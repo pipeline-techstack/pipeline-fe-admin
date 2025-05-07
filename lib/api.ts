@@ -1,6 +1,6 @@
 import { getToken } from "./auth";
 
-const AUTH_API_URL = "https://authapi.techstack.management/api/v1";
+const AUTH_API_URL = "https://auth-apis-p4de.onrender.com/api/v1";
 const API_URL = "https://auth-apis-p4de.onrender.com/api/v1";
 
 interface LoginResponse {
