@@ -1,13 +1,14 @@
 "use client"
-
+import React from "react"
 import { useEffect, useState } from "react"
 import LoginCard from "@/components/login-card"
-import AddSubscriptionCard from "@/components/add-subscription-card"
-import ManageSubscriptionCard from "@/components/manage-subscription-card"
 import { isAuthenticated, logout } from "@/lib/auth"
+import { DashboardLayout } from '@/components/layout/dashboard-layout'
+import { OrganizationTable } from '@/components/dashboard/org-table'
 
 export default function Home() {
   const [authenticated, setAuthenticated] = useState(false)
+  const [currentView, setCurrentView] = useState('dashboard')
 
   useEffect(() => {
     // Check if user is authenticated on component mount
@@ -19,32 +20,44 @@ export default function Home() {
     setAuthenticated(false)
   }
 
-  return (
-    <main className="min-h-screen p-8 bg-gray-50">
-      <div className="max-w-4xl mx-auto">
-        <header className="mb-8 flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Admin Panel</h1>
-          {authenticated && (
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
-            >
-              Logout
-            </button>
-          )}
-        </header>
+  const handleNavigation = (view: string) => {
+    setCurrentView(view)
+  }
 
-        {!authenticated ? (
-          <div className="max-w-md mx-auto">
-            <LoginCard onLoginSuccess={() => setAuthenticated(true)} />
+  if (!authenticated) {
+    return (
+      <main className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="max-w-md w-full">
+          <LoginCard onLoginSuccess={() => setAuthenticated(true)} />
+        </div>
+      </main>
+    )
+  }
+
+  return (
+    <DashboardLayout 
+      currentView={currentView} 
+      onNavigate={handleNavigation}
+      onLogout={handleLogout}
+    >
+      <div className="space-y-6">
+        {currentView === 'dashboard' && (
+          <div className="p-6">
+            <h1 className="text-2xl font-bold text-gray-900 mb-6">Dashboard</h1>
+            <p className="text-gray-600">Welcome to the admin dashboard. Select Organization to manage subscriptions.</p>
           </div>
-        ) : (
-          <div className="grid gap-8 md:grid-cols-2">
-            <AddSubscriptionCard />
-            <ManageSubscriptionCard />
+        )}
+        
+        {currentView === 'organization' && (
+          <div className="p-6">
+            <div className="mb-6">
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">Organization</h1>
+              <p className="text-gray-600">See subscription details and status for all your organizations</p>
+            </div>
+            <OrganizationTable />
           </div>
         )}
       </div>
-    </main>
+    </DashboardLayout>
   )
 }
