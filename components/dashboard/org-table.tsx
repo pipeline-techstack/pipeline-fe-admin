@@ -66,13 +66,13 @@ export function OrganizationTable() {
           </div>
           <Button className="bg-blue-600 hover:bg-blue-700">
             <Plus className="w-4 h-4 mr-2" />
-            Add subscription
+            Add Organization
           </Button>
         </div>
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto">
+      <div className="overflow-auto max-h-[calc(100vh-250px)]">
         <Table>
           <TableHeader>
             <TableRow className="bg-gray-50">

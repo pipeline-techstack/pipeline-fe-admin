@@ -40,7 +40,7 @@ export default function Home() {
       onNavigate={handleNavigation}
       onLogout={handleLogout}
     >
-      <div className="space-y-6">
+      <div className="flex flex-col flex-1 space-y-6 h-full">
         {currentView === 'dashboard' && (
           <div className="p-6">
             <h1 className="text-2xl font-bold text-gray-900 mb-6">Dashboard</h1>

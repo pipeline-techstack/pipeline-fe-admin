@@ -20,9 +20,12 @@ export function DashboardLayout({
       <Sidebar currentView={currentView} onNavigate={onNavigate} />
       <div className="flex flex-col flex-1 overflow-hidden">
         <Header onLogout={onLogout} />
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50">
-          {children}
-        </main>
+        <main className="flex-1 h-full overflow-hidden bg-gray-50 flex flex-col">
+  <div className="flex-1 overflow-auto">
+    {children}
+  </div>
+</main>
+
       </div>
     </div>
   )

@@ -24,7 +24,7 @@ export function Sidebar({ currentView, onNavigate }: SidebarProps) {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-4 py-6 space-y-1">
+      <nav className="flex-1 px-4 py-4 space-y-1">
         {navigation.map((item) => {
           const isActive = currentView === item.key
           return (
