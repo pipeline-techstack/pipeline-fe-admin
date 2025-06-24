@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
 import { 
@@ -12,7 +11,8 @@ import {
   TableHeader, 
   TableRow 
 } from '@/components/ui/table'
-import { Search, Plus } from 'lucide-react'
+import { Search } from 'lucide-react'
+import { AddOrganizationDialog } from '@/components/ui/add-organization-dialog'
 
 interface OrganizationData {
   id: string
@@ -21,6 +21,14 @@ interface OrganizationData {
   customer: string
   quotaPlan: string
   checked: boolean
+}
+
+interface OrganizationFormData {
+  organizationName: string
+  enterpriseId: string
+  email: string
+  plan: string
+  quota: string
 }
 
 const mockData: OrganizationData[] = [
@@ -41,6 +49,20 @@ export function OrganizationTable() {
         item.id === id ? { ...item, checked } : item
       )
     )
+  }
+
+  const handleAddOrganization = (orgData: OrganizationFormData) => {
+    // Generate a new organization entry
+    const newOrganization: OrganizationData = {
+      id: (data.length + 1).toString(),
+      srNo: `#${Math.floor(Math.random() * 99999)}`,
+      company: orgData.organizationName,
+      customer: orgData.email.split('@')[0], // Extract username from email
+      quotaPlan: `0/${orgData.quota}-${orgData.plan.charAt(0).toUpperCase() + orgData.plan.slice(1)}`,
+      checked: false
+    }
+
+    setData(prev => [...prev, newOrganization])
   }
 
   const filteredData = data.filter(item =>
@@ -64,10 +86,7 @@ export function OrganizationTable() {
               className="pl-10 pr-4 py-2 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
-          <Button className="bg-blue-600 hover:bg-blue-700">
-            <Plus className="w-4 h-4 mr-2" />
-            Add Organization
-          </Button>
+          <AddOrganizationDialog onAddOrganization={handleAddOrganization} />
         </div>
       </div>
 

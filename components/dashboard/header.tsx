@@ -7,7 +7,7 @@ interface HeaderProps {
 
 export function Header({ onLogout }: HeaderProps) {
   return (
-    <header className="bg-white border-b border-gray-200 h-16">
+    <header className="bg-white h-14">
       <div className="flex items-center justify-between px-6 h-full">
         <div></div>
         <button

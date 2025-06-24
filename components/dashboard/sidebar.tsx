@@ -16,12 +16,12 @@ interface SidebarProps {
 
 export function Sidebar({ currentView, onNavigate }: SidebarProps) {
   return (
-    <div className="flex flex-col w-64 bg-white border-r border-gray-200">
+    <div className="flex flex-col w-64">
       {/* Logo */}
-      <div className="px-6 py-4 border-b border-gray-200">
-        <h1 className="text-xl font-bold text-gray-900">Pipeline</h1>
-        <p className="text-sm text-gray-500">Admin Dashboard</p>
-      </div>
+      <div className="px-6 py-4 border-b border-gray-200 mt-6">
+  <h1 className="text-4xl px-4 py-2 font-bold text-gray-900">Pipeline</h1>
+  <p className="text-md px-4 py-1 text-gray-500">Admin Dashboard</p>
+</div>
 
       {/* Navigation */}
       <nav className="flex-1 px-4 py-4 space-y-1">
