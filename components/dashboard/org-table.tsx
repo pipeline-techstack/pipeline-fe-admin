@@ -1,6 +1,9 @@
 'use client'
 
 import React, { useState } from 'react'
+import { useRouter } from 'next/navigation' 
+// import { useRouter } from 'next/router' 
+// import { useNavigate } from 'react-router-dom'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
 import { 
@@ -42,6 +45,8 @@ const mockData: OrganizationData[] = [
 export function OrganizationTable() {
   const [data, setData] = useState<OrganizationData[]>(mockData)
   const [searchTerm, setSearchTerm] = useState('')
+  const router = useRouter() 
+  // const navigate = useNavigate() 
 
   const handleCheckboxChange = (id: string, checked: boolean) => {
     setData(prev => 
@@ -63,6 +68,17 @@ export function OrganizationTable() {
     }
 
     setData(prev => [...prev, newOrganization])
+  }
+
+  const handleRowClick = (organizationId: string, event: React.MouseEvent) => {
+    // Prevent navigation if clicking on checkbox
+    if ((event.target as HTMLElement).closest('[role="checkbox"]')) {
+      return
+    }
+
+    // Navigate to organization detail page
+    router.push(`/organization/${organizationId}`)
+    // navigate(`/organization/${organizationId}`)
   }
 
   const filteredData = data.filter(item =>
@@ -106,8 +122,12 @@ export function OrganizationTable() {
           </TableHeader>
           <TableBody>
             {filteredData.map((item) => (
-              <TableRow key={item.id} className="hover:bg-gray-50">
-                <TableCell>
+              <TableRow 
+                key={item.id} 
+                className="hover:bg-gray-50 cursor-pointer transition-colors"
+                onClick={(e) => handleRowClick(item.id, e)}
+              >
+                <TableCell onClick={(e) => e.stopPropagation()}>
                   <Checkbox
                     checked={item.checked}
                     onCheckedChange={(checked) => 
