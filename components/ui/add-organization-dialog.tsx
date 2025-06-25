@@ -4,6 +4,8 @@ import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { AlertCircle } from 'lucide-react'
+
 import {
   Select,
   SelectContent,
@@ -35,6 +37,9 @@ export function AddOrganizationDialog({ onAddOrganization }: AddOrganizationDial
     quota: ''
   })
 
+  const [emailTouched, setEmailTouched] = useState(false)
+  const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
+
   const handleInputChange = (field: keyof OrganizationFormData, value: string) => {
     setFormData(prev => ({
       ...prev,
@@ -47,7 +52,6 @@ export function AddOrganizationDialog({ onAddOrganization }: AddOrganizationDial
     if (onAddOrganization) {
       onAddOrganization(formData)
     }
-    // Reset form
     setFormData({
       organizationName: '',
       enterpriseId: '',
@@ -55,12 +59,12 @@ export function AddOrganizationDialog({ onAddOrganization }: AddOrganizationDial
       plan: '',
       quota: ''
     })
+    setEmailTouched(false)
     setOpen(false)
   }
 
   const handleClose = () => {
     setOpen(false)
-    // Reset form when closing without saving
     setFormData({
       organizationName: '',
       enterpriseId: '',
@@ -68,13 +72,19 @@ export function AddOrganizationDialog({ onAddOrganization }: AddOrganizationDial
       plan: '',
       quota: ''
     })
+    setEmailTouched(false)
   }
 
-  const isFormValid = formData.organizationName && formData.enterpriseId && formData.email && formData.plan && formData.quota
+  const isFormValid =
+    formData.organizationName &&
+    formData.enterpriseId &&
+    isEmailValid &&
+    formData.plan &&
+    formData.quota
 
   return (
     <>
-      <Button 
+      <Button
         className="bg-blue-600 hover:bg-blue-700"
         onClick={() => setOpen(true)}
       >
@@ -141,19 +151,32 @@ export function AddOrganizationDialog({ onAddOrganization }: AddOrganizationDial
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-base font-medium text-gray-700">
-                  Email <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  required
-                  placeholder="e.g. amina103@gmail.com"
-                  value={formData.email}
-                  onChange={(e) => handleInputChange('email', e.target.value)}
-                  className="w-full px-3 py-3 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent invalid:border-red-300 invalid:ring-red-500"
-                />
-              </div>
+  <Label htmlFor="email" className="text-base font-medium text-gray-700">
+    Email <span className="text-red-500">*</span>
+  </Label>
+  <Input
+    id="email"
+    type="email"
+    required
+    placeholder="e.g. name@example.com"
+    value={formData.email}
+    onChange={(e) => handleInputChange('email', e.target.value)}
+    onBlur={() => setEmailTouched(true)}
+    className={`w-full px-3 py-3 text-base border rounded-md focus:outline-none focus:ring-2 focus:border-transparent ${
+      emailTouched && !isEmailValid
+        ? 'border-red-300 ring-red-500 focus:ring-red-500'
+        : 'border-gray-300 focus:ring-blue-500'
+    }`}
+  />
+
+  {emailTouched && !isEmailValid && (
+    <div className="flex items-center mt-1 text-sm text-red-600 gap-1">
+      <AlertCircle className="w-4 h-4" />
+      Please enter a valid email (e.g. name@example.com)
+    </div>
+  )}
+</div>
+
 
               <div className="space-y-2">
                 <Label htmlFor="plan" className="text-base font-medium text-gray-700">
