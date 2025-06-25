@@ -15,7 +15,7 @@ import {
   TableRow 
 } from '@/components/ui/table'
 import { Search } from 'lucide-react'
-import { AddOrganizationDialog } from '@/components/ui/add-organization-dialog'
+import { AddOrganizationDialog } from '@/components/ui/dialog/add-organization'
 
 interface OrganizationData {
   id: string
