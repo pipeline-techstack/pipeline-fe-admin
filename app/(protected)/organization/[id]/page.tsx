@@ -23,7 +23,7 @@ export default function OrganizationPage() {
     error,
   } = useQuery({
     queryKey: ["organization", id],
-    queryFn: () => getMembers({ id }),
+    queryFn: () => getMembers({ id: id as string }),
     retry: false,
   });
 
