@@ -23,7 +23,6 @@ interface OrganizationFormData {
   organizationName: string
   enterpriseId: string
   email: string
-  plan: string
   quota: string
 }
 
@@ -33,7 +32,6 @@ export function AddOrganizationDialog({ onAddOrganization }: AddOrganizationDial
     organizationName: '',
     enterpriseId: '',
     email: '',
-    plan: '',
     quota: ''
   })
 
@@ -56,7 +54,6 @@ export function AddOrganizationDialog({ onAddOrganization }: AddOrganizationDial
       organizationName: '',
       enterpriseId: '',
       email: '',
-      plan: '',
       quota: ''
     })
     setEmailTouched(false)
@@ -69,7 +66,6 @@ export function AddOrganizationDialog({ onAddOrganization }: AddOrganizationDial
       organizationName: '',
       enterpriseId: '',
       email: '',
-      plan: '',
       quota: ''
     })
     setEmailTouched(false)
@@ -79,7 +75,6 @@ export function AddOrganizationDialog({ onAddOrganization }: AddOrganizationDial
     formData.organizationName &&
     formData.enterpriseId &&
     isEmailValid &&
-    formData.plan &&
     formData.quota
 
   return (
@@ -178,40 +173,21 @@ export function AddOrganizationDialog({ onAddOrganization }: AddOrganizationDial
 </div>
 
 
-              <div className="space-y-2">
-                <Label htmlFor="plan" className="text-base font-medium text-gray-700">
-                  Plan <span className="text-red-500">*</span>
-                </Label>
-                <Select value={formData.plan} onValueChange={(value) => handleInputChange('plan', value)} required>
-                  <SelectTrigger className="w-full px-3 py-3 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    <SelectValue placeholder="Select a plan" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="basic">Basic</SelectItem>
-                    <SelectItem value="premium">Premium</SelectItem>
-                    <SelectItem value="enterprise">Enterprise</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+        
 
               <div className="space-y-2">
                 <Label htmlFor="quota" className="text-base font-medium text-gray-700">
                   Quota <span className="text-red-500">*</span>
                 </Label>
-                <Select value={formData.quota} onValueChange={(value) => handleInputChange('quota', value)} required>
-                  <SelectTrigger className="w-full px-3 py-3 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    <SelectValue placeholder="Select quota" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="10">10</SelectItem>
-                    <SelectItem value="25">25</SelectItem>
-                    <SelectItem value="50">50</SelectItem>
-                    <SelectItem value="100">100</SelectItem>
-                    <SelectItem value="250">250</SelectItem>
-                    <SelectItem value="500">500</SelectItem>
-                    <SelectItem value="1000">1000</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Input
+                  id="quota"
+                  type="text"
+                  required
+                  placeholder="e.g. 1000 rows"
+                  value={formData.quota}
+                  onChange={(e) => handleInputChange('quota', e.target.value)}
+                  className="w-full px-3 py-3 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
               </div>
 
               <Button
