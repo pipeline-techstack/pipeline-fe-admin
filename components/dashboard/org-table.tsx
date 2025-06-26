@@ -13,7 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Search } from "lucide-react";
-import { AddOrganizationDialog } from "@/components/ui/dialog/add-organization";
+import { AddOrganizationDialog } from "@/components/dialog/add-organization";
 import { useQuery } from "@tanstack/react-query";
 import { getOrganizations } from "@/services/org-apis";
 import { formatDate } from "@/lib/utils";

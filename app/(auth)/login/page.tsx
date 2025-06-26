@@ -1,4 +1,4 @@
-import LoginCard from "@/components/login-card";
+import LoginCard from "@/components/cards/login-card";
 import React from "react";
 
 const Login = () => {
