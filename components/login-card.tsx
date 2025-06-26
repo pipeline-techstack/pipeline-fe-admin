@@ -8,16 +8,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { login } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
-interface LoginCardProps {
-  onLoginSuccess: () => void;
-}
-
-export default function LoginCard({ onLoginSuccess }: LoginCardProps) {
+export default function LoginCard() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,9 +24,8 @@ export default function LoginCard({ onLoginSuccess }: LoginCardProps) {
 
     try {
       await login(email, password);
-      onLoginSuccess();
-      console.log("Login successful");
       alert("Login Successful");
+      router.push("/");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error occurred");
       console.error("Login failed:", err);
@@ -44,7 +41,7 @@ export default function LoginCard({ onLoginSuccess }: LoginCardProps) {
       </CardHeader>
       <CardContent>
         {error && (
-          <div className="mb-4 p-3 bg-red-100 text-red-800 rounded-md">
+          <div className="bg-red-100 mb-4 p-3 rounded-md text-red-800">
             {error}
           </div>
         )}

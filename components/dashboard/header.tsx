@@ -1,26 +1,32 @@
-import React from 'react'
-import { LogOut } from 'lucide-react'
+"use client";
+import React from "react";
+import { LogOut } from "lucide-react";
+import { logout } from "@/lib/auth";
+import { Button } from "../ui/button";
+import { redirect } from "next/navigation";
 
-interface HeaderProps {
-  onLogout: () => void
-}
+export function Header() {
+  const handleLogout = () => {
+    logout();
+    redirect("/login");
 
-export function Header({ onLogout }: HeaderProps) {
+    // setAuthenticated(false);
+  };
   return (
     <header className="bg-white h-14">
-      <div className="flex items-center justify-between px-6 h-full">
+      <div className="flex justify-between items-center px-6 h-full">
         <div></div>
-        <button
-          onClick={onLogout}
-          className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors relative group"
+        <Button
+          onClick={handleLogout}
+          className="group relative hover:bg-red-50 p-2 rounded-lg text-red-600 hover:text-red-700 transition-colors"
           aria-label="Logout"
         >
           <LogOut size={20} />
-          <span className="absolute right-0 top-full mt-2 px-2 py-1 bg-gray-500 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+          <span className="top-full right-0 absolute bg-gray-500 opacity-0 group-hover:opacity-100 mt-2 px-2 py-1 rounded text-white text-sm whitespace-nowrap transition-opacity pointer-events-none">
             Logout
           </span>
-        </button>
+        </Button>
       </div>
     </header>
-  )
+  );
 }
