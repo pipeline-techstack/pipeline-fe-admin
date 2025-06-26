@@ -44,6 +44,16 @@ const MemberCard = ({ member }: { member: Member }) => (
       >
         {capitalize(member.role)}
       </span>
+
+      <div className="text-sm text-gray-500 mt-2">
+        <p>
+          <span className="font-medium">Used Rows:</span> {member.usedRows || 0}
+        </p>
+        <p>
+          <span className="font-medium">Row Quota:</span> {member.rowQuota || 0}
+        </p>
+
+      </div>
     </div>
   </div>
 );
