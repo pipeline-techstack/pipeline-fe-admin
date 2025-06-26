@@ -27,6 +27,19 @@ export default function OrganizationPage() {
     retry: false,
   });
 
+  const handleViewMember = (member: Member) => {
+    console.log("View member:", member);
+  };
+
+  const handleEditMember = (member: Member) => {
+    console.log("Edit member:", member);
+  };
+
+  const handleRemoveMember = (member: Member) => {
+    console.log("Remove member:", member);
+    setMembers(prev => prev.filter(m => m._id !== member._id));
+  };
+
   useEffect(() => {
     if (fetchedData) {
       setMembers(fetchedData.data);
@@ -74,7 +87,13 @@ export default function OrganizationPage() {
         <div className="p-8">
           <div className="gap-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {members.map((member: Member) => (
-              <MemberCard key={member._id} member={member} />
+              <MemberCard 
+                key={member._id} 
+                member={member} 
+                onView={handleViewMember}
+                onEdit={handleEditMember}
+                onRemove={handleRemoveMember}
+              />
             ))}
           </div>
 
