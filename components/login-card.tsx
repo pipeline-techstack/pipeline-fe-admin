@@ -7,8 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { login } from "@/lib/api";
 import { useRouter } from "next/navigation";
+import { loginApi } from "@/services/auth-apis";
 
 export default function LoginCard() {
   const [email, setEmail] = useState("");
@@ -23,7 +23,7 @@ export default function LoginCard() {
     setError(null);
 
     try {
-      await login(email, password);
+      await loginApi(email, password);
       alert("Login Successful");
       router.push("/");
     } catch (err) {

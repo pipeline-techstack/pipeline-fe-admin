@@ -2,15 +2,7 @@
 
 import React, { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import {
-  Search,
-  Plus,
-  MoreVertical,
-  ArrowLeft,
-  Home,
-  Users,
-  Copyright,
-} from "lucide-react";
+import { Search, MoreVertical, ArrowLeft } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -60,64 +52,6 @@ const organizations: Record<string, Organization> = {
   "3": { id: "3", name: "Google INC.", members: mockMembers },
   "4": { id: "4", name: "Microsoft", members: mockMembers },
   "5": { id: "5", name: "Google INC.", members: mockMembers },
-};
-
-const navigation = [
-  { name: "Dashboard", key: "dashboard", icon: Home, href: "/" },
-  { name: "Organization", key: "organization", icon: Users, href: "/" },
-];
-
-const Sidebar = ({ organizationName }: { organizationName: string }) => {
-  const router = useRouter();
-  return (
-    <div className="flex flex-col bg-white border-gray-200 border-r w-64 h-full">
-      <div className="mt-6 px-6 py-4 border-gray-200 border-b">
-        <h1 className="px-4 py-2 font-bold text-gray-900 text-4xl">Pipeline</h1>
-        <p className="px-4 py-1 text-gray-500 text-md">Admin Dashboard</p>
-      </div>
-      <nav className="flex-1 space-y-1 px-4 py-4">
-        {navigation.map(({ name, key, icon: Icon, href }) => (
-          <button
-            key={name}
-            onClick={() => router.push(href)}
-            type="button"
-            className={cn(
-              "flex items-center w-full px-3 py-2 text-sm font-medium rounded-lg transition-colors text-left",
-              key === "organization"
-                ? "bg-blue-50 text-blue-700 border-r-2 border-blue-700"
-                : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
-            )}
-          >
-            <Icon className="mr-3 w-5 h-5" />
-            {name}
-          </button>
-        ))}
-      </nav>
-      <div className="mb-4 px-4">
-        <div className="bg-gray-50 p-3 rounded-lg">
-          <p className="font-medium text-gray-500 text-xs uppercase tracking-wide">
-            Current Organization
-          </p>
-          <p className="mt-1 font-medium text-gray-900 text-sm">
-            {organizationName}
-          </p>
-        </div>
-      </div>
-      <div className="p-4 border-gray-200 border-t">
-        <div className="flex items-center">
-          <div className="bg-gray-300 rounded-full w-8 h-8" />
-          <div className="ml-3">
-            <p className="font-medium text-gray-700 text-sm">
-              Pipeline Admin Dashboard
-            </p>
-            <p className="flex items-center gap-1 text-gray-500 text-xs">
-              <Copyright className="w-3 h-3" /> 2025 All Rights Reserved
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
 };
 
 const MemberCard = ({ member }: { member: Member }) => (
@@ -170,7 +104,6 @@ export default function OrganizationPage() {
   if (!organization) {
     return (
       <div className="flex bg-gray-50 h-screen">
-        <Sidebar organizationName="Unknown" />
         <div className="flex flex-1 justify-center items-center">
           <div className="text-center">
             <h1 className="mb-2 font-bold text-gray-900 text-2xl">
@@ -179,9 +112,7 @@ export default function OrganizationPage() {
             <p className="mb-4 text-gray-500">
               The organization you're looking for doesn't exist.
             </p>
-            <Button onClick={() => router.push("/")}>
-              Go Back to Dashboard
-            </Button>
+            <Button onClick={() => router.push("/")}>Go Back to Home</Button>
           </div>
         </div>
       </div>
