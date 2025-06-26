@@ -144,7 +144,7 @@ export function OrganizationTable() {
                 <TableRow 
                   key={item._id} 
                   className={`hover:bg-gray-50 group cursor-pointer transition-colors duration-150 ${
-                    item.checked ? 'bg-blue-50 border-blue-200' : ''
+                    item.checked ? 'bg-blue-20' : ''
                   }`} 
                   onClick={(e) => handleRowClick(item._id, e)}
                 >
