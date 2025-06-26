@@ -2,12 +2,8 @@
 import React from "react";
 import { OrganizationTable } from "@/components/dashboard/org-table";
 import { AddOrganizationDialog } from "@/components/dialog/add-organization";
-import { OrganizationData, OrganizationFormData } from "@/lib/types/org-types";
 
 export default function Home() {
-  const handleAddOrganization = (orgData: OrganizationFormData) => {
-    console.log(orgData);
-  };
   return (
     <div className="flex flex-col flex-1 space-y-6 h-full">
       <div className="p-6">
@@ -21,7 +17,7 @@ export default function Home() {
             </p>
           </div>
 
-          <AddOrganizationDialog onAddOrganization={handleAddOrganization} />
+          <AddOrganizationDialog />
         </div>
         <OrganizationTable />
       </div>

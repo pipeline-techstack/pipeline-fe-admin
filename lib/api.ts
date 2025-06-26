@@ -1,19 +1,14 @@
 import { getToken } from "./auth";
-
-interface SubscriptionData {
-  name: string;
-  enterprisePriceId: string;
-  email: string;
-}
+import { OrganizationFormData } from "./types/org-types";
 
 interface UsageData {
   email: string;
   count: number;
 }
 
-// Add subscription API call
-export async function addSubscription(
-  subscriptionData: SubscriptionData
+// Add organization API call
+export async function addOrganization(
+  formData: OrganizationFormData
 ): Promise<any> {
   const token = getToken();
 
@@ -29,7 +24,12 @@ export async function addSubscription(
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(subscriptionData),
+      body: JSON.stringify({
+        name: formData.organizationName,
+        enterprisePriceId: formData.enterpriseId,
+        email: formData.email,
+        quota: formData.quota,
+      }),
     }
   );
 

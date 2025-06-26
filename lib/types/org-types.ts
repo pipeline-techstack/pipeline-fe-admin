@@ -11,6 +11,5 @@ export interface OrganizationFormData {
   organizationName: string;
   enterpriseId: string;
   email: string;
-  plan: string;
   quota: string;
 }

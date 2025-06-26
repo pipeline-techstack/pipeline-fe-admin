@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { addSubscription } from "@/lib/api";
+import { addOrganization } from "@/lib/api";
 
 export default function AddSubscriptionCard() {
   const [name, setName] = useState("");
@@ -26,7 +26,7 @@ export default function AddSubscriptionCard() {
     setSuccess(false);
 
     try {
-      const response = await addSubscription({
+      const response = await addOrganization({
         name,
         enterprisePriceId,
         email,
@@ -53,12 +53,12 @@ export default function AddSubscriptionCard() {
       </CardHeader>
       <CardContent>
         {error && (
-          <div className="mb-4 p-3 bg-red-100 text-red-800 rounded-md">
+          <div className="bg-red-100 mb-4 p-3 rounded-md text-red-800">
             {error}
           </div>
         )}
         {success && (
-          <div className="mb-4 p-3 bg-green-100 text-green-800 rounded-md">
+          <div className="bg-green-100 mb-4 p-3 rounded-md text-green-800">
             Subscription added successfully!
           </div>
         )}
