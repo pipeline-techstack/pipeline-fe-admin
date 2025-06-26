@@ -1,81 +1,74 @@
-'use client'
+"use client";
 
-import React, { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { AlertCircle } from 'lucide-react'
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { AlertCircle } from "lucide-react";
+import { Plus, Users, X } from "lucide-react";
+import { addOrganization } from "@/lib/api";
+import { OrganizationFormData } from "@/lib/types/org-types";
+import { useQueryClient } from "@tanstack/react-query";
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { Plus, Users, X } from 'lucide-react'
-
-interface AddOrganizationDialogProps {
-  onAddOrganization?: (orgData: OrganizationFormData) => void
-}
-
-interface OrganizationFormData {
-  organizationName: string
-  enterpriseId: string
-  email: string
-  quota: string
-}
-
-export function AddOrganizationDialog({ onAddOrganization }: AddOrganizationDialogProps) {
-  const [open, setOpen] = useState(false)
+export function AddOrganizationDialog() {
+  const queryClient = useQueryClient();
+  const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState<OrganizationFormData>({
-    organizationName: '',
-    enterpriseId: '',
-    email: '',
-    quota: ''
-  })
+    organizationName: "",
+    enterpriseId: `${process.env.NEXT_PUBLIC_PRICE_ID}`, //this will be hard coded
+    email: "",
+    quota: "",
+  });
 
-  const [emailTouched, setEmailTouched] = useState(false)
-  const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
+  const [emailTouched, setEmailTouched] = useState(false);
+  const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email);
 
-  const handleInputChange = (field: keyof OrganizationFormData, value: string) => {
-    setFormData(prev => ({
+  const handleInputChange = (
+    field: keyof OrganizationFormData,
+    value: string
+  ) => {
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
-    }))
-  }
+      [field]: value,
+    }));
+  };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (onAddOrganization) {
-      onAddOrganization(formData)
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await addOrganization(formData);
+      setFormData({
+        organizationName: "",
+        enterpriseId: `${process.env.NEXT_PUBLIC_PRICE_ID}`, //this will be hard coded
+        email: "",
+        quota: "",
+      });
+      setEmailTouched(false);
+      setOpen(false);
+      queryClient.invalidateQueries({
+        queryKey: ["organizations"],
+      });
+    } catch (error) {
+      console.error("Error adding organization:", error);
     }
-    setFormData({
-      organizationName: '',
-      enterpriseId: '',
-      email: '',
-      quota: ''
-    })
-    setEmailTouched(false)
-    setOpen(false)
-  }
+  };
 
   const handleClose = () => {
-    setOpen(false)
+    setOpen(false);
     setFormData({
-      organizationName: '',
-      enterpriseId: '',
-      email: '',
-      quota: ''
-    })
-    setEmailTouched(false)
-  }
+      organizationName: "",
+      enterpriseId: `${process.env.NEXT_PUBLIC_PRICE_ID}`, //this will be hard coded
+      email: "",
+      quota: "",
+    });
+    setEmailTouched(false);
+  };
 
   const isFormValid =
     formData.organizationName &&
     formData.enterpriseId &&
     isEmailValid &&
-    formData.quota
+    formData.quota;
 
   return (
     <>
@@ -83,22 +76,22 @@ export function AddOrganizationDialog({ onAddOrganization }: AddOrganizationDial
         className="bg-blue-600 hover:bg-blue-700"
         onClick={() => setOpen(true)}
       >
-        <Plus className="w-4 h-4 mr-2" />
+        <Plus className="mr-2 w-4 h-4" />
         Add Organization
       </Button>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div className="bg-white rounded-lg shadow-2xl border border-gray-200 w-full max-w-2xl mx-4 px-2 py-2">
+        <div className="z-50 fixed inset-0 flex justify-center items-center">
+          <div className="bg-white shadow-2xl mx-4 px-2 py-2 border border-gray-200 rounded-lg w-full max-w-2xl">
             {/* Header */}
-            <div className="flex items-center justify-between p-6 pb-4 border-b border-gray-100">
+            <div className="flex justify-between items-center p-6 pb-4 border-gray-100 border-b">
               <div className="flex items-center gap-2">
                 <Users className="w-7 h-7 text-gray-600" />
                 <div>
-                  <h2 className="text-2xl font-semibold text-gray-900">
+                  <h2 className="font-semibold text-gray-900 text-2xl">
                     Add enterprise organization
                   </h2>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p className="mt-1 text-gray-600 text-sm">
                     Enterprise organization model & value proposition
                   </p>
                 </div>
@@ -107,16 +100,19 @@ export function AddOrganizationDialog({ onAddOrganization }: AddOrganizationDial
                 variant="ghost"
                 size="sm"
                 onClick={handleClose}
-                className="h-8 w-8 p-0 hover:bg-gray-100"
+                className="hover:bg-gray-100 p-0 w-8 h-8"
               >
                 <X className="w-4 h-4" />
               </Button>
             </div>
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="px-6 pb-6 space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6 px-6 pb-6">
               <div className="space-y-2">
-                <Label htmlFor="organizationName" className="text-base font-medium text-gray-700">
+                <Label
+                  htmlFor="organizationName"
+                  className="font-medium text-gray-700 text-base"
+                >
                   Organization name <span className="text-red-500">*</span>
                 </Label>
                 <Input
@@ -125,58 +121,69 @@ export function AddOrganizationDialog({ onAddOrganization }: AddOrganizationDial
                   required
                   placeholder="e.g. google.com"
                   value={formData.organizationName}
-                  onChange={(e) => handleInputChange('organizationName', e.target.value)}
-                  className="w-full px-3 py-3 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  onChange={(e) =>
+                    handleInputChange("organizationName", e.target.value)
+                  }
+                  className="px-3 py-3 border border-gray-300 focus:border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-base"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="enterpriseId" className="text-base font-medium text-gray-700">
+                <Label
+                  htmlFor="enterpriseId"
+                  className="font-medium text-gray-700 text-base"
+                >
                   Enterprise ID <span className="text-red-500">*</span>
                 </Label>
                 <Input
+                  readOnly
                   id="enterpriseId"
                   type="text"
                   required
                   placeholder="893qdefshnnqjdh"
                   value={formData.enterpriseId}
-                  onChange={(e) => handleInputChange('enterpriseId', e.target.value)}
-                  className="w-full px-3 py-3 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  onChange={(e) =>
+                    handleInputChange("enterpriseId", e.target.value)
+                  }
+                  className="px-3 py-3 border border-gray-300 focus:border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-base"
                 />
               </div>
 
               <div className="space-y-2">
-  <Label htmlFor="email" className="text-base font-medium text-gray-700">
-    Email <span className="text-red-500">*</span>
-  </Label>
-  <Input
-    id="email"
-    type="email"
-    required
-    placeholder="e.g. name@example.com"
-    value={formData.email}
-    onChange={(e) => handleInputChange('email', e.target.value)}
-    onBlur={() => setEmailTouched(true)}
-    className={`w-full px-3 py-3 text-base border rounded-md focus:outline-none focus:ring-2 focus:border-transparent ${
-      emailTouched && !isEmailValid
-        ? 'border-red-300 ring-red-500 focus:ring-red-500'
-        : 'border-gray-300 focus:ring-blue-500'
-    }`}
-  />
+                <Label
+                  htmlFor="email"
+                  className="font-medium text-gray-700 text-base"
+                >
+                  Email <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="email"
+                  type="email"
+                  required
+                  placeholder="e.g. name@example.com"
+                  value={formData.email}
+                  onChange={(e) => handleInputChange("email", e.target.value)}
+                  onBlur={() => setEmailTouched(true)}
+                  className={`w-full px-3 py-3 text-base border rounded-md focus:outline-none focus:ring-2 focus:border-transparent ${
+                    emailTouched && !isEmailValid
+                      ? "border-red-300 ring-red-500 focus:ring-red-500"
+                      : "border-gray-300 focus:ring-blue-500"
+                  }`}
+                />
 
-  {emailTouched && !isEmailValid && (
-    <div className="flex items-center mt-1 text-sm text-red-600 gap-1">
-      <AlertCircle className="w-4 h-4" />
-      Please enter a valid email (e.g. name@example.com)
-    </div>
-  )}
-</div>
-
-
-        
+                {emailTouched && !isEmailValid && (
+                  <div className="flex items-center gap-1 mt-1 text-red-600 text-sm">
+                    <AlertCircle className="w-4 h-4" />
+                    Please enter a valid email (e.g. name@example.com)
+                  </div>
+                )}
+              </div>
 
               <div className="space-y-2">
-                <Label htmlFor="quota" className="text-base font-medium text-gray-700">
+                <Label
+                  htmlFor="quota"
+                  className="font-medium text-gray-700 text-base"
+                >
                   Quota <span className="text-red-500">*</span>
                 </Label>
                 <Input
@@ -185,15 +192,15 @@ export function AddOrganizationDialog({ onAddOrganization }: AddOrganizationDial
                   required
                   placeholder="e.g. 1000 rows"
                   value={formData.quota}
-                  onChange={(e) => handleInputChange('quota', e.target.value)}
-                  className="w-full px-3 py-3 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  onChange={(e) => handleInputChange("quota", e.target.value)}
+                  className="px-3 py-3 border border-gray-300 focus:border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-base"
                 />
               </div>
 
               <Button
                 type="submit"
                 disabled={!isFormValid}
-                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-medium py-3 px-4 text-base rounded-md transition-colors"
+                className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 px-4 py-3 rounded-md w-full font-medium text-white text-base transition-colors disabled:cursor-not-allowed"
               >
                 Add organization
               </Button>
@@ -202,5 +209,5 @@ export function AddOrganizationDialog({ onAddOrganization }: AddOrganizationDial
         </div>
       )}
     </>
-  )
+  );
 }
