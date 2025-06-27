@@ -1,0 +1,113 @@
+"use client";
+
+import React, { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { AddTeamMemberDialog } from "@/components/dialog/add-team-member";
+import { Member } from "@/lib/types/member-types";
+import MemberCard from "../../../../components/members/memberCard";
+import { useQuery } from "@tanstack/react-query";
+import { getMembers } from "@/services/member-apis";
+
+export default function OrganizationPage() {
+  const { id } = useParams();
+  const router = useRouter();
+  const [members, setMembers] = useState<Member[]>([]);
+  const [organizationName, setOrganizationName] = useState<string>("");
+  const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
+  const {
+    data: fetchedData,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["organization", id],
+    queryFn: () => getMembers({ id: id as string }),
+    retry: false,
+  });
+
+  const handleViewMember = (member: Member) => {
+    console.log("View member:", member);
+  };
+
+  const handleEditMember = (member: Member) => {
+    console.log("Edit member:", member);
+  };
+
+  const handleRemoveMember = (member: Member) => {
+    console.log("Remove member:", member);
+    setMembers(prev => prev.filter(m => m._id !== member._id));
+  };
+
+  useEffect(() => {
+    if (fetchedData) {
+      setMembers(fetchedData.data);
+      setOrganizationName(fetchedData.organization);
+    }
+  }, [fetchedData]);
+
+  if (isLoading) return <p>Loading organizations...</p>;
+  if (isError)
+    return <p className="text-red-600">Error: {(error as Error).message}</p>;
+
+  return (
+    <div className="flex bg-gray-50 h-screen">
+      <div className="flex-1 bg-gray-50">
+        <div className="px-8 py-6">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center space-x-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => router.push("/")}
+                className="p-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+              </Button>
+              <div>
+                <h1 className="font-medium text-gray-900 text-2xl">
+                  {organizationName}
+                </h1>
+                <p className="mt-1 text-gray-500 text-sm">
+                  See the members who can read, write and edit
+                </p>
+              </div>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsAddMemberOpen(true)}
+            >
+              + Add Team Member
+            </Button>
+          </div>
+        </div>
+
+        <div className="p-8">
+          <div className="gap-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {members.map((member: Member) => (
+              <MemberCard 
+                key={member._id} 
+                member={member} 
+                onView={handleViewMember}
+                onEdit={handleEditMember}
+                onRemove={handleRemoveMember}
+              />
+            ))}
+          </div>
+
+          <div className="mt-8 text-gray-500 text-sm text-center">
+            Showing {members.length} of {members.length} members
+          </div>
+        </div>
+      </div>
+
+      <AddTeamMemberDialog
+        isAddMemberOpen={isAddMemberOpen}
+        setIsAddMemberOpen={setIsAddMemberOpen}
+        organizationId={id as string}
+      />
+    </div>
+  );
+}

@@ -1,0 +1,31 @@
+type RoleType = "owner" | "admin" | "member";
+export type PermissionLevel = "Read" | "Exec" | "Editor" | "Admin";
+export type Member = {
+  _id: string;
+  userId: string;
+  name?: string;
+  email: string;
+  organizationId: string;
+  rowQuota: number;
+  usedRows: number;
+  role: RoleType; // Extend if needed
+  createdAt: string;
+  updatedAt: string;
+};
+
+export interface TeamMemberFormData {
+  organizationId?: string;
+  email: string;
+  quota: string;
+  role: RoleType;
+  permissions: {
+    workbooks: [];
+    prompt: [];
+    CRM: [];
+  };
+}
+
+export const VALID_PERMISSIONS = {
+  workbooks: ["Read", "Exec", "Editor", "Admin"],
+  prompt: ["Read", "Admin"],
+} as const;
