@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AlertCircle, Edit } from "lucide-react";
-import { Plus, Users, X } from "lucide-react";
+import { Users, X } from "lucide-react";
 import { addOrganization } from "@/lib/api";
 import { OrganizationFormData } from "@/lib/types/org-types";
 import { useQueryClient } from "@tanstack/react-query";
@@ -14,13 +14,7 @@ import { editOrganization } from "@/lib/api";
 interface AddOrganizationDialogProps {
   open: boolean;
   onClose: () => void;
-  defaultValues?: {
-    id?: string;
-    organizationName: string;
-    email: string;
-    quota: string;
-    enterpriseId?: string;
-  };
+  defaultValues?: OrganizationFormData;
   isEditMode?: boolean;
 }
 
@@ -36,43 +30,64 @@ export function AddOrganizationDialog({
     enterpriseId:
       defaultValues?.enterpriseId || `${process.env.NEXT_PUBLIC_PRICE_ID}`,
     email: defaultValues?.email || "",
-    quota: defaultValues?.quota || "",
+    quota: defaultValues?.quota || 0,
+    addQuota: 0,
+    removeQuota: 0,
+    addSeats: 0,
+    removeSeats: 0,
   });
 
   useEffect(() => {
     if (defaultValues) {
       setFormData({
+        id: defaultValues.id,
         organizationName: defaultValues.organizationName || "",
         enterpriseId:
           defaultValues.enterpriseId || `${process.env.NEXT_PUBLIC_PRICE_ID}`,
         email: defaultValues.email || "",
-        quota: defaultValues.quota || "",
+        quota: defaultValues.quota || 0,
+        addQuota: 0,
+        removeQuota: 0,
+        addSeats: 0,
+        removeSeats: 0,
       });
     }
   }, [defaultValues]);
 
   const [emailTouched, setEmailTouched] = useState(false);
-  const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email);
+  const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email ?? "");
 
   const handleInputChange = (
     field: keyof OrganizationFormData,
     value: string
   ) => {
+    // Convert to number if it's a numeric field
+    const numberFields: (keyof OrganizationFormData)[] = [
+      "quota",
+      "addSeats",
+      "removeSeats",
+      "addQuota",
+      "removeQuota",
+    ];
+
     setFormData((prev) => ({
       ...prev,
-      [field]: value,
+      [field]: numberFields.includes(field) ? Number(value) : value,
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      if (isEditMode && defaultValues?.id) {
+      if (isEditMode) {
         await editOrganization({
-          id: defaultValues.id,
+          id: formData?.id ?? "",
           name: formData.organizationName,
-          email: formData.email,
-          quota: formData.quota,
+          email: formData.email ?? "",
+          addQuota: formData.addQuota ?? 0,
+          removeQuota: formData.removeQuota ?? 0,
+          addSeats: formData.addSeats ?? 0,
+          removeSeats: formData.removeSeats ?? 0,
         });
       } else {
         await addOrganization(formData);
@@ -82,7 +97,7 @@ export function AddOrganizationDialog({
         organizationName: "",
         enterpriseId: `${process.env.NEXT_PUBLIC_PRICE_ID}`, //this will be hard coded
         email: "",
-        quota: "",
+        quota: 0,
       });
       setEmailTouched(false);
       onClose();
@@ -100,7 +115,7 @@ export function AddOrganizationDialog({
       organizationName: "",
       enterpriseId: `${process.env.NEXT_PUBLIC_PRICE_ID}`, //this will be hard coded
       email: "",
-      quota: "",
+      quota: 0,
     });
     setEmailTouched(false);
   };
@@ -108,8 +123,7 @@ export function AddOrganizationDialog({
   const isFormValid =
     formData.organizationName &&
     formData.enterpriseId &&
-    isEmailValid &&
-    formData.quota;
+    (isEditMode || (isEmailValid && formData.email && formData.quota));
 
   return (
     <>
@@ -190,54 +204,151 @@ export function AddOrganizationDialog({
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label
-                  htmlFor="email"
-                  className="font-medium text-gray-700 text-base"
-                >
-                  Email <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  required
-                  placeholder="e.g. name@example.com"
-                  value={formData.email}
-                  onChange={(e) => handleInputChange("email", e.target.value)}
-                  onBlur={() => setEmailTouched(true)}
-                  className={`w-full px-3 py-3 text-base border rounded-md focus:outline-none focus:ring-2 focus:border-transparent ${
-                    emailTouched && !isEmailValid
-                      ? "border-red-300 ring-red-500 focus:ring-red-500"
-                      : "border-gray-300 focus:ring-blue-500"
-                  }`}
-                />
+              {!isEditMode && (
+                <>
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="email"
+                      className="font-medium text-gray-700 text-base"
+                    >
+                      Email <span className="text-red-500">*</span>
+                    </Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      required
+                      placeholder="e.g. name@example.com"
+                      value={formData.email}
+                      onChange={(e) =>
+                        handleInputChange("email", e.target.value)
+                      }
+                      onBlur={() => setEmailTouched(true)}
+                      className={`w-full px-3 py-3 text-base border rounded-md focus:outline-none focus:ring-2 focus:border-transparent ${
+                        emailTouched && !isEmailValid
+                          ? "border-red-300 ring-red-500 focus:ring-red-500"
+                          : "border-gray-300 focus:ring-blue-500"
+                      }`}
+                    />
 
-                {emailTouched && !isEmailValid && (
-                  <div className="flex items-center gap-1 mt-1 text-red-600 text-sm">
-                    <AlertCircle className="w-4 h-4" />
-                    Please enter a valid email (e.g. name@example.com)
+                    {emailTouched && !isEmailValid && (
+                      <div className="flex items-center gap-1 mt-1 text-red-600 text-sm">
+                        <AlertCircle className="w-4 h-4" />
+                        Please enter a valid email (e.g. name@example.com)
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="quota"
+                      className="font-medium text-gray-700 text-base"
+                    >
+                      Quota <span className="text-red-500">*</span>
+                    </Label>
+                    <Input
+                      id="quota"
+                      type="text"
+                      required
+                      placeholder="e.g. 1000"
+                      value={formData.quota}
+                      onChange={(e) =>
+                        handleInputChange("quota", e.target.value)
+                      }
+                      className="px-3 py-3 border border-gray-300 focus:border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-base"
+                    />
+                  </div>
+                </>
+              )}
 
-              <div className="space-y-2">
-                <Label
-                  htmlFor="quota"
-                  className="font-medium text-gray-700 text-base"
-                >
-                  Quota <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  id="quota"
-                  type="text"
-                  required
-                  placeholder="e.g. 1000"
-                  value={formData.quota}
-                  onChange={(e) => handleInputChange("quota", e.target.value)}
-                  className="px-3 py-3 border border-gray-300 focus:border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-base"
-                />
-              </div>
+              {isEditMode && (
+                <>
+                  <div className="space-y-2">
+                    <Label className="font-medium text-gray-700 text-base">
+                      Current Monthly Quota
+                    </Label>
+                    <Input
+                      readOnly
+                      type="number"
+                      value={formData.quota}
+                      className="bg-gray-100 px-3 py-3 border border-gray-200 rounded-md w-full text-base"
+                    />
+                  </div>
 
+                  <div className="gap-4 grid grid-cols-2">
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="addQuota"
+                        className="font-medium text-gray-700 text-sm"
+                      >
+                        Add Quota
+                      </Label>
+                      <Input
+                        id="addQuota"
+                        type="number"
+                        value={formData.addQuota}
+                        onChange={(e) =>
+                          handleInputChange("addQuota", e.target.value)
+                        }
+                        placeholder="e.g. 100"
+                        className="px-3 py-3 border border-gray-300 rounded-md w-full text-base"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="removeQuota"
+                        className="font-medium text-gray-700 text-sm"
+                      >
+                        Remove Quota
+                      </Label>
+                      <Input
+                        id="removeQuota"
+                        type="number"
+                        value={formData.removeQuota}
+                        onChange={(e) =>
+                          handleInputChange("removeQuota", e.target.value)
+                        }
+                        placeholder="e.g. 50"
+                        className="px-3 py-3 border border-gray-300 rounded-md w-full text-base"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="addSeats"
+                        className="font-medium text-gray-700 text-sm"
+                      >
+                        Add Seats
+                      </Label>
+                      <Input
+                        id="addSeats"
+                        type="number"
+                        value={formData.addSeats}
+                        onChange={(e) =>
+                          handleInputChange("addSeats", e.target.value)
+                        }
+                        placeholder="e.g. 3"
+                        className="px-3 py-3 border border-gray-300 rounded-md w-full text-base"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="removeSeats"
+                        className="font-medium text-gray-700 text-sm"
+                      >
+                        Remove Seats
+                      </Label>
+                      <Input
+                        id="removeSeats"
+                        type="number"
+                        value={formData.removeSeats}
+                        onChange={(e) =>
+                          handleInputChange("removeSeats", e.target.value)
+                        }
+                        placeholder="e.g. 1"
+                        className="px-3 py-3 border border-gray-300 rounded-md w-full text-base"
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
               <Button
                 type="submit"
                 disabled={!isFormValid}

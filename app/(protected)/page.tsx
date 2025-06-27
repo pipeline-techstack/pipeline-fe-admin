@@ -36,7 +36,7 @@ export default function Home() {
             defaultValues={{
               organizationName: "",
               email: "",
-              quota: "",
+              quota: 0,
               enterpriseId: `${process.env.NEXT_PUBLIC_PRICE_ID}`,
             }}
             isEditMode={false}

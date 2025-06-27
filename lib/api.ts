@@ -75,13 +75,18 @@ export async function manageSubscriptionUsage(
 export const editOrganization = async ({
   id,
   name,
-  email,
-  quota,
+  addQuota,
+  removeQuota,
+  addSeats,
+  removeSeats,
 }: {
   id: string;
   name: string;
   email: string;
-  quota: string;
+  addQuota: number;
+  removeQuota: number;
+  addSeats: number;
+  removeSeats: number;
 }) => {
   const token = getToken();
   if (!token) {
@@ -97,16 +102,18 @@ export const editOrganization = async ({
       },
       body: JSON.stringify({
         name: name,
-        addQuota: Number(quota),
-        email: email,
+        addQuota: addQuota,
+        removeQuota: removeQuota,
+        addSeats: addSeats,
+        removeSeats: removeSeats,
       }),
     }
   );
-  
+
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
     throw new Error(errorData.message || "Failed to edit organization");
   }
-  
+
   return response.json();
 };

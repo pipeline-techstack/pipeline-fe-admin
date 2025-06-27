@@ -9,8 +9,13 @@ export interface OrganizationData {
 }
 
 export interface OrganizationFormData {
+  id?: string;
   organizationName: string;
   enterpriseId: string;
-  email: string;
-  quota: string;
+  email?: string;
+  quota: number;
+  addQuota?: number;
+  removeQuota?: number;
+  addSeats?: number;
+  removeSeats?: number;
 }

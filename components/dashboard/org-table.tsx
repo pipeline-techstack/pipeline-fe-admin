@@ -298,7 +298,7 @@ export function OrganizationTable() {
             id: editOrg?._id,
             organizationName: editOrg?.name || "",
             email: editOrg?.email || "",
-            quota: editOrg?.monthlyQuota?.toString() || "",
+            quota: editOrg?.monthlyQuota || 0,
             enterpriseId: `${process.env.NEXT_PUBLIC_PRICE_ID}`,
           }}
           isEditMode={true}
