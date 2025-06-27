@@ -32,23 +32,24 @@ export function AddOrganizationDialog({
 }: AddOrganizationDialogProps) {
   const queryClient = useQueryClient();
   const [formData, setFormData] = useState<OrganizationFormData>({
-  organizationName: defaultValues?.organizationName || "",
-  enterpriseId: defaultValues?.enterpriseId || `${process.env.NEXT_PUBLIC_PRICE_ID}`,
-  email: defaultValues?.email || "",
-  quota: defaultValues?.quota || "",
-});
- 
-useEffect(() => {
-  if (defaultValues) {
-    setFormData({
-      organizationName: defaultValues.organizationName || "",
-      enterpriseId: defaultValues.enterpriseId || `${process.env.NEXT_PUBLIC_PRICE_ID}`,
-      email: defaultValues.email || "",
-      quota: defaultValues.quota || "",
-    });
-  }
-}, [defaultValues]);
+    organizationName: defaultValues?.organizationName || "",
+    enterpriseId:
+      defaultValues?.enterpriseId || `${process.env.NEXT_PUBLIC_PRICE_ID}`,
+    email: defaultValues?.email || "",
+    quota: defaultValues?.quota || "",
+  });
 
+  useEffect(() => {
+    if (defaultValues) {
+      setFormData({
+        organizationName: defaultValues.organizationName || "",
+        enterpriseId:
+          defaultValues.enterpriseId || `${process.env.NEXT_PUBLIC_PRICE_ID}`,
+        email: defaultValues.email || "",
+        quota: defaultValues.quota || "",
+      });
+    }
+  }, [defaultValues]);
 
   const [emailTouched, setEmailTouched] = useState(false);
   const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email);
@@ -67,15 +68,15 @@ useEffect(() => {
     e.preventDefault();
     try {
       if (isEditMode && defaultValues?.id) {
-  await editOrganization({
-    id: defaultValues.id,
-    name: formData.organizationName,
-    email: formData.email,
-    quota: formData.quota,
-  });
-} else {
-  await addOrganization(formData);
-}
+        await editOrganization({
+          id: defaultValues.id,
+          name: formData.organizationName,
+          email: formData.email,
+          quota: formData.quota,
+        });
+      } else {
+        await addOrganization(formData);
+      }
 
       setFormData({
         organizationName: "",
@@ -112,16 +113,6 @@ useEffect(() => {
 
   return (
     <>
-      {!isEditMode && (
-        <Button
-          className="bg-blue-600 hover:bg-blue-700"
-          onClick={() => onClose()}
-        >
-          <Plus className="mr-2 w-4 h-4" />
-          Add Organization
-        </Button>
-      )}
-
       {open && (
         <div className="z-50 fixed inset-0 flex justify-center items-center">
           <div className="bg-white shadow-2xl mx-4 px-2 py-2 border border-gray-200 rounded-lg w-full max-w-2xl">
@@ -135,13 +126,14 @@ useEffect(() => {
                 )}
                 <div>
                   <h2 className="font-semibold text-gray-900 text-2xl">
-                    {isEditMode ? 'Edit organization' : 'Add enterprise organization'}
+                    {isEditMode
+                      ? "Edit organization"
+                      : "Add enterprise organization"}
                   </h2>
                   <p className="mt-1 text-gray-600 text-sm">
-                    {isEditMode 
-                      ? 'Update organization details and settings'
-                      : 'Enterprise organization model & value proposition'
-                    }
+                    {isEditMode
+                      ? "Update organization details and settings"
+                      : "Enterprise organization model & value proposition"}
                   </p>
                 </div>
               </div>
@@ -194,7 +186,7 @@ useEffect(() => {
                   onChange={(e) =>
                     handleInputChange("enterpriseId", e.target.value)
                   }
-                  className="px-3 py-3 border border-gray-300 focus:border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-base bg-gray-50"
+                  className="bg-gray-50 px-3 py-3 border border-gray-300 focus:border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-base"
                 />
               </div>
 
@@ -251,7 +243,7 @@ useEffect(() => {
                 disabled={!isFormValid}
                 className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 px-4 py-3 rounded-md w-full font-medium text-white text-base transition-colors disabled:cursor-not-allowed"
               >
-                {isEditMode ? 'Update organization' : 'Add organization'}
+                {isEditMode ? "Update organization" : "Add organization"}
               </Button>
             </form>
           </div>
