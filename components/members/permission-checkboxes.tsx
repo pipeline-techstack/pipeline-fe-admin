@@ -1,12 +1,9 @@
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { TeamMemberFormData } from "@/lib/types/member-types";
-
-export const PERMISSIONS = {
-  workbooks: ["Editor", "Exec"],
-  prompt: ["Editor"],
-  CRM: ["Get", "Admin"],
-};
+import {
+  TeamMemberFormData,
+  VALID_PERMISSIONS,
+} from "@/lib/types/member-types";
 
 const PermissionCheckboxes = ({
   formPermissions,
@@ -24,12 +21,13 @@ const PermissionCheckboxes = ({
   ) => void;
 }) => {
   // Flatten all permissions
-  const allPermissions = Object.entries(PERMISSIONS).reduce(
+  const allPermissions = Object.entries(VALID_PERMISSIONS).reduce(
     (acc, [section, perms]) => {
+      //@ts-expect-error Ignore this
       acc[section as keyof typeof formPermissions] = perms;
       return acc;
     },
-    {} as typeof PERMISSIONS
+    {} as typeof VALID_PERMISSIONS
   );
 
   const allSelected = Object.entries(allPermissions).every(([section, perms]) =>
@@ -79,7 +77,7 @@ const PermissionCheckboxes = ({
         </div>
       </div>
 
-      {Object.entries(PERMISSIONS).map(([section, values]) => (
+      {Object.entries(VALID_PERMISSIONS).map(([section, values]) => (
         <div key={section} className="gap-4 space-y-2 grid grid-cols-4">
           <div className="text-sm capitalize">{section}</div>
           <div className="flex flex-wrap gap-4">

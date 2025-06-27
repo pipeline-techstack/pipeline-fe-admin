@@ -1,5 +1,5 @@
 type RoleType = "owner" | "admin" | "member";
-
+export type PermissionLevel = "Read" | "Exec" | "Editor" | "Admin";
 export type Member = {
   _id: string;
   userId: string;
@@ -14,7 +14,7 @@ export type Member = {
 };
 
 export interface TeamMemberFormData {
-  name: string;
+  organizationId?: string;
   email: string;
   quota: string;
   role: RoleType;
@@ -24,3 +24,8 @@ export interface TeamMemberFormData {
     CRM: [];
   };
 }
+
+export const VALID_PERMISSIONS = {
+  workbooks: ["Read", "Exec", "Editor", "Admin"],
+  prompt: ["Read", "Admin"],
+} as const;

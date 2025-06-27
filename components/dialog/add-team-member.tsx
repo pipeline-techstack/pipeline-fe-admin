@@ -14,7 +14,9 @@ import {
 } from "../ui/select";
 import { Label } from "../ui/label";
 import PermissionCheckboxes from "../members/permission-checkboxes";
-import { addTeamMember } from "@/lib/api";
+import { addTeamMember } from "@/services/member-apis";
+import { useQueryClient } from "@tanstack/react-query";
+import { useParams } from "next/navigation";
 
 interface AddTeamMemberDialogProps {
   isAddMemberOpen: boolean;
@@ -29,8 +31,10 @@ export function AddTeamMemberDialog({
   organizationId,
   onMemberAdded,
 }: AddTeamMemberDialogProps) {
+  const queryClient = useQueryClient();
+  const { id } = useParams();
+
   const [member, setMemberForm] = useState<TeamMemberFormData>({
-    name: "",
     email: "",
     quota: "",
     role: "admin",
@@ -94,13 +98,13 @@ export function AddTeamMemberDialog({
       await addTeamMember({
         organizationId,
         email: member.email,
-        quota: parseInt(member.quota),
+        quota: member.quota,
         role: member.role,
+        permissions: member.permissions,
       });
 
       // Reset form
       setMemberForm({
-        name: "",
         email: "",
         quota: "",
         role: "admin",
@@ -110,8 +114,9 @@ export function AddTeamMemberDialog({
           CRM: [],
         },
       });
-      
+
       setIsAddMemberOpen(false);
+      queryClient.invalidateQueries({ queryKey: ["organization", id] });
       onMemberAdded?.();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to add member");
@@ -123,37 +128,43 @@ export function AddTeamMemberDialog({
   if (!isAddMemberOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="relative w-full max-w-2xl max-h-[90vh] bg-white rounded-lg shadow-xl flex flex-col">
+    <div className="z-50 fixed inset-0 flex justify-center items-center bg-black/50 p-4">
+      <div className="relative flex flex-col bg-white shadow-xl rounded-lg w-full max-w-2xl max-h-[90vh]">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 flex-shrink-0">
+        <div className="flex flex-shrink-0 justify-between items-center p-6 border-gray-200 border-b">
           <div>
-            <h2 className="text-xl font-semibold text-gray-900">Add New Team Member</h2>
-            <p className="mt-1 text-sm text-gray-600">
-              Add a new member to your team. They will receive an invitation email.
+            <h2 className="font-semibold text-gray-900 text-xl">
+              Add New Team Member
+            </h2>
+            <p className="mt-1 text-gray-600 text-sm">
+              Add a new member to your team. They will receive an invitation
+              email.
             </p>
           </div>
           <Button
             variant="ghost"
             size="sm"
             onClick={() => setIsAddMemberOpen(false)}
-            className="h-8 w-8 p-0 text-gray-400 hover:text-gray-600"
+            className="p-0 w-8 h-8 text-gray-400 hover:text-gray-600"
           >
-            <X className="h-4 w-4" />
+            <X className="w-4 h-4" />
           </Button>
         </div>
 
         {/* Form Content - Scrollable */}
-        <div className="p-6 space-y-6 overflow-y-auto flex-1">
+        <div className="flex-1 space-y-6 p-6 overflow-y-auto">
           {error && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-md">
-              <p className="text-sm text-red-600">{error}</p>
+            <div className="bg-red-50 p-3 border border-red-200 rounded-md">
+              <p className="text-red-600 text-sm">{error}</p>
             </div>
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="gap-4 grid grid-cols-1 md:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-semibold text-gray-900">
+              <Label
+                htmlFor="email"
+                className="font-semibold text-gray-900 text-sm"
+              >
                 Email
               </Label>
               <Input
@@ -162,12 +173,15 @@ export function AddTeamMemberDialog({
                 value={member.email}
                 onChange={(e) => handleFormChange("email", e.target.value)}
                 placeholder="john@example.com"
-                className="w-full border-gray-300 text-gray-900 placeholder:text-gray-500"
+                className="border-gray-300 w-full text-gray-900 placeholder:text-gray-500"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="quota" className="text-sm font-semibold text-gray-900">
+              <Label
+                htmlFor="quota"
+                className="font-semibold text-gray-900 text-sm"
+              >
                 Add Quota
               </Label>
               <Input
@@ -177,19 +191,22 @@ export function AddTeamMemberDialog({
                 value={member.quota}
                 onChange={handleQuotaChange}
                 placeholder="1000"
-                className="w-full border-gray-300 text-gray-900 placeholder:text-gray-500"
+                className="border-gray-300 w-full text-gray-900 placeholder:text-gray-500"
               />
             </div>
 
             <div className="space-y-2 md:col-span-2">
-              <Label htmlFor="role" className="text-sm font-semibold text-gray-900">
+              <Label
+                htmlFor="role"
+                className="font-semibold text-gray-900 text-sm"
+              >
                 Role
               </Label>
               <Select
                 value={member.role}
                 onValueChange={(value) => handleFormChange("role", value)}
               >
-                <SelectTrigger className="w-full border-gray-300 text-gray-900">
+                <SelectTrigger className="border-gray-300 w-full text-gray-900">
                   <SelectValue placeholder="Select a role" />
                 </SelectTrigger>
                 <SelectContent>
@@ -202,7 +219,7 @@ export function AddTeamMemberDialog({
 
           {/* Permissions Section */}
           {member.role !== "admin" && (
-            <div className="pt-4 border-t border-gray-200">
+            <div className="pt-4 border-gray-200 border-t">
               <PermissionCheckboxes
                 formPermissions={member.permissions}
                 setFormPermissions={(section, value) =>
@@ -214,11 +231,11 @@ export function AddTeamMemberDialog({
         </div>
 
         {/* Footer */}
-        <div className="flex gap-3 p-6 border-t border-gray-200 bg-gray-50 rounded-b-lg flex-shrink-0">
+        <div className="flex flex-shrink-0 gap-3 bg-gray-50 p-6 border-gray-200 border-t rounded-b-lg">
           <Button
             variant="outline"
             onClick={() => setIsAddMemberOpen(false)}
-            className="flex-1 border-gray-300 text-gray-900 hover:bg-gray-100"
+            className="flex-1 hover:bg-gray-100 border-gray-300 text-gray-900"
             disabled={isSubmitting}
           >
             Cancel
@@ -226,7 +243,7 @@ export function AddTeamMemberDialog({
           <Button
             onClick={handleSubmit}
             disabled={!isFormValid || isSubmitting}
-            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
+            className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white disabled:text-gray-500 disabled:cursor-not-allowed"
           >
             {isSubmitting ? "Adding..." : "Add Member"}
           </Button>

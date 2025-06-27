@@ -6,10 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AlertCircle, Edit } from "lucide-react";
 import { Users, X } from "lucide-react";
-import { addOrganization } from "@/lib/api";
 import { OrganizationFormData } from "@/lib/types/org-types";
 import { useQueryClient } from "@tanstack/react-query";
-import { editOrganization } from "@/lib/api";
+import { addOrganization, editOrganization } from "@/services/org-apis";
 
 interface AddOrganizationDialogProps {
   open: boolean;
