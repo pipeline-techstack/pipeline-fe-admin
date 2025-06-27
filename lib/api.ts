@@ -70,3 +70,43 @@ export async function manageSubscriptionUsage(
 
   return await response.json();
 }
+
+// Edit organization API call
+export const editOrganization = async ({
+  id,
+  name,
+  email,
+  quota,
+}: {
+  id: string;
+  name: string;
+  email: string;
+  quota: string;
+}) => {
+  const token = getToken();
+  if (!token) {
+    throw new Error("Authentication required");
+  }
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/payment/admin/organizations/${id}/properties`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        name: name,
+        addQuota: Number(quota),
+        email: email,
+      }),
+    }
+  );
+  
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || "Failed to edit organization");
+  }
+  
+  return response.json();
+};

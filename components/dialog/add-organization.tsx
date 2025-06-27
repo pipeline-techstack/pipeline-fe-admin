@@ -1,24 +1,54 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Edit } from "lucide-react";
 import { Plus, Users, X } from "lucide-react";
 import { addOrganization } from "@/lib/api";
 import { OrganizationFormData } from "@/lib/types/org-types";
 import { useQueryClient } from "@tanstack/react-query";
+import { editOrganization } from "@/lib/api";
 
-export function AddOrganizationDialog() {
+interface AddOrganizationDialogProps {
+  open: boolean;
+  onClose: () => void;
+  defaultValues?: {
+    id?: string;
+    organizationName: string;
+    email: string;
+    quota: string;
+    enterpriseId?: string;
+  };
+  isEditMode?: boolean;
+}
+
+export function AddOrganizationDialog({
+  open,
+  onClose,
+  defaultValues,
+  isEditMode,
+}: AddOrganizationDialogProps) {
   const queryClient = useQueryClient();
-  const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState<OrganizationFormData>({
-    organizationName: "",
-    enterpriseId: `${process.env.NEXT_PUBLIC_PRICE_ID}`, //this will be hard coded
-    email: "",
-    quota: "",
-  });
+  organizationName: defaultValues?.organizationName || "",
+  enterpriseId: defaultValues?.enterpriseId || `${process.env.NEXT_PUBLIC_PRICE_ID}`,
+  email: defaultValues?.email || "",
+  quota: defaultValues?.quota || "",
+});
+ 
+useEffect(() => {
+  if (defaultValues) {
+    setFormData({
+      organizationName: defaultValues.organizationName || "",
+      enterpriseId: defaultValues.enterpriseId || `${process.env.NEXT_PUBLIC_PRICE_ID}`,
+      email: defaultValues.email || "",
+      quota: defaultValues.quota || "",
+    });
+  }
+}, [defaultValues]);
+
 
   const [emailTouched, setEmailTouched] = useState(false);
   const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email);
@@ -36,7 +66,17 @@ export function AddOrganizationDialog() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await addOrganization(formData);
+      if (isEditMode && defaultValues?.id) {
+  await editOrganization({
+    id: defaultValues.id,
+    name: formData.organizationName,
+    email: formData.email,
+    quota: formData.quota,
+  });
+} else {
+  await addOrganization(formData);
+}
+
       setFormData({
         organizationName: "",
         enterpriseId: `${process.env.NEXT_PUBLIC_PRICE_ID}`, //this will be hard coded
@@ -44,7 +84,7 @@ export function AddOrganizationDialog() {
         quota: "",
       });
       setEmailTouched(false);
-      setOpen(false);
+      onClose();
       queryClient.invalidateQueries({
         queryKey: ["organizations"],
       });
@@ -54,7 +94,7 @@ export function AddOrganizationDialog() {
   };
 
   const handleClose = () => {
-    setOpen(false);
+    onClose();
     setFormData({
       organizationName: "",
       enterpriseId: `${process.env.NEXT_PUBLIC_PRICE_ID}`, //this will be hard coded
@@ -72,13 +112,15 @@ export function AddOrganizationDialog() {
 
   return (
     <>
-      <Button
-        className="bg-blue-600 hover:bg-blue-700"
-        onClick={() => setOpen(true)}
-      >
-        <Plus className="mr-2 w-4 h-4" />
-        Add Organization
-      </Button>
+      {!isEditMode && (
+        <Button
+          className="bg-blue-600 hover:bg-blue-700"
+          onClick={() => onClose()}
+        >
+          <Plus className="mr-2 w-4 h-4" />
+          Add Organization
+        </Button>
+      )}
 
       {open && (
         <div className="z-50 fixed inset-0 flex justify-center items-center">
@@ -86,13 +128,20 @@ export function AddOrganizationDialog() {
             {/* Header */}
             <div className="flex justify-between items-center p-6 pb-4 border-gray-100 border-b">
               <div className="flex items-center gap-2">
-                <Users className="w-7 h-7 text-gray-600" />
+                {isEditMode ? (
+                  <Edit className="w-7 h-7 text-gray-600" />
+                ) : (
+                  <Users className="w-7 h-7 text-gray-600" />
+                )}
                 <div>
                   <h2 className="font-semibold text-gray-900 text-2xl">
-                    Add enterprise organization
+                    {isEditMode ? 'Edit organization' : 'Add enterprise organization'}
                   </h2>
                   <p className="mt-1 text-gray-600 text-sm">
-                    Enterprise organization model & value proposition
+                    {isEditMode 
+                      ? 'Update organization details and settings'
+                      : 'Enterprise organization model & value proposition'
+                    }
                   </p>
                 </div>
               </div>
@@ -145,7 +194,7 @@ export function AddOrganizationDialog() {
                   onChange={(e) =>
                     handleInputChange("enterpriseId", e.target.value)
                   }
-                  className="px-3 py-3 border border-gray-300 focus:border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-base"
+                  className="px-3 py-3 border border-gray-300 focus:border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-base bg-gray-50"
                 />
               </div>
 
@@ -190,7 +239,7 @@ export function AddOrganizationDialog() {
                   id="quota"
                   type="text"
                   required
-                  placeholder="e.g. 1000 rows"
+                  placeholder="e.g. 1000"
                   value={formData.quota}
                   onChange={(e) => handleInputChange("quota", e.target.value)}
                   className="px-3 py-3 border border-gray-300 focus:border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-base"
@@ -202,7 +251,7 @@ export function AddOrganizationDialog() {
                 disabled={!isFormValid}
                 className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 px-4 py-3 rounded-md w-full font-medium text-white text-base transition-colors disabled:cursor-not-allowed"
               >
-                Add organization
+                {isEditMode ? 'Update organization' : 'Add organization'}
               </Button>
             </form>
           </div>

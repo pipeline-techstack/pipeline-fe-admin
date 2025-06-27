@@ -19,12 +19,15 @@ import { useQuery } from "@tanstack/react-query";
 import { getOrganizations } from "@/services/org-apis";
 import { formatDate } from "@/lib/utils";
 import { OrganizationData } from "@/lib/types/org-types";
+import { AddOrganizationDialog } from "@/components/dialog/add-organization";
 
 interface ExtendedOrganizationData extends OrganizationData {
   checked: boolean;
 }
 
 export function OrganizationTable() {
+  const [editOrg, setEditOrg] = useState<OrganizationData | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [data, setData] = useState<ExtendedOrganizationData[]>([]);
   const [confirmDialog, setConfirmDialog] = useState<{
     open: boolean;
@@ -69,7 +72,11 @@ export function OrganizationTable() {
   const showConfirm = (title: string, message: string, onConfirm: () => void) =>
     setConfirmDialog({ open: true, title, message, onConfirm });
 
-  const handleEdit = (id: string) => router.push(`/organization/${id}/edit`);
+  const handleEdit = (org: OrganizationData) => {
+  setEditOrg(org);
+  setIsModalOpen(true);
+};
+
 
   const deleteOrg = (id: string) => setData(prev => prev.filter(i => i._id !== id));
 
@@ -170,7 +177,7 @@ export function OrganizationTable() {
                         <DropdownMenuItem onClick={() => router.push(`/organization/${item._id}`)}>
                           <FolderKanban className="h-4 w-4 mr-2" /> View
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleEdit(item._id)}>
+                        <DropdownMenuItem onClick={() => handleEdit(item)}>
                           <Edit className="h-4 w-4 mr-2" /> Edit
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => showConfirm(
@@ -214,6 +221,25 @@ export function OrganizationTable() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {isModalOpen && (
+        <AddOrganizationDialog
+          open={isModalOpen}
+          onClose={() => {
+            setIsModalOpen(false);
+            setEditOrg(null);
+          }}
+          defaultValues={{
+            id: editOrg?._id,
+            organizationName: editOrg?.name || "",
+            email: editOrg?.email || "",
+            quota: editOrg?.monthlyQuota?.toString() || "",
+            enterpriseId: `${process.env.NEXT_PUBLIC_PRICE_ID}`,
+          }}
+          isEditMode={true}
+        />
+      )}
+
     </>
   );
 }
