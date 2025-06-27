@@ -9,7 +9,7 @@ import { Users, X } from "lucide-react";
 import { OrganizationFormData } from "@/lib/types/org-types";
 import { useQueryClient } from "@tanstack/react-query";
 import { addOrganization, editOrganization } from "@/services/org-apis";
-
+import { LoadingButton } from "@/components/loader-button";
 interface AddOrganizationDialogProps {
   open: boolean;
   onClose: () => void;
@@ -55,6 +55,7 @@ export function AddOrganizationDialog({
 
   const [emailTouched, setEmailTouched] = useState(false);
   const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email ?? "");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (
     field: keyof OrganizationFormData,
@@ -77,6 +78,8 @@ export function AddOrganizationDialog({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    
     try {
       if (isEditMode) {
         await editOrganization({
@@ -94,17 +97,17 @@ export function AddOrganizationDialog({
 
       setFormData({
         organizationName: "",
-        enterpriseId: `${process.env.NEXT_PUBLIC_PRICE_ID}`, //this will be hard coded
+        enterpriseId: `${process.env.NEXT_PUBLIC_PRICE_ID}`,
         email: "",
         quota: 0,
       });
       setEmailTouched(false);
       onClose();
-      queryClient.invalidateQueries({
-        queryKey: ["organizations"],
-      });
+      queryClient.invalidateQueries({ queryKey: ["organizations"] });
     } catch (error) {
       console.error("Error adding organization:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -348,13 +351,15 @@ export function AddOrganizationDialog({
                   </div>
                 </>
               )}
-              <Button
+              <LoadingButton
                 type="submit"
+                isLoading={isSubmitting}
                 disabled={!isFormValid}
+                loadingText={isEditMode ? "Updating..." : "Adding..."}
                 className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 px-4 py-3 rounded-md w-full font-medium text-white text-base transition-colors disabled:cursor-not-allowed"
               >
                 {isEditMode ? "Update organization" : "Add organization"}
-              </Button>
+              </LoadingButton>
             </form>
           </div>
         </div>

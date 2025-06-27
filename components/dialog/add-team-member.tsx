@@ -17,6 +17,7 @@ import PermissionCheckboxes from "../members/permission-checkboxes";
 import { addTeamMember } from "@/services/member-apis";
 import { useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
+import { LoadingButton } from "@/components/loader-button";
 
 interface AddTeamMemberDialogProps {
   isAddMemberOpen: boolean;
@@ -240,13 +241,15 @@ export function AddTeamMemberDialog({
           >
             Cancel
           </Button>
-          <Button
+          <LoadingButton
+            isLoading={isSubmitting}
+            disabled={!isFormValid}
+            loadingText="Adding member..."
             onClick={handleSubmit}
-            disabled={!isFormValid || isSubmitting}
             className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white disabled:text-gray-500 disabled:cursor-not-allowed"
           >
-            {isSubmitting ? "Adding..." : "Add Member"}
-          </Button>
+            Add Member
+          </LoadingButton>
         </div>
       </div>
     </div>
