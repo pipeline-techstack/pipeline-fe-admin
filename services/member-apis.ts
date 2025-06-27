@@ -114,3 +114,59 @@ export const addTeamMember = async ({
 
   return response.json();
 };
+
+// remove team member API call
+export const removeTeamMember = async ({
+  organizationId,
+  email,
+}: {
+  organizationId: string;
+  email: string;
+}): Promise<any> => {
+  const token = getToken();
+  if (!token) {
+    throw new Error("Authentication required");
+  }
+
+  if (
+    !organizationId ||
+    organizationId === "undefined" ||
+    organizationId.trim() === ""
+  ) {
+    throw new Error("Organization ID is required and cannot be empty");
+  }
+
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/payment/admin/organizations/${organizationId}/properties`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        removeMember: email,
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error("API Error Response:", errorText);
+    let errorMessage = "Failed to remove team member";
+    try {
+      const errorData = JSON.parse(errorText);
+      errorMessage = errorData.message || errorMessage;
+    } catch {
+      if (errorText.includes("CastError") && errorText.includes("ObjectId")) {
+        errorMessage = "Invalid organization ID provided";
+      } else {
+        errorMessage = "Server error occurred while adding team member";
+      }
+    }
+
+    throw new Error(errorMessage);
+  }
+
+  return response.json();
+};

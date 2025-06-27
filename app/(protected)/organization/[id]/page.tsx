@@ -8,7 +8,7 @@ import { AddTeamMemberDialog } from "@/components/dialog/add-team-member";
 import { Member } from "@/lib/types/member-types";
 import MemberCard from "../../../../components/members/memberCard";
 import { useQuery } from "@tanstack/react-query";
-import { getMembers } from "@/services/member-apis";
+import { getMembers, removeTeamMember } from "@/services/member-apis";
 
 export default function OrganizationPage() {
   const { id } = useParams();
@@ -35,9 +35,13 @@ export default function OrganizationPage() {
     console.log("Edit member:", member);
   };
 
-  const handleRemoveMember = (member: Member) => {
+  const handleRemoveMember = async (member: Member) => {
     console.log("Remove member:", member);
-    setMembers(prev => prev.filter(m => m._id !== member._id));
+    await removeTeamMember({
+      organizationId: id as string,
+      email: member.email,
+    });
+    setMembers((prev) => prev.filter((m) => m._id !== member._id));
   };
 
   useEffect(() => {
@@ -87,9 +91,9 @@ export default function OrganizationPage() {
         <div className="p-8">
           <div className="gap-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {members.map((member: Member) => (
-              <MemberCard 
-                key={member._id} 
-                member={member} 
+              <MemberCard
+                key={member._id}
+                member={member}
                 onView={handleViewMember}
                 onEdit={handleEditMember}
                 onRemove={handleRemoveMember}
