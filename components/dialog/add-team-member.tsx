@@ -37,8 +37,8 @@ export function AddTeamMemberDialog({
   });
 
   const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(member.email);
-  const isFormValid =
-    member.name && isEmailValid && member.quota && member.role;
+  const isQuotaValid = member.quota && parseInt(member.quota) >= 0;
+  const isFormValid = member.name && isEmailValid && isQuotaValid && member.role;
 
   const handleFormChange = (
     field: keyof TeamMemberFormData | "permissions",
@@ -69,10 +69,16 @@ export function AddTeamMemberDialog({
     }
   };
 
+  const handleQuotaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (value === "" || (parseInt(value) >= 0 && !isNaN(parseInt(value)))) {
+      handleFormChange("quota", value);
+    }
+  };
+
   const handleSubmit = () => {
     if (!isFormValid) return;
 
-    // Reset form
     setMemberForm({
       name: "",
       email: "",
@@ -90,101 +96,116 @@ export function AddTeamMemberDialog({
   if (!isAddMemberOpen) return null;
 
   return (
-    <div className="z-50 fixed inset-0 flex justify-center items-center bg-black bg-opacity-20 p-4">
-      <div className="relative bg-white shadow-xl p-6 border rounded-lg w-screen max-w-5xl">
-        <Button
-          onClick={() => setIsAddMemberOpen(false)}
-          className="top-4 right-4 absolute text-gray-400 hover:text-gray-600 transition-colors"
-        >
-          <X className="w-5 h-5" />
-        </Button>
-
-        <div className="mb-6">
-          <h2 className="font-semibold text-lg">Add New Team Member</h2>
-          <p className="mt-1 text-gray-500 text-sm">
-            Add a new member to your team. They will receive an invitation
-            email.
-          </p>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+      <div className="relative w-full max-w-2xl max-h-[90vh] bg-white rounded-lg shadow-xl flex flex-col">
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 border-b border-gray-200 flex-shrink-0">
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900">Add New Team Member</h2>
+            <p className="mt-1 text-sm text-gray-600">
+              Add a new member to your team. They will receive an invitation email.
+            </p>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsAddMemberOpen(false)}
+            className="h-8 w-8 p-0 text-gray-400 hover:text-gray-600"
+          >
+            <X className="h-4 w-4" />
+          </Button>
         </div>
 
-        <div className="space-y-4">
-          <div className="items-center gap-4 grid grid-cols-4">
-            <Label htmlFor="name" className="text-right">
-              Name
-            </Label>
-            <Input
-              id="name"
-              value={member.name}
-              onChange={(e) => handleFormChange("name", e.target.value)}
-              placeholder="John Doe"
-              className="col-span-3"
-            />
+        {/* Form Content - Scrollable */}
+        <div className="p-6 space-y-6 overflow-y-auto flex-1">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="name" className="text-sm font-semibold text-gray-900">
+                Name
+              </Label>
+              <Input
+                id="name"
+                value={member.name}
+                onChange={(e) => handleFormChange("name", e.target.value)}
+                placeholder="John Doe"
+                className="w-full border-gray-300 text-gray-900 placeholder:text-gray-500"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-sm font-semibold text-gray-900">
+                Email
+              </Label>
+              <Input
+                id="email"
+                type="email"
+                value={member.email}
+                onChange={(e) => handleFormChange("email", e.target.value)}
+                placeholder="john@example.com"
+                className="w-full border-gray-300 text-gray-900 placeholder:text-gray-500"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="quota" className="text-sm font-semibold text-gray-900">
+                Quota
+              </Label>
+              <Input
+                id="quota"
+                type="number"
+                min="0"
+                value={member.quota}
+                onChange={handleQuotaChange}
+                placeholder="1000"
+                className="w-full border-gray-300 text-gray-900 placeholder:text-gray-500"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="role" className="text-sm font-semibold text-gray-900">
+                Role
+              </Label>
+              <Select
+                value={member.role}
+                onValueChange={(value) => handleFormChange("role", value)}
+              >
+                <SelectTrigger className="w-full border-gray-300 text-gray-900">
+                  <SelectValue placeholder="Select a role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="member">Team Member</SelectItem>
+                  <SelectItem value="admin">Admin</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-          <div className="items-center gap-4 grid grid-cols-4">
-            <Label htmlFor="email" className="text-right">
-              Email
-            </Label>
-            <Input
-              id="email"
-              type="email"
-              value={member.email}
-              onChange={(e) => handleFormChange("email", e.target.value)}
-              placeholder="john@example.com"
-              className="col-span-3"
-            />
-          </div>
-          <div className="items-center gap-4 grid grid-cols-4">
-            <Label htmlFor="quota" className="text-right">
-              Quota
-            </Label>
-            <Input
-              id="quota"
-              type="number"
-              value={member.quota}
-              onChange={(e) => handleFormChange("quota", e.target.value)}
-              placeholder="1000"
-              className="col-span-3"
-            />
-          </div>
-          <div className="items-center gap-4 grid grid-cols-4">
-            <Label htmlFor="role" className="text-right">
-              Role
-            </Label>
-            <Select
-              value={member.role}
-              onValueChange={(value) => handleFormChange("role", value)}
-            >
-              <SelectTrigger className="col-span-3">
-                <SelectValue placeholder="Select a role" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="member"> Team Member</SelectItem>
-                <SelectItem value="admin">Admin</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+
+          {/* Permissions Section */}
           {member.role !== "admin" && (
-            <PermissionCheckboxes
-              formPermissions={member.permissions}
-              setFormPermissions={(section, value) =>
-                handleFormChange("permissions", value, section)
-              }
-            />
+            <div className="pt-4 border-t border-gray-200">
+              <PermissionCheckboxes
+                formPermissions={member.permissions}
+                setFormPermissions={(section, value) =>
+                  handleFormChange("permissions", value, section)
+                }
+              />
+            </div>
           )}
         </div>
 
-        <div className="flex gap-2 pt-4">
+        {/* Footer */}
+        <div className="flex gap-3 p-6 border-t border-gray-200 bg-gray-50 rounded-b-lg flex-shrink-0">
           <Button
             variant="outline"
             onClick={() => setIsAddMemberOpen(false)}
-            className="flex-1"
+            className="flex-1 border-gray-300 text-gray-900 hover:bg-gray-100"
           >
             Cancel
           </Button>
           <Button
             onClick={handleSubmit}
             disabled={!isFormValid}
-            className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400"
+            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
           >
             Add Member
           </Button>
