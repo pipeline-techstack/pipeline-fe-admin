@@ -18,4 +18,5 @@ export interface OrganizationFormData {
   removeQuota?: number;
   addSeats?: number;
   removeSeats?: number;
+  seats?: number;
 }

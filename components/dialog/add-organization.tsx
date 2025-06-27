@@ -10,6 +10,7 @@ import { OrganizationFormData } from "@/lib/types/org-types";
 import { useQueryClient } from "@tanstack/react-query";
 import { addOrganization, editOrganization } from "@/services/org-apis";
 import { LoadingButton } from "@/components/loader-button";
+
 interface AddOrganizationDialogProps {
   open: boolean;
   onClose: () => void;
@@ -30,6 +31,7 @@ export function AddOrganizationDialog({
       defaultValues?.enterpriseId || `${process.env.NEXT_PUBLIC_PRICE_ID}`,
     email: defaultValues?.email || "",
     quota: defaultValues?.quota || 0,
+    seats: defaultValues?.seats || 0,
     addQuota: 0,
     removeQuota: 0,
     addSeats: 0,
@@ -45,6 +47,7 @@ export function AddOrganizationDialog({
           defaultValues.enterpriseId || `${process.env.NEXT_PUBLIC_PRICE_ID}`,
         email: defaultValues.email || "",
         quota: defaultValues.quota || 0,
+        seats: defaultValues.seats || 0, // Add seats to useEffect
         addQuota: 0,
         removeQuota: 0,
         addSeats: 0,
@@ -64,6 +67,7 @@ export function AddOrganizationDialog({
     // Convert to number if it's a numeric field
     const numberFields: (keyof OrganizationFormData)[] = [
       "quota",
+      "seats",
       "addSeats",
       "removeSeats",
       "addQuota",
@@ -100,6 +104,7 @@ export function AddOrganizationDialog({
         enterpriseId: `${process.env.NEXT_PUBLIC_PRICE_ID}`,
         email: "",
         quota: 0,
+        seats: 0,
       });
       setEmailTouched(false);
       onClose();
@@ -118,6 +123,7 @@ export function AddOrganizationDialog({
       enterpriseId: `${process.env.NEXT_PUBLIC_PRICE_ID}`, //this will be hard coded
       email: "",
       quota: 0,
+      seats: 0,
     });
     setEmailTouched(false);
   };
@@ -263,16 +269,29 @@ export function AddOrganizationDialog({
 
               {isEditMode && (
                 <>
-                  <div className="space-y-2">
-                    <Label className="font-medium text-gray-700 text-base">
-                      Current Monthly Quota
-                    </Label>
-                    <Input
-                      readOnly
-                      type="number"
-                      value={formData.quota}
-                      className="bg-gray-100 px-3 py-3 border border-gray-200 rounded-md w-full text-base"
-                    />
+                  <div className="gap-4 grid grid-cols-2">
+                    <div className="space-y-2">
+                      <Label className="font-medium text-gray-700 text-base">
+                        Current Monthly Quota
+                      </Label>
+                      <Input
+                        readOnly
+                        type="number"
+                        value={formData.quota}
+                        className="bg-gray-100 px-3 py-3 border border-gray-200 rounded-md w-full text-base"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="font-medium text-gray-700 text-base">
+                        Current Seats
+                      </Label>
+                      <Input
+                        readOnly
+                        type="number"
+                        value={formData.seats}
+                        className="bg-gray-100 px-3 py-3 border border-gray-200 rounded-md w-full text-base"
+                      />
+                    </div>
                   </div>
 
                   <div className="gap-4 grid grid-cols-2">
