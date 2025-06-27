@@ -14,15 +14,20 @@ import {
 } from "../ui/select";
 import { Label } from "../ui/label";
 import PermissionCheckboxes from "../members/permission-checkboxes";
+import { addTeamMember } from "@/lib/api";
 
 interface AddTeamMemberDialogProps {
   isAddMemberOpen: boolean;
   setIsAddMemberOpen: (open: boolean) => void;
+  organizationId: string;
+  onMemberAdded?: () => void;
 }
 
 export function AddTeamMemberDialog({
   isAddMemberOpen,
   setIsAddMemberOpen,
+  organizationId,
+  onMemberAdded,
 }: AddTeamMemberDialogProps) {
   const [member, setMemberForm] = useState<TeamMemberFormData>({
     name: "",
@@ -36,9 +41,12 @@ export function AddTeamMemberDialog({
     },
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(member.email);
   const isQuotaValid = member.quota && parseInt(member.quota) >= 0;
-  const isFormValid = member.name && isEmailValid && isQuotaValid && member.role;
+  const isFormValid = isEmailValid && isQuotaValid && member.role;
 
   const handleFormChange = (
     field: keyof TeamMemberFormData | "permissions",
@@ -76,21 +84,40 @@ export function AddTeamMemberDialog({
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!isFormValid) return;
 
-    setMemberForm({
-      name: "",
-      email: "",
-      quota: "",
-      role: "admin",
-      permissions: {
-        workbooks: [],
-        prompt: [],
-        CRM: [],
-      },
-    });
-    setIsAddMemberOpen(false);
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      await addTeamMember({
+        organizationId,
+        email: member.email,
+        quota: parseInt(member.quota),
+        role: member.role,
+      });
+
+      // Reset form
+      setMemberForm({
+        name: "",
+        email: "",
+        quota: "",
+        role: "admin",
+        permissions: {
+          workbooks: [],
+          prompt: [],
+          CRM: [],
+        },
+      });
+      
+      setIsAddMemberOpen(false);
+      onMemberAdded?.();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to add member");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (!isAddMemberOpen) return null;
@@ -118,20 +145,13 @@ export function AddTeamMemberDialog({
 
         {/* Form Content - Scrollable */}
         <div className="p-6 space-y-6 overflow-y-auto flex-1">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="name" className="text-sm font-semibold text-gray-900">
-                Name
-              </Label>
-              <Input
-                id="name"
-                value={member.name}
-                onChange={(e) => handleFormChange("name", e.target.value)}
-                placeholder="John Doe"
-                className="w-full border-gray-300 text-gray-900 placeholder:text-gray-500"
-              />
+          {error && (
+            <div className="p-3 bg-red-50 border border-red-200 rounded-md">
+              <p className="text-sm text-red-600">{error}</p>
             </div>
+          )}
 
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="email" className="text-sm font-semibold text-gray-900">
                 Email
@@ -148,7 +168,7 @@ export function AddTeamMemberDialog({
 
             <div className="space-y-2">
               <Label htmlFor="quota" className="text-sm font-semibold text-gray-900">
-                Quota
+                Add Quota
               </Label>
               <Input
                 id="quota"
@@ -161,7 +181,7 @@ export function AddTeamMemberDialog({
               />
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-2 md:col-span-2">
               <Label htmlFor="role" className="text-sm font-semibold text-gray-900">
                 Role
               </Label>
@@ -199,15 +219,16 @@ export function AddTeamMemberDialog({
             variant="outline"
             onClick={() => setIsAddMemberOpen(false)}
             className="flex-1 border-gray-300 text-gray-900 hover:bg-gray-100"
+            disabled={isSubmitting}
           >
             Cancel
           </Button>
           <Button
             onClick={handleSubmit}
-            disabled={!isFormValid}
+            disabled={!isFormValid || isSubmitting}
             className="flex-1 bg-blue-600 hover:bg-blue-700 text-white disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
           >
-            Add Member
+            {isSubmitting ? "Adding..." : "Add Member"}
           </Button>
         </div>
       </div>

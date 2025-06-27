@@ -106,6 +106,7 @@ export default function OrganizationPage() {
       <AddTeamMemberDialog
         isAddMemberOpen={isAddMemberOpen}
         setIsAddMemberOpen={setIsAddMemberOpen}
+        organizationId={id as string}
       />
     </div>
   );
