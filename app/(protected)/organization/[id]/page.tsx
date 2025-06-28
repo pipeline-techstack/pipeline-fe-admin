@@ -9,6 +9,7 @@ import { Member } from "@/lib/types/member-types";
 import MemberCard from "../../../../components/members/memberCard";
 import { useQuery } from "@tanstack/react-query";
 import { getMembers, removeTeamMember } from "@/services/member-apis";
+import { normalizePermissions } from "@/lib/utils";
 
 export default function OrganizationPage() {
   const { id } = useParams();
@@ -27,10 +28,6 @@ export default function OrganizationPage() {
     retry: false,
   });
 
-  const handleViewMember = (member: Member) => {
-    console.log("View member:", member);
-  };
-
   const handleEditMember = (member: Member) => {
     console.log("Edit member:", member);
   };
@@ -41,12 +38,27 @@ export default function OrganizationPage() {
       organizationId: id as string,
       email: member.email,
     });
-    setMembers((prev) => prev.filter((m) => m._id !== member._id));
+    setMembers((prev) =>
+      prev.filter((m) => m.organizationId !== member.organizationId)
+    );
   };
 
   useEffect(() => {
     if (fetchedData) {
-      setMembers(fetchedData.data);
+      const transformedMembers: Member[] = fetchedData.data.map(
+        (member: any) => ({
+          userId: member.userId,
+          email: member.email,
+          organizationId: member._id,
+          rowQuota: member.rowQuota,
+          usedRows: member.usedRows,
+          role: member.role,
+          updatedAt: member.updatedAt,
+          permissions: normalizePermissions(member.permissions || []),
+        })
+      );
+
+      setMembers(transformedMembers);
       setOrganizationName(fetchedData.organization);
     }
   }, [fetchedData]);
@@ -92,9 +104,8 @@ export default function OrganizationPage() {
           <div className="gap-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {members.map((member: Member) => (
               <MemberCard
-                key={member._id}
+                key={member.organizationId}
                 member={member}
-                onView={handleViewMember}
                 onEdit={handleEditMember}
                 onRemove={handleRemoveMember}
               />

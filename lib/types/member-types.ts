@@ -1,7 +1,6 @@
 type RoleType = "owner" | "admin" | "member";
 export type PermissionLevel = "Read" | "Exec" | "Editor" | "Admin";
 export type Member = {
-  _id: string;
   userId: string;
   name?: string;
   email: string;
@@ -9,7 +8,11 @@ export type Member = {
   rowQuota: number;
   usedRows: number;
   role: RoleType; // Extend if needed
-  createdAt: string;
+  permissions: {
+    workbooks: [];
+    prompt: [];
+    CRM: [];
+  };
   updatedAt: string;
 };
 

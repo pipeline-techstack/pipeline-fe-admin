@@ -1,91 +1,154 @@
 import React from "react";
 import { Member } from "@/lib/types/member-types";
-import { MoreVertical, Eye, Edit, UserMinus } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-
-const getInitials = (email: string) => {
-  const namePart = email?.split("@")[0];
-  return (
-    namePart
-      ?.split(".")
-      .map((part) => part[0]?.toUpperCase())
-      .join("") || "U"
-  );
-};
-
-const capitalize = (str: string) =>
-  str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  MoreVertical,
+  Edit3,
+  Trash2,
+  Shield,
+  Database,
+  MessageSquare,
+  Users,
+} from "lucide-react";
+import { cn, getInitials } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Avatar, AvatarFallback } from "../ui/avatar";
+import { Badge } from "../ui/badge";
+import PermissionItem from "./permission-item";
 
 interface MemberCardProps {
   member: Member;
-  onView?: (member: Member) => void;
   onEdit?: (member: Member) => void;
   onRemove?: (member: Member) => void;
 }
 
-const MemberCard = ({ member, onView, onEdit, onRemove }: MemberCardProps) => {
-  const handleMenuClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
+const MemberCard = ({ member, onEdit, onRemove }: MemberCardProps) => {
+  const getUsagePercentage = (used: number, quota: number): number => {
+    if (quota <= 0) return 0;
+    return Math.round((used / quota) * 100);
   };
 
+  const usagePercentage = getUsagePercentage(member.usedRows, member.rowQuota);
+  console.log("member", member);
   return (
-    <div className="group relative bg-white hover:shadow-sm p-6 rounded-5xl text-center transition-shadow">
-      <div className="absolute top-4 right-4">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild onClick={handleMenuClick}>
-            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-              <MoreVertical className="w-4 h-4 text-gray-400" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => onView?.(member)}>
-              <Eye className="h-4 w-4 mr-2" /> View
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onEdit?.(member)}>
-              <Edit className="h-4 w-4 mr-2" /> Edit
-            </DropdownMenuItem>
-            <DropdownMenuItem 
-              onClick={() => onRemove?.(member)} 
-              className="text-red-600"
-            >
-              <UserMinus className="h-4 w-4 mr-2" /> Remove
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+    <div
+      key={member.organizationId}
+      className="relative flex flex-col items-center bg-accent p-4 border rounded-xl"
+    >
+      {/* Top Right Menu Icon */}
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="top-2 right-2 absolute"
+          >
+            <MoreVertical className="w-4 h-4 text-gray-500" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="space-y-1 p-1 w-32">
+          <Button
+            variant="ghost"
+            className="justify-start hover:bg-gray-100 w-full text-gray-700 text-sm"
+            // onClick={() => setIsAddMemberOpen(true)}
+          >
+            <Edit3 className="mr-2 w-4 h-4" />
+            Edit
+          </Button>
+          <Button
+            variant="ghost"
+            className="justify-start hover:bg-red-50 w-full text-red-600 text-sm"
+            onClick={() => {
+              // TODO: Add delete logic here
+              console.log("Delete clicked");
+            }}
+          >
+            <Trash2 className="mr-2 w-4 h-4" />
+            Delete
+          </Button>
+        </PopoverContent>
+      </Popover>
+
+      {/* Avatar */}
+      <Avatar className="mb-2 w-16 h-16">
+        <AvatarFallback className="bg-primary text-white">
+          {getInitials(member.email as string)}
+        </AvatarFallback>
+      </Avatar>
+
+      {/* Email */}
+      <div className="text-center">
+        <div className="text-gray-600 text-sm">{member.email}</div>
       </div>
 
-      <div className="flex flex-col items-center">
-        <div className="flex justify-center items-center bg-gray-100 mb-4 rounded-full w-20 h-20 font-semibold text-gray-600 text-3xl">
-          {getInitials(member.email)}
+      {/* Role Badge */}
+      <Badge
+        variant="secondary"
+        className={`mt-2 px-3 py-1 rounded-full text-sm font-medium ${
+          member.role === "admin"
+            ? "bg-green-100 text-green-700"
+            : "bg-blue-100 text-blue-700"
+        }`}
+      >
+        {member.role === "admin" ? "Admin" : "Member"}
+      </Badge>
+
+      {/* Quota Usage */}
+      <div className="mt-4 w-full">
+        <div className="mb-1 text-gray-500 text-xs">Quota usage</div>
+        <div className="bg-gray-200 rounded-full w-full h-2 overflow-hidden">
+          <div
+            className={`h-2 transition-all duration-300 rounded-full ${
+              usagePercentage >= 90
+                ? "bg-red-500"
+                : usagePercentage >= 70
+                ? "bg-orange-500"
+                : "bg-green-500"
+            }`}
+            style={{ width: `${Math.min(usagePercentage, 100)}%` }}
+          />
         </div>
-        <h3 className="mb-1 font-semibold text-gray-900 text-lg">
-          {member.email.split("@")[0]}
-        </h3>
-        <p className="mb-6 text-gray-500 text-sm">{member.email}</p>
-        <span
-          className={cn(
-            "inline-block w-full py-2 px-4 rounded text-sm font-medium capitalize",
-            member.role === "admin" || member.role === "owner"
-              ? "bg-blue-50 text-blue-700 border border-blue-200"
-              : "bg-gray-50 text-gray-700 border border-gray-200"
-          )}
+        <div className="mt-1 text-gray-700 text-xs text-right">
+          {/* {member.used.toLocaleString()} / {member.quota.toLocaleString()} rows */}
+          ({usagePercentage}%)
+        </div>
+      </div>
+
+      {/* Permissions Toggle */}
+      <div className="mt-4 pt-3 border-t w-full">
+        <button
+          // onClick={() => setOpenPermissionsId(isOpen ? null : member.id)}
+          className="flex justify-between items-center w-full font-medium text-gray-700 text-sm cursor-pointer"
         >
-          {capitalize(member.role)}
-        </span>
-        <div className="text-sm text-gray-500 mt-2">
-          <p>
-            <span className="font-medium">Used Rows:</span> {member.usedRows || 0}
-          </p>
-          <p>
-            <span className="font-medium">Row Quota:</span> {member.rowQuota || 0}
-          </p>
+          <span className="flex items-center gap-2">
+            <Shield className="w-4 h-4" />
+            Permissions
+          </span>
+        </button>
+
+        {/* Permissions List */}
+        <div className="space-y-2 mt-3 pl-2">
+          <PermissionItem
+            icon={Database}
+            label="Workbooks"
+            permissions={member.permissions.workbooks}
+            permissionType="workbooks"
+            color="text-blue-600"
+          />
+          <PermissionItem
+            icon={MessageSquare}
+            label="Prompt"
+            permissions={member.permissions.prompt}
+            permissionType="prompt"
+            color="text-green-600"
+          />
+          <PermissionItem
+            icon={Users}
+            label="CRM"
+            permissions={member.permissions.CRM}
+            permissionType="CRM"
+            color="text-purple-600"
+          />
         </div>
       </div>
     </div>
