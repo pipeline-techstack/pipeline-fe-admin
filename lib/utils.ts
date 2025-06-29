@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { Member } from "./types/member-types";
+import { EditMemberFormData, Member } from "./types/member-types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -54,3 +54,31 @@ export function normalizePermissions(
 
   return grouped;
 }
+
+// export function transformToEditForm(member: any): EditMemberFormData {
+//   const permissionMap: EditMemberFormData["permissions"] = {
+//     workbooks: [],
+//     prompt: [],
+//     CRM: [],
+//   };
+
+//   if (member.permissions && Array.isArray(member.permissions)) {
+//     for (const perm of member.permissions) {
+//       const resource = perm.resource as keyof typeof permissionMap;
+//       if (permissionMap[resource]) {
+//         permissionMap[resource].push(perm.permission);
+//       }
+//     }
+//   }
+
+//   return {
+//     memberId: member.userId,
+//     email: member.email,
+//     organizationId: member.organizationId,
+//     quota: String(member.rowQuota), // form expects string
+//     addQuota: 0,
+//     reduceQuota: 0,
+//     role: member.role,
+//     permissions: permissionMap,
+//   };
+// }

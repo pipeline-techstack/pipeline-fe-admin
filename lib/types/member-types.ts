@@ -28,6 +28,11 @@ export interface TeamMemberFormData {
   };
 }
 
+export interface EditMemberFormData extends TeamMemberFormData {
+  memberId: string;
+  addQuota: number;
+  reduceQuota: number;
+}
 export const VALID_PERMISSIONS = {
   workbooks: ["Read", "Exec", "Editor", "Admin"],
   prompt: ["Read", "Admin"],

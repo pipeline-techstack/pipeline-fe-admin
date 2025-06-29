@@ -10,6 +10,7 @@ import MemberCard from "../../../../components/members/memberCard";
 import { useQuery } from "@tanstack/react-query";
 import { getMembers, removeTeamMember } from "@/services/member-apis";
 import { normalizePermissions } from "@/lib/utils";
+import EditTeamMember from "@/components/dialog/edit-team-member";
 
 export default function OrganizationPage() {
   const { id } = useParams();
@@ -17,6 +18,9 @@ export default function OrganizationPage() {
   const [members, setMembers] = useState<Member[]>([]);
   const [organizationName, setOrganizationName] = useState<string>("");
   const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
+  const [isEditMemberOpen, setIsEditMemberOpen] = useState(false);
+  const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
+
   const {
     data: fetchedData,
     isLoading,
@@ -28,12 +32,12 @@ export default function OrganizationPage() {
     retry: false,
   });
 
-  const handleEditMember = (member: Member) => {
-    console.log("Edit member:", member);
+  const handleEditMember = (userId: string) => {
+    setIsEditMemberOpen(true);
+    setSelectedMemberId(userId);
   };
 
   const handleRemoveMember = async (member: Member) => {
-    console.log("Remove member:", member);
     await removeTeamMember({
       organizationId: id as string,
       email: member.email,
@@ -122,6 +126,13 @@ export default function OrganizationPage() {
         isAddMemberOpen={isAddMemberOpen}
         setIsAddMemberOpen={setIsAddMemberOpen}
         organizationId={id as string}
+      />
+      <EditTeamMember
+        isOpen={isEditMemberOpen}
+        setIsOpen={setIsEditMemberOpen}
+        organizationId={id as string}
+        members={members}
+        memberId={selectedMemberId || ""}
       />
     </div>
   );

@@ -18,7 +18,7 @@ import PermissionItem from "./permission-item";
 
 interface MemberCardProps {
   member: Member;
-  onEdit?: (member: Member) => void;
+  onEdit?: (userId: string) => void;
   onRemove?: (member: Member) => void;
 }
 
@@ -29,7 +29,7 @@ const MemberCard = ({ member, onEdit, onRemove }: MemberCardProps) => {
   };
 
   const usagePercentage = getUsagePercentage(member.usedRows, member.rowQuota);
-  console.log("member", member);
+
   return (
     <div
       key={member.organizationId}
@@ -50,7 +50,9 @@ const MemberCard = ({ member, onEdit, onRemove }: MemberCardProps) => {
           <Button
             variant="ghost"
             className="justify-start hover:bg-gray-100 w-full text-gray-700 text-sm"
-            // onClick={() => setIsAddMemberOpen(true)}
+            onClick={() => {
+              onEdit?.(member.userId);
+            }}
           >
             <Edit3 className="mr-2 w-4 h-4" />
             Edit
@@ -84,13 +86,13 @@ const MemberCard = ({ member, onEdit, onRemove }: MemberCardProps) => {
       {/* Role Badge */}
       <Badge
         variant="secondary"
-        className={`mt-2 px-3 py-1 rounded-full text-sm font-medium ${
-          member.role === "admin"
+        className={`mt-2 px-3 py-1 rounded-full text-sm font-medium capitalize ${
+          member.role === "admin" || member.role === "owner"
             ? "bg-green-100 text-green-700"
             : "bg-blue-100 text-blue-700"
         }`}
       >
-        {member.role === "admin" ? "Admin" : "Member"}
+        {member.role}
       </Badge>
 
       {/* Quota Usage */}

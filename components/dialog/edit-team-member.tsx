@@ -1,9 +1,8 @@
-"use client";
-
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { LoadingButton } from "../loader-button";
+import { Button } from "../ui/button";
 import { X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Member, TeamMemberFormData } from "@/lib/types/member-types";
+import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import {
   Select,
@@ -12,51 +11,54 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { Label } from "../ui/label";
 import PermissionCheckboxes from "../members/permission-checkboxes";
-import { addTeamMember } from "@/services/member-apis";
-import { useQueryClient } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
-import { LoadingButton } from "@/components/loader-button";
+import { EditMemberFormData } from "@/lib/types/member-types";
+import { editTeamMember } from "@/services/member-apis";
 
-interface AddTeamMemberDialogProps {
-  isAddMemberOpen: boolean;
-  setIsAddMemberOpen: (open: boolean) => void;
+interface EditTeamMemberProps {
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
   organizationId: string;
-  onMemberAdded?: () => void;
+  members: any[]; // the full list from your API
+  memberId: string;
 }
 
-export function AddTeamMemberDialog({
-  isAddMemberOpen,
-  setIsAddMemberOpen,
+const EditTeamMember: React.FC<EditTeamMemberProps> = ({
+  isOpen,
+  setIsOpen,
   organizationId,
-  onMemberAdded,
-}: AddTeamMemberDialogProps) {
-  const queryClient = useQueryClient();
-  const { id } = useParams();
-
-  const [member, setMemberForm] = useState<TeamMemberFormData>({
+  members,
+  memberId,
+}) => {
+  const [member, setMemberForm] = useState<EditMemberFormData>({
+    memberId: "",
     email: "",
-    quota: "",
+    quota: "1000",
     role: "admin",
+    addQuota: 0,
+    reduceQuota: 0,
     permissions: {
       workbooks: [],
       prompt: [],
       CRM: [],
     },
   });
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(member.email);
-  const isQuotaValid = member.quota && parseInt(member.quota) >= 0;
-  const isFormValid = isEmailValid && isQuotaValid && member.role;
+  useEffect(() => {
+    if (isOpen && members.length > 0) {
+      const matched = members.find((m) => m.userId === memberId);
+      if (matched) {
+        setMemberForm(matched);
+      }
+    }
+  }, [isOpen, memberId, members]);
 
   const handleFormChange = (
-    field: keyof TeamMemberFormData | "permissions",
+    field: keyof EditMemberFormData | "permissions",
     value: string,
-    section?: keyof TeamMemberFormData["permissions"],
+    section?: keyof EditMemberFormData["permissions"],
     isSelectAll = false
   ) => {
     if (field === "permissions" && section) {
@@ -82,51 +84,33 @@ export function AddTeamMemberDialog({
     }
   };
 
-  const handleQuotaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (value === "" || (parseInt(value) >= 0 && !isNaN(parseInt(value)))) {
-      handleFormChange("quota", value);
-    }
-  };
-
   const handleSubmit = async () => {
-    if (!isFormValid) return;
-
     setIsSubmitting(true);
     setError(null);
 
     try {
-      await addTeamMember({
+      await editTeamMember({
+        memberId,
         organizationId,
-        email: member.email,
-        quota: member.quota,
+        addQuota: Number(member.addQuota),
+        reduceQuota: Number(member.reduceQuota),
         role: member.role,
         permissions: member.permissions,
+        email: member.email,
+        quota: member.quota,
       });
 
-      // Reset form
-      setMemberForm({
-        email: "",
-        quota: "",
-        role: "admin",
-        permissions: {
-          workbooks: [],
-          prompt: [],
-          CRM: [],
-        },
-      });
-
-      setIsAddMemberOpen(false);
-      queryClient.invalidateQueries({ queryKey: ["organization", id] });
-      onMemberAdded?.();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to add member");
+      setIsOpen(false); // Close modal
+    } catch (err: any) {
+      setError(err.message || "Failed to update team member");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  if (!isAddMemberOpen) return null;
+  const isFormValid = member.email.trim() !== "";
+
+  if (!isOpen) return null;
 
   return (
     <div className="z-50 fixed inset-0 flex justify-center items-center bg-black/50 p-4">
@@ -135,17 +119,16 @@ export function AddTeamMemberDialog({
         <div className="flex flex-shrink-0 justify-between items-center p-6 border-gray-200 border-b">
           <div>
             <h2 className="font-semibold text-gray-900 text-xl">
-              Add New Team Member
+              Edit Team Member
             </h2>
             <p className="mt-1 text-gray-600 text-sm">
-              Add a new member to your team. They will receive an invitation
-              email.
+              Edita member to your team.
             </p>
           </div>
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => setIsAddMemberOpen(false)}
+            onClick={() => setIsOpen(false)}
             className="p-0 w-8 h-8 text-gray-400 hover:text-gray-600"
           >
             <X className="w-4 h-4" />
@@ -180,18 +163,37 @@ export function AddTeamMemberDialog({
 
             <div className="space-y-2">
               <Label
-                htmlFor="quota"
+                htmlFor="addQuota"
                 className="font-semibold text-gray-900 text-sm"
               >
                 Add Quota
               </Label>
               <Input
-                id="quota"
+                id="addQuota"
                 type="number"
                 min="0"
-                value={member.quota}
-                onChange={handleQuotaChange}
+                value={member.addQuota}
+                onChange={(e) => handleFormChange("addQuota", e.target.value)}
                 placeholder="1000"
+                className="border-gray-300 w-full text-gray-900 placeholder:text-gray-500"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label
+                htmlFor="reduceQuota"
+                className="font-semibold text-gray-900 text-sm"
+              >
+                Reduce Quota
+              </Label>
+              <Input
+                id="reduceQuota"
+                type="number"
+                min="0"
+                value={member.reduceQuota}
+                onChange={(e) =>
+                  handleFormChange("reduceQuota", e.target.value)
+                }
+                placeholder="500"
                 className="border-gray-300 w-full text-gray-900 placeholder:text-gray-500"
               />
             </div>
@@ -235,23 +237,25 @@ export function AddTeamMemberDialog({
         <div className="flex flex-shrink-0 gap-3 bg-gray-50 p-6 border-gray-200 border-t rounded-b-lg">
           <Button
             variant="outline"
-            onClick={() => setIsAddMemberOpen(false)}
+            onClick={() => setIsOpen(false)}
             className="flex-1 hover:bg-gray-100 border-gray-300 text-gray-900"
-            disabled={isSubmitting}
+            // disabled={isSubmitting}
           >
             Cancel
           </Button>
           <LoadingButton
             isLoading={isSubmitting}
             disabled={!isFormValid}
-            loadingText="Adding member..."
+            loadingText="Editing member..."
             onClick={handleSubmit}
             className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white disabled:text-gray-500 disabled:cursor-not-allowed"
           >
-            Add Member
+            Edit Member
           </LoadingButton>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default EditTeamMember;
