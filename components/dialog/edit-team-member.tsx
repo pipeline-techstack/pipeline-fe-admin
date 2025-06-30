@@ -14,6 +14,13 @@ import {
 import PermissionCheckboxes from "../members/permission-checkboxes";
 import { EditMemberFormData } from "@/lib/types/member-types";
 import { editTeamMember } from "@/services/member-apis";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
 
 interface EditTeamMemberProps {
   isOpen: boolean;
@@ -113,27 +120,16 @@ const EditTeamMember: React.FC<EditTeamMemberProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="z-50 fixed inset-0 flex justify-center items-center bg-black/50 p-4">
-      <div className="relative flex flex-col bg-white shadow-xl rounded-lg w-full max-w-2xl max-h-[90vh]">
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogContent className="p-0 max-w-2xl max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex flex-shrink-0 justify-between items-center p-6 border-gray-200 border-b">
-          <div>
-            <h2 className="font-semibold text-gray-900 text-xl">
-              Edit Team Member
-            </h2>
-            <p className="mt-1 text-gray-600 text-sm">
-              Edita member to your team.
-            </p>
-          </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsOpen(false)}
-            className="p-0 w-8 h-8 text-gray-400 hover:text-gray-600"
-          >
-            <X className="w-4 h-4" />
-          </Button>
-        </div>
+        <DialogHeader className="p-4">
+          <DialogTitle>Edit Team Member</DialogTitle>
+          <DialogDescription className="text-gray-600">
+            Edit a member of your team. You can adjust role, quota, and
+            permissions.
+          </DialogDescription>
+        </DialogHeader>
 
         {/* Form Content - Scrollable */}
         <div className="flex-1 space-y-6 p-6 overflow-y-auto">
@@ -253,8 +249,8 @@ const EditTeamMember: React.FC<EditTeamMemberProps> = ({
             Edit Member
           </LoadingButton>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 

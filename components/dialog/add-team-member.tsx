@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Member, TeamMemberFormData } from "@/lib/types/member-types";
 import { Input } from "../ui/input";
@@ -18,6 +17,13 @@ import { addTeamMember } from "@/services/member-apis";
 import { useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { LoadingButton } from "@/components/loader-button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
 
 interface AddTeamMemberDialogProps {
   isAddMemberOpen: boolean;
@@ -129,28 +135,16 @@ export function AddTeamMemberDialog({
   if (!isAddMemberOpen) return null;
 
   return (
-    <div className="z-50 fixed inset-0 flex justify-center items-center bg-black/50 p-4">
-      <div className="relative flex flex-col bg-white shadow-xl rounded-lg w-full max-w-2xl max-h-[90vh]">
+    <Dialog open={isAddMemberOpen} onOpenChange={setIsAddMemberOpen}>
+      <DialogContent className="p-0 max-w-2xl max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex flex-shrink-0 justify-between items-center p-6 border-gray-200 border-b">
-          <div>
-            <h2 className="font-semibold text-gray-900 text-xl">
-              Add New Team Member
-            </h2>
-            <p className="mt-1 text-gray-600 text-sm">
-              Add a new member to your team. They will receive an invitation
-              email.
-            </p>
-          </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsAddMemberOpen(false)}
-            className="p-0 w-8 h-8 text-gray-400 hover:text-gray-600"
-          >
-            <X className="w-4 h-4" />
-          </Button>
-        </div>
+        <DialogHeader className="p-4">
+          <DialogTitle>Add Team Member</DialogTitle>
+          <DialogDescription className="text-gray-600">
+            Add a member of your team. You can adjust role, quota, and
+            permissions.
+          </DialogDescription>
+        </DialogHeader>
 
         {/* Form Content - Scrollable */}
         <div className="flex-1 space-y-6 p-6 overflow-y-auto">
@@ -251,7 +245,7 @@ export function AddTeamMemberDialog({
             Add Member
           </LoadingButton>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }
