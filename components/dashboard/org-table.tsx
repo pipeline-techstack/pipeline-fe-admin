@@ -300,6 +300,7 @@ export function OrganizationTable() {
             email: editOrg?.email || "",
             quota: editOrg?.monthlyQuota || 0,
             enterpriseId: `${process.env.NEXT_PUBLIC_PRICE_ID}`,
+            seats: editOrg?.seats || 0,
           }}
           isEditMode={true}
         />
