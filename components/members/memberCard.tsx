@@ -7,7 +7,6 @@ import {
   Shield,
   Database,
   MessageSquare,
-  Users,
 } from "lucide-react";
 import { cn, getInitials } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -61,8 +60,7 @@ const MemberCard = ({ member, onEdit, onRemove }: MemberCardProps) => {
             variant="ghost"
             className="justify-start hover:bg-red-50 w-full text-red-600 text-sm"
             onClick={() => {
-              // TODO: Add delete logic here
-              console.log("Delete clicked");
+              onRemove?.(member);
             }}
           >
             <Trash2 className="mr-2 w-4 h-4" />
@@ -144,13 +142,13 @@ const MemberCard = ({ member, onEdit, onRemove }: MemberCardProps) => {
             permissionType="prompt"
             color="text-green-600"
           />
-          <PermissionItem
+          {/* <PermissionItem
             icon={Users}
             label="CRM"
             permissions={member.permissions.CRM}
             permissionType="CRM"
             color="text-purple-600"
-          />
+          /> */}
         </div>
       </div>
     </div>
