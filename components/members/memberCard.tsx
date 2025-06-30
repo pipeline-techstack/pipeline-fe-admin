@@ -51,7 +51,7 @@ const MemberCard = ({ member, onEdit, onRemove }: MemberCardProps) => {
             variant="ghost"
             className="justify-start hover:bg-gray-100 w-full text-gray-700 text-sm"
             onClick={() => {
-              onEdit?.(member.userId);
+              onEdit?.(member._id as string);
             }}
           >
             <Edit3 className="mr-2 w-4 h-4" />

@@ -32,9 +32,10 @@ export default function OrganizationPage() {
     retry: false,
   });
 
-  const handleEditMember = (userId: string) => {
+  const handleEditMember = (id: string) => {
     setIsEditMemberOpen(true);
-    setSelectedMemberId(userId);
+    console.log("id", id);
+    setSelectedMemberId(id);
   };
 
   const handleRemoveMember = async (member: Member) => {
@@ -51,6 +52,7 @@ export default function OrganizationPage() {
     if (fetchedData) {
       const transformedMembers: Member[] = fetchedData.data.map(
         (member: any) => ({
+          _id: member._id,
           userId: member.userId,
           email: member.email,
           organizationId: member._id,

@@ -21,6 +21,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface EditTeamMemberProps {
   isOpen: boolean;
@@ -37,6 +38,7 @@ const EditTeamMember: React.FC<EditTeamMemberProps> = ({
   members,
   memberId,
 }) => {
+  const queryClient = useQueryClient();
   const [member, setMemberForm] = useState<EditMemberFormData>({
     memberId: "",
     email: "",
@@ -55,7 +57,7 @@ const EditTeamMember: React.FC<EditTeamMemberProps> = ({
 
   useEffect(() => {
     if (isOpen && members.length > 0) {
-      const matched = members.find((m) => m.userId === memberId);
+      const matched = members.find((m) => m._id === memberId);
       if (matched) {
         setMemberForm(matched);
       }
@@ -108,6 +110,9 @@ const EditTeamMember: React.FC<EditTeamMemberProps> = ({
       });
 
       setIsOpen(false); // Close modal
+      queryClient.invalidateQueries({
+        queryKey: ["organization", organizationId],
+      });
     } catch (err: any) {
       setError(err.message || "Failed to update team member");
     } finally {
