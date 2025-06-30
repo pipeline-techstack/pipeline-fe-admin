@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Member, TeamMemberFormData } from "@/lib/types/member-types";
+import { TeamMemberFormData } from "@/lib/types/member-types";
 import { Input } from "../ui/input";
 import {
   Select,

@@ -1,6 +1,7 @@
 type RoleType = "owner" | "admin" | "member";
 export type PermissionLevel = "Read" | "Exec" | "Editor" | "Admin";
 export type Member = {
+  _id: string;
   userId: string;
   name?: string;
   email: string;
