@@ -79,7 +79,7 @@ export const addTeamMember = async ({
   }
 
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/admin/organizations/add-member?org_id${organizationId}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/payment/admin/organizations/add-member?org_id${organizationId}`,
     {
       method: "POST",
       headers: {
