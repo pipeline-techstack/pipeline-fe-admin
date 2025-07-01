@@ -64,7 +64,7 @@ const MemberCard = ({ member, onEdit, onRemove }: MemberCardProps) => {
             }}
           >
             <Trash2 className="mr-2 w-4 h-4" />
-            Delete
+            Remove
           </Button>
         </PopoverContent>
       </Popover>
@@ -92,6 +92,12 @@ const MemberCard = ({ member, onEdit, onRemove }: MemberCardProps) => {
       >
         {member.role}
       </Badge>
+
+      {/* Row quoate */}
+      <div className="my-1 text-gray-500 text-xs">
+        <span>Row quota:</span>
+        <span>{member.rowQuota}</span>
+      </div>
 
       {/* Quota Usage */}
       <div className="mt-4 w-full">

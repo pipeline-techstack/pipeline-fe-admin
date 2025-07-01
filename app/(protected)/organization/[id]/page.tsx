@@ -20,7 +20,7 @@ export default function OrganizationPage() {
   const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
   const [isEditMemberOpen, setIsEditMemberOpen] = useState(false);
   const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
-
+  const [seats, setSeats] = useState(0);
   const {
     data: fetchedData,
     isLoading,
@@ -66,8 +66,19 @@ export default function OrganizationPage() {
 
       setMembers(transformedMembers);
       setOrganizationName(fetchedData.organization);
+      setSeats(fetchedData.seats);
     }
   }, [fetchedData]);
+
+  const handleAddMember = () => {
+    if (members.length >= seats) {
+      alert(
+        "You have reached the maximum number of members for this organization. Add more seats to continue"
+      );
+      return;
+    }
+    setIsAddMemberOpen(true);
+  };
 
   if (isLoading) return <p>Loading organizations...</p>;
   if (isError)
@@ -96,11 +107,7 @@ export default function OrganizationPage() {
                 </p>
               </div>
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setIsAddMemberOpen(true)}
-            >
+            <Button variant="outline" size="sm" onClick={handleAddMember}>
               + Add Team Member
             </Button>
           </div>

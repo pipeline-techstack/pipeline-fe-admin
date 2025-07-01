@@ -39,7 +39,7 @@ export const addTeamMember = async ({
   role,
   permissions,
 }: TeamMemberFormData): Promise<any> => {
-  const token = localStorage.getItem("authToken");
+  const token = getToken();
   if (!token) {
     throw new Error("Authentication required");
   }
@@ -79,7 +79,7 @@ export const addTeamMember = async ({
   }
 
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/payment/admin/organizations/add-member?org_id${organizationId}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/payment/admin/organizations/add-member?org_id=${organizationId}`,
     {
       method: "POST",
       headers: {
