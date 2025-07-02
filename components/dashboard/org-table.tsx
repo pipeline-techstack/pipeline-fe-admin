@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
-import { getOrganizations } from "@/services/org-apis";
+import { disableOrganization, getOrganizations } from "@/services/org-apis";
 import { formatDate } from "@/lib/utils";
 import { OrganizationData } from "@/lib/types/org-types";
 import { AddOrganizationDialog } from "@/components/dialog/add-organization";
@@ -43,12 +43,13 @@ export function OrganizationTable() {
   const [editOrg, setEditOrg] = useState<OrganizationData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [data, setData] = useState<ExtendedOrganizationData[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [orgId, setOrgId] = useState("");
   const [confirmDialog, setConfirmDialog] = useState<{
     open: boolean;
     title: string;
     message: string;
-    onConfirm: () => void;
-  }>({ open: false, title: "", message: "", onConfirm: () => {} });
+  }>({ open: false, title: "", message: "" });
   const router = useRouter();
 
   const {
@@ -83,8 +84,8 @@ export function OrganizationTable() {
     if (input) input.indeterminate = someSelected;
   }, [someSelected]);
 
-  const toggleCheckbox = (id: string, checked: boolean) =>
-    setData((prev) => prev.map((i) => (i._id === id ? { ...i, checked } : i)));
+  // const toggleCheckbox = (id: string, checked: boolean) =>
+  //   setData((prev) => prev.map((i) => (i._id === id ? { ...i, checked } : i)));
 
   const toggleAll = (checked: boolean) =>
     setData((prev) => prev.map((i) => ({ ...i, checked })));
@@ -95,25 +96,31 @@ export function OrganizationTable() {
     router.push(`/organization/${id}`);
   };
 
-  const showConfirm = (title: string, message: string, onConfirm: () => void) =>
-    setConfirmDialog({ open: true, title, message, onConfirm });
+  const showConfirm = (title: string, message: string) =>
+    setConfirmDialog({ open: true, title, message });
 
   const handleEdit = (org: OrganizationData) => {
     setEditOrg(org);
     setIsModalOpen(true);
   };
 
-  const deleteOrg = (id: string) =>
-    setData((prev) => prev.filter((i) => i._id !== id));
-
+  const handleDisable = async () => {
+    try {
+      setLoading(true);
+      await disableOrganization(orgId as string);
+    } catch (error) {
+      console.error("Error disabling the organization:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   const handleBulkDelete = () => {
     const count = data.filter((i) => i.checked).length;
     showConfirm(
-      "Delete Organizations",
-      `Are you sure you want to delete ${count} organization${
+      "Disable Organizations",
+      `Are you sure you want to disable ${count} organization${
         count > 1 ? "s" : ""
-      }? This cannot be undone.`,
-      () => setData((prev) => prev.filter((i) => !i.checked))
+      }? This cannot be undone.`
     );
   };
 
@@ -153,13 +160,13 @@ export function OrganizationTable() {
           <Table>
             <TableHeader>
               <TableRow className="bg-gray-50">
-                <TableHead className="pl-6 w-12">
+                {/* <TableHead className="pl-6 w-12">
                   <Checkbox
                     ref={selectAllRef}
                     checked={allSelected}
                     onCheckedChange={(c) => toggleAll(c as boolean)}
                   />
-                </TableHead>
+                </TableHead> */}
                 <TableHead className="font-semibold">Company</TableHead>
                 <TableHead className="font-semibold">Quota</TableHead>
                 <TableHead className="font-semibold">Seats</TableHead>
@@ -193,7 +200,7 @@ export function OrganizationTable() {
                   }`}
                   onClick={(e) => handleRowClick(item._id, e)}
                 >
-                  <TableCell
+                  {/* <TableCell
                     className="pl-6"
                     onClick={(e) => e.stopPropagation()}
                   >
@@ -204,7 +211,7 @@ export function OrganizationTable() {
                       }
                       className="transition-all duration-150"
                     />
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell className="font-medium">{item.name}</TableCell>
                   <TableCell>
                     {item.monthlyQuota?.toLocaleString() || "—"}
@@ -236,16 +243,16 @@ export function OrganizationTable() {
                           <Edit className="mr-2 w-4 h-4" /> Edit
                         </DropdownMenuItem>
                         <DropdownMenuItem
-                          onClick={() =>
+                          onClick={() => {
+                            setOrgId(item._id);
                             showConfirm(
-                              "Delete Organization",
-                              `Are you sure you want to delete "${item.name}"? This cannot be undone.`,
-                              () => deleteOrg(item._id)
-                            )
-                          }
+                              "Disable Organization",
+                              `Are you sure you want to disable "${item.name}"? This cannot be undone.`
+                            );
+                          }}
                           className="text-red-600"
                         >
-                          <Trash2 className="mr-2 w-4 h-4" /> Delete
+                          <Trash2 className="mr-2 w-4 h-4" /> Disable
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -277,11 +284,12 @@ export function OrganizationTable() {
             <AlertDialogAction
               className="bg-red-600 hover:bg-red-700"
               onClick={() => {
-                confirmDialog.onConfirm();
+                handleDisable();
                 setConfirmDialog((p) => ({ ...p, open: false }));
               }}
+              disabled={loading}
             >
-              Delete
+              Disable
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -104,3 +104,27 @@ export const editOrganization = async ({
 
   return response.json();
 };
+
+export const disableOrganization = async (id: string) => {
+  const token = getToken();
+  if (!token) {
+    throw new Error("Authentication required");
+  }
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/payment/admin/organizations/${id}/disable`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || "Failed to disable organization");
+  }
+
+  return response.json();
+};

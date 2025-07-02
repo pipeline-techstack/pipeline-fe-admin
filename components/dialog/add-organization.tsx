@@ -83,7 +83,7 @@ export function AddOrganizationDialog({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     try {
       if (isEditMode) {
         await editOrganization({
