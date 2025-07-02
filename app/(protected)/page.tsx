@@ -4,9 +4,11 @@ import { OrganizationTable } from "@/components/dashboard/org-table";
 import { AddOrganizationDialog } from "@/components/dialog/add-organization";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { toast } from "@/hooks/use-toast"; 
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <div className="flex flex-col flex-1 space-y-6 h-full">
       <div className="p-6">
@@ -40,8 +42,16 @@ export default function Home() {
               enterpriseId: `${process.env.NEXT_PUBLIC_PRICE_ID}`,
             }}
             isEditMode={false}
+            onSuccess={() => {
+              toast({
+                title: "Organization Added",
+                description: "New organization has been created successfully.",
+                variant: "success",
+              });
+            }}
           />
         </div>
+
         <OrganizationTable />
       </div>
     </div>

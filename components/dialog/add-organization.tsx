@@ -10,12 +10,14 @@ import { OrganizationFormData } from "@/lib/types/org-types";
 import { useQueryClient } from "@tanstack/react-query";
 import { addOrganization, editOrganization } from "@/services/org-apis";
 import { LoadingButton } from "@/components/loader-button";
+import { toast } from "@/hooks/use-toast"; 
 
 interface AddOrganizationDialogProps {
   open: boolean;
   onClose: () => void;
   defaultValues?: OrganizationFormData;
   isEditMode?: boolean;
+  onSuccess?: () => void; 
 }
 
 export function AddOrganizationDialog({
@@ -23,6 +25,7 @@ export function AddOrganizationDialog({
   onClose,
   defaultValues,
   isEditMode,
+  onSuccess,
 }: AddOrganizationDialogProps) {
   const queryClient = useQueryClient();
   const [formData, setFormData] = useState<OrganizationFormData>({
@@ -47,7 +50,7 @@ export function AddOrganizationDialog({
           defaultValues.enterpriseId || `${process.env.NEXT_PUBLIC_PRICE_ID}`,
         email: defaultValues.email || "",
         quota: defaultValues.quota || 0,
-        seats: defaultValues.seats || 0, // Add seats to useEffect
+        seats: defaultValues.seats || 0,
         addQuota: 0,
         removeQuota: 0,
         addSeats: 0,
@@ -95,9 +98,26 @@ export function AddOrganizationDialog({
           addSeats: formData.addSeats ?? 0,
           removeSeats: formData.removeSeats ?? 0,
         });
+        toast({
+          title: "Organization Updated",
+          description: "Organization details have been updated successfully.",
+          variant: "success",
+        });
       } else {
         await addOrganization(formData);
       }
+      toast({
+        title: isEditMode ? "Organization Updated" : "Organization Added",
+        description: isEditMode
+          ? "Organization details have been updated successfully."
+          : "New organization has been created successfully.",
+        variant: "success",
+      });
+
+      if (onSuccess) {
+        onSuccess();
+      }
+      
 
       setFormData({
         organizationName: "",
@@ -111,6 +131,11 @@ export function AddOrganizationDialog({
       queryClient.invalidateQueries({ queryKey: ["organizations"] });
     } catch (error) {
       console.error("Error adding organization:", error);
+      toast({
+        title: "Error",
+        description: "Failed to add or update organization. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsSubmitting(false);
     }
