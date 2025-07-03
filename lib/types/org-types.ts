@@ -3,6 +3,7 @@ export interface OrganizationData {
   name: string;
   email: string;
   monthlyQuota: number;
+  enterprisePriceId: string;
   seats: number;
   updatedAt: string;
   checked?: boolean;

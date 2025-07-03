@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { TeamMemberFormData } from "@/lib/types/member-types";
 import { Input } from "../ui/input";
+import { toast } from "@/hooks/use-toast";
 import {
   Select,
   SelectContent,
@@ -110,6 +111,12 @@ export function AddTeamMemberDialog({
         permissions: member.permissions,
       });
 
+      toast({
+        title: "Team Member Added",
+        description: `${member.email} has been added successfully.`,
+        variant: "success",
+      });
+
       // Reset form
       setMemberForm({
         email: "",
@@ -126,7 +133,16 @@ export function AddTeamMemberDialog({
       queryClient.invalidateQueries({ queryKey: ["organization", id] });
       onMemberAdded?.();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to add member");
+      const errMsg =
+        err instanceof Error ? err.message : "Failed to add member";
+
+      setError(errMsg);
+
+      toast({
+        title: "Failed to Add Member",
+        description: errMsg,
+        variant: "destructive",
+      });
     } finally {
       setIsSubmitting(false);
     }
