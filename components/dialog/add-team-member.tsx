@@ -97,57 +97,56 @@ export function AddTeamMemberDialog({
   };
 
   const handleSubmit = async () => {
-  if (!isFormValid) return;
+    if (!isFormValid) return;
 
-  setIsSubmitting(true);
-  setError(null);
+    setIsSubmitting(true);
+    setError(null);
 
-  try {
-    await addTeamMember({
-      organizationId,
-      email: member.email,
-      quota: member.quota,
-      role: member.role,
-      permissions: member.permissions,
-    });
+    try {
+      await addTeamMember({
+        organizationId,
+        email: member.email,
+        quota: member.quota,
+        role: member.role,
+        permissions: member.permissions,
+      });
 
-    toast({
-      title: "Team Member Added",
-      description: `${member.email} has been added successfully.`,
-      variant: "success",
-    });
+      toast({
+        title: "Team Member Added",
+        description: `${member.email} has been added successfully.`,
+        variant: "success",
+      });
 
-    // Reset form
-    setMemberForm({
-      email: "",
-      quota: "",
-      role: "admin",
-      permissions: {
-        workbooks: [],
-        prompt: [],
-        CRM: [],
-      },
-    });
+      // Reset form
+      setMemberForm({
+        email: "",
+        quota: "",
+        role: "admin",
+        permissions: {
+          workbooks: [],
+          prompt: [],
+          CRM: [],
+        },
+      });
 
-    setIsAddMemberOpen(false);
-    queryClient.invalidateQueries({ queryKey: ["organization", id] });
-    onMemberAdded?.();
-  } catch (err) {
-    const errMsg =
-      err instanceof Error ? err.message : "Failed to add member";
+      setIsAddMemberOpen(false);
+      queryClient.invalidateQueries({ queryKey: ["organization", id] });
+      onMemberAdded?.();
+    } catch (err) {
+      const errMsg =
+        err instanceof Error ? err.message : "Failed to add member";
 
-    setError(errMsg);
+      setError(errMsg);
 
-    toast({
-      title: "Failed to Add Member",
-      description: errMsg,
-      variant: "destructive",
-    });
-  } finally {
-    setIsSubmitting(false);
-  }
-};
-
+      toast({
+        title: "Failed to Add Member",
+        description: errMsg,
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   if (!isAddMemberOpen) return null;
 

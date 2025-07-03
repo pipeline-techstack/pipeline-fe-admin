@@ -10,14 +10,14 @@ import { OrganizationFormData } from "@/lib/types/org-types";
 import { useQueryClient } from "@tanstack/react-query";
 import { addOrganization, editOrganization } from "@/services/org-apis";
 import { LoadingButton } from "@/components/loader-button";
-import { toast } from "@/hooks/use-toast"; 
+import { toast } from "@/hooks/use-toast";
 
 interface AddOrganizationDialogProps {
   open: boolean;
   onClose: () => void;
   defaultValues?: OrganizationFormData;
   isEditMode?: boolean;
-  onSuccess?: () => void; 
+  onSuccess?: () => void;
 }
 
 export function AddOrganizationDialog({
@@ -117,7 +117,6 @@ export function AddOrganizationDialog({
       if (onSuccess) {
         onSuccess();
       }
-      
 
       setFormData({
         organizationName: "",

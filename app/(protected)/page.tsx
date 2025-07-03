@@ -4,7 +4,7 @@ import { OrganizationTable } from "@/components/dashboard/org-table";
 import { AddOrganizationDialog } from "@/components/dialog/add-organization";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import { toast } from "@/hooks/use-toast"; 
+import { toast } from "@/hooks/use-toast";
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
