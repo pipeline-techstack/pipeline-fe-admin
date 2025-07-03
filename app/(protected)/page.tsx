@@ -37,7 +37,7 @@ export default function Home() {
               organizationName: "",
               email: "",
               quota: 0,
-              enterpriseId: `${process.env.NEXT_PUBLIC_PRICE_ID}`,
+              enterpriseId: "",
             }}
             isEditMode={false}
           />

@@ -27,8 +27,7 @@ export function AddOrganizationDialog({
   const queryClient = useQueryClient();
   const [formData, setFormData] = useState<OrganizationFormData>({
     organizationName: defaultValues?.organizationName || "",
-    enterpriseId:
-      defaultValues?.enterpriseId || `${process.env.NEXT_PUBLIC_PRICE_ID}`,
+    enterpriseId: defaultValues?.enterpriseId || "",
     email: defaultValues?.email || "",
     quota: defaultValues?.quota || 0,
     seats: defaultValues?.seats || 0,
@@ -43,8 +42,7 @@ export function AddOrganizationDialog({
       setFormData({
         id: defaultValues.id,
         organizationName: defaultValues.organizationName || "",
-        enterpriseId:
-          defaultValues.enterpriseId || `${process.env.NEXT_PUBLIC_PRICE_ID}`,
+        enterpriseId: defaultValues.enterpriseId,
         email: defaultValues.email || "",
         quota: defaultValues.quota || 0,
         seats: defaultValues.seats || 0, // Add seats to useEffect
@@ -101,7 +99,7 @@ export function AddOrganizationDialog({
 
       setFormData({
         organizationName: "",
-        enterpriseId: `${process.env.NEXT_PUBLIC_PRICE_ID}`,
+        enterpriseId: "",
         email: "",
         quota: 0,
         seats: 0,
@@ -120,7 +118,7 @@ export function AddOrganizationDialog({
     onClose();
     setFormData({
       organizationName: "",
-      enterpriseId: `${process.env.NEXT_PUBLIC_PRICE_ID}`, //this will be hard coded
+      enterpriseId: "", //this will be hard coded
       email: "",
       quota: 0,
       seats: 0,
@@ -199,7 +197,6 @@ export function AddOrganizationDialog({
                   Enterprise ID <span className="text-red-500">*</span>
                 </Label>
                 <Input
-                  readOnly
                   id="enterpriseId"
                   type="text"
                   required
