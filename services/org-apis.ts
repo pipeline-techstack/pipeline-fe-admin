@@ -47,7 +47,8 @@ export async function addOrganization(
         name: formData.organizationName,
         enterprisePriceId: formData.enterpriseId,
         email: formData.email,
-        quota: formData.quota,
+        monthlyQuota: formData.quota,
+        seats: formData.seats,
       }),
     }
   );
@@ -62,25 +63,29 @@ export async function addOrganization(
 export const editOrganization = async ({
   id,
   name,
-  addQuota,
-  removeQuota,
-  addSeats,
-  removeSeats,
-}: {
+  quota,
+  seats,
+}: // addQuota,
+// removeQuota,
+// addSeats,
+// removeSeats,
+{
   id: string;
   name: string;
   email: string;
-  addQuota: number;
-  removeQuota: number;
-  addSeats: number;
-  removeSeats: number;
+  quota: number;
+  seats: number;
+  // addQuota: number;
+  // removeQuota: number;
+  // addSeats: number;
+  // removeSeats: number;
 }) => {
   const token = getToken();
   if (!token) {
     throw new Error("Authentication required");
   }
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/payment/admin/organizations/${id}/properties`,
+    `${process.env.NEXT_PUBLIC_API_URL}/payment/admin/organizations/${id}/editWholeOrganization`,
     {
       method: "PUT",
       headers: {
@@ -89,10 +94,12 @@ export const editOrganization = async ({
       },
       body: JSON.stringify({
         name: name,
-        addQuota: addQuota,
-        subtractQuota: removeQuota,
-        addSeats: addSeats,
-        subtractSeats: removeSeats,
+        monthlyQuota: quota,
+        seats: seats,
+        // addQuota: addQuota,
+        // subtractQuota: removeQuota,
+        // addSeats: addSeats,
+        // subtractSeats: removeSeats,
       }),
     }
   );

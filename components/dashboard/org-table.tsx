@@ -2,7 +2,14 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { MoreHorizontal, Edit, Trash2, FolderKanban, X } from "lucide-react";
+import {
+  MoreHorizontal,
+  Edit,
+  Trash2,
+  FolderKanban,
+  X,
+  Loader2,
+} from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Table,
@@ -29,17 +36,19 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { disableOrganization, getOrganizations } from "@/services/org-apis";
 import { formatDate } from "@/lib/utils";
 import { OrganizationData } from "@/lib/types/org-types";
 import { AddOrganizationDialog } from "@/components/dialog/add-organization";
+import { toast } from "@/hooks/use-toast";
 
 interface ExtendedOrganizationData extends OrganizationData {
   checked: boolean;
 }
 
 export function OrganizationTable() {
+  const queryClient = useQueryClient();
   const [editOrg, setEditOrg] = useState<OrganizationData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [data, setData] = useState<ExtendedOrganizationData[]>([]);
@@ -107,9 +116,23 @@ export function OrganizationTable() {
   const handleDisable = async () => {
     try {
       setLoading(true);
-      await disableOrganization(orgId as string);
+      const res = await disableOrganization(orgId as string);
+      queryClient.invalidateQueries({ queryKey: ["organizations"] });
+      setConfirmDialog((p) => ({ ...p, open: false }));
+      if (res) {
+        toast({
+          title: "Organization Disabled",
+          description: "Organization has been disabled successfully.",
+          variant: "success",
+        });
+      }
     } catch (error) {
       console.error("Error disabling the organization:", error);
+      toast({
+        title: "Error",
+        description: "Failed to disable the organization.",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
@@ -281,16 +304,14 @@ export function OrganizationTable() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
+            <Button
               className="bg-red-600 hover:bg-red-700"
-              onClick={() => {
-                handleDisable();
-                setConfirmDialog((p) => ({ ...p, open: false }));
-              }}
+              onClick={handleDisable}
               disabled={loading}
             >
+              {loading && <Loader2 className="mr-2 w-4 h-4 animate-spin" />}
               Disable
-            </AlertDialogAction>
+            </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
@@ -307,8 +328,8 @@ export function OrganizationTable() {
             organizationName: editOrg?.name || "",
             email: editOrg?.email || "",
             quota: editOrg?.monthlyQuota || 0,
-            enterpriseId: "",
-            seats: editOrg?.seats || 0,
+            enterpriseId: editOrg?.enterprisePriceId || "",
+            seats: editOrg?.seats || 1,
           }}
           isEditMode={true}
         />

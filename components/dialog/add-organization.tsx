@@ -30,11 +30,10 @@ export function AddOrganizationDialog({
   const queryClient = useQueryClient();
   const [formData, setFormData] = useState<OrganizationFormData>({
     organizationName: defaultValues?.organizationName || "",
-    enterpriseId:
-      defaultValues?.enterpriseId || `${process.env.NEXT_PUBLIC_PRICE_ID}`,
+    enterpriseId: defaultValues?.enterpriseId || "",
     email: defaultValues?.email || "",
     quota: defaultValues?.quota || 0,
-    seats: defaultValues?.seats || 0,
+    seats: defaultValues?.seats || 1,
     addQuota: 0,
     removeQuota: 0,
     addSeats: 0,
@@ -46,11 +45,10 @@ export function AddOrganizationDialog({
       setFormData({
         id: defaultValues.id,
         organizationName: defaultValues.organizationName || "",
-        enterpriseId:
-          defaultValues.enterpriseId || `${process.env.NEXT_PUBLIC_PRICE_ID}`,
+        enterpriseId: defaultValues.enterpriseId || "",
         email: defaultValues.email || "",
         quota: defaultValues.quota || 0,
-        seats: defaultValues.seats || 0,
+        seats: defaultValues.seats || 1,
         addQuota: 0,
         removeQuota: 0,
         addSeats: 0,
@@ -93,15 +91,10 @@ export function AddOrganizationDialog({
           id: formData?.id ?? "",
           name: formData.organizationName,
           email: formData.email ?? "",
-          addQuota: formData.addQuota ?? 0,
-          removeQuota: formData.removeQuota ?? 0,
-          addSeats: formData.addSeats ?? 0,
-          removeSeats: formData.removeSeats ?? 0,
-        });
-        toast({
-          title: "Organization Updated",
-          description: "Organization details have been updated successfully.",
-          variant: "success",
+          quota: formData.quota ?? 0,
+          // removeQuota: formData.removeQuota ?? 0,
+          seats: formData.seats ?? 1,
+          // removeSeats: formData.removeSeats ?? 0,
         });
       } else {
         await addOrganization(formData);
@@ -120,7 +113,7 @@ export function AddOrganizationDialog({
 
       setFormData({
         organizationName: "",
-        enterpriseId: `${process.env.NEXT_PUBLIC_PRICE_ID}`,
+        enterpriseId: "",
         email: "",
         quota: 0,
         seats: 0,
@@ -144,7 +137,7 @@ export function AddOrganizationDialog({
     onClose();
     setFormData({
       organizationName: "",
-      enterpriseId: `${process.env.NEXT_PUBLIC_PRICE_ID}`, //this will be hard coded
+      enterpriseId: "", //this will be hard coded
       email: "",
       quota: 0,
       seats: 0,
@@ -220,14 +213,13 @@ export function AddOrganizationDialog({
                   htmlFor="enterpriseId"
                   className="font-medium text-gray-700 text-base"
                 >
-                  Enterprise ID <span className="text-red-500">*</span>
+                  Enterprise price id <span className="text-red-500">*</span>
                 </Label>
                 <Input
-                  readOnly
                   id="enterpriseId"
                   type="text"
                   required
-                  placeholder="893qdefshnnqjdh"
+                  placeholder="price_1234"
                   value={formData.enterpriseId}
                   onChange={(e) =>
                     handleInputChange("enterpriseId", e.target.value)
@@ -274,7 +266,7 @@ export function AddOrganizationDialog({
                       htmlFor="quota"
                       className="font-medium text-gray-700 text-base"
                     >
-                      Quota <span className="text-red-500">*</span>
+                      Monthly Quota <span className="text-red-500">*</span>
                     </Label>
                     <Input
                       id="quota"
@@ -288,6 +280,25 @@ export function AddOrganizationDialog({
                       className="px-3 py-3 border border-gray-300 focus:border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-base"
                     />
                   </div>
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="seats"
+                      className="font-medium text-gray-700 text-base"
+                    >
+                      Seats
+                    </Label>
+                    <Input
+                      id="seats"
+                      type="number"
+                      min={1}
+                      placeholder="e.g. 5"
+                      value={formData.seats}
+                      onChange={(e) =>
+                        handleInputChange("seats", e.target.value)
+                      }
+                      className="px-3 py-3 border border-gray-300 focus:border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-base"
+                    />
+                  </div>
                 </>
               )}
 
@@ -296,29 +307,35 @@ export function AddOrganizationDialog({
                   <div className="gap-4 grid grid-cols-2">
                     <div className="space-y-2">
                       <Label className="font-medium text-gray-700 text-base">
-                        Current Monthly Quota
+                        Monthly quota
                       </Label>
                       <Input
-                        readOnly
-                        type="number"
+                        id="quota"
+                        type="text"
                         value={formData.quota}
                         className="bg-gray-100 px-3 py-3 border border-gray-200 rounded-md w-full text-base"
+                        onChange={(e) =>
+                          handleInputChange("quota", e.target.value)
+                        }
                       />
                     </div>
                     <div className="space-y-2">
                       <Label className="font-medium text-gray-700 text-base">
-                        Current Seats
+                        Seats
                       </Label>
                       <Input
-                        readOnly
-                        type="number"
+                        id="seats"
+                        type="text"
                         value={formData.seats}
                         className="bg-gray-100 px-3 py-3 border border-gray-200 rounded-md w-full text-base"
+                        onChange={(e) =>
+                          handleInputChange("seats", e.target.value)
+                        }
                       />
                     </div>
                   </div>
 
-                  <div className="gap-4 grid grid-cols-2">
+                  {/* <div className="gap-4 grid grid-cols-2">
                     <div className="space-y-2">
                       <Label
                         htmlFor="addQuota"
@@ -391,7 +408,7 @@ export function AddOrganizationDialog({
                         className="px-3 py-3 border border-gray-300 rounded-md w-full text-base"
                       />
                     </div>
-                  </div>
+                  </div> */}
                 </>
               )}
               <LoadingButton
