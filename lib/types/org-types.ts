@@ -7,6 +7,7 @@ export interface OrganizationData {
   seats: number;
   updatedAt: string;
   checked?: boolean;
+  status: string;
 }
 
 export interface OrganizationFormData {
