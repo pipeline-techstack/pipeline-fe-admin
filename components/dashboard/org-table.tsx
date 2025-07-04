@@ -194,6 +194,7 @@ export function OrganizationTable() {
                 <TableHead className="font-semibold">Quota</TableHead>
                 <TableHead className="font-semibold">Seats</TableHead>
                 <TableHead className="font-semibold">Updated</TableHead>
+                <TableHead className="font-semibold">Status</TableHead>
                 <TableHead className="w-12 font-semibold">
                   <div className="transition-all duration-200 ease-in-out">
                     {selectedCount > 0 ? (
@@ -242,6 +243,15 @@ export function OrganizationTable() {
                   <TableCell>{item.seats || "—"}</TableCell>
                   <TableCell className="text-gray-600">
                     {formatDate(item.updatedAt)}
+                  </TableCell>
+                  <TableCell className="text-gray-600">
+                    {item.status === "canceled" ? (
+                      <span className="bg-red-500 px-2 py-1 rounded-full text-white">
+                        Disabled
+                      </span>
+                    ) : (
+                      "-"
+                    )}
                   </TableCell>
                   <TableCell onClick={(e) => e.stopPropagation()}>
                     <DropdownMenu>
