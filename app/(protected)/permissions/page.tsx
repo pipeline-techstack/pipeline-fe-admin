@@ -1,175 +1,114 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { Check, X, ChevronDown, Search } from "lucide-react";
-import { useCampaigns } from "@/hooks/use-campaigns";
+import React from "react";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { useHeyreach } from "@/hooks/use-heyreach";
 
-const MultiSelect = ({
-  value,
-  onChange,
-  placeholder = "Select options...",
-}) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [search, setSearch] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState(search);
-
-  // debounce search
-  useEffect(() => {
-    const handler = setTimeout(() => setDebouncedSearch(search), 400);
-    return () => clearTimeout(handler);
-  }, [search]);
-
-  // fetch campaigns based on debounced search
-  const { data: options = [], isLoading } = useCampaigns(debouncedSearch);
-
-  const handleToggle = (option) => {
-    const newValue = value.includes(option.id)
-      ? value.filter((id) => id !== option.id)
-      : [...value, option.id];
-    onChange(newValue);
-  };
-
-  const handleRemove = (id, e) => {
-    e.stopPropagation();
-    onChange(value.filter((item) => item !== id));
-  };
+const PermissionsPage = () => {
+  const router = useRouter();
+  const { userPermissionsQuery } = useHeyreach({ enablePermissions: true });
+  const { data: userPermissions = [], isLoading } = userPermissionsQuery;
 
   return (
-    <div className="relative">
-      <div
-        className="bg-white px-3 py-2 border border-gray-300 focus-within:border-blue-500 rounded-lg focus-within:ring-2 focus-within:ring-blue-500 min-h-[42px] transition-all duration-200 cursor-pointer"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <div className="flex flex-wrap items-center gap-1">
-          {value.length === 0 ? (
-            <span className="text-gray-500">{placeholder}</span>
-          ) : (
-            value.map((id) => {
-              const campaign = options.find((c) => c.id === id);
-              return (
-                <span
-                  key={id}
-                  className="inline-flex items-center gap-1 bg-blue-100 px-2 py-1 rounded-md font-medium text-blue-800 text-sm"
-                >
-                  {campaign?.name || id}
-                  <button
-                    type="button"
-                    onClick={(e) => handleRemove(id, e)}
-                    className="hover:bg-blue-200 p-0.5 rounded-full transition-colors"
-                  >
-                    <X size={12} />
-                  </button>
-                </span>
-              );
-            })
-          )}
-          <ChevronDown
-            size={16}
-            className={`ml-auto text-gray-400 transition-transform ${
-              isOpen ? "rotate-180" : ""
-            }`}
-          />
-        </div>
-      </div>
-
-      {isOpen && (
-        <div className="z-10 absolute bg-white shadow-lg mt-1 border border-gray-300 rounded-lg w-full max-h-72 overflow-auto">
-          {/* Search box */}
-          <div className="flex items-center px-3 py-2 border-gray-200 border-b">
-            <Search size={14} className="mr-2 text-gray-400" />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search campaigns..."
-              className="flex-1 border-none outline-none focus:ring-0 text-sm"
-            />
+    <TooltipProvider>
+      <div className="bg-gray-50 px-4 py-8">
+        <div className="bg-white shadow-sm mx-auto p-8 rounded-xl">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="font-bold text-gray-900 text-2xl">
+              Users & Campaign Permissions
+            </h2>
+            <Button onClick={() => router.push("/permissions/new")}>
+              New Form
+            </Button>
           </div>
 
           {isLoading ? (
-            <p className="p-3 text-gray-500 text-sm">Loading...</p>
-          ) : options.length === 0 ? (
-            <p className="p-3 text-gray-500 text-sm">No campaigns found</p>
+            <p className="text-gray-500">Loading users...</p>
+          ) : userPermissions.length === 0 ? (
+            <p className="text-gray-500">No user permissions found</p>
           ) : (
-            options.map((option) => (
-              <div
-                key={option.id}
-                className="flex justify-between items-center hover:bg-gray-50 px-3 py-2 transition-colors cursor-pointer"
-                onClick={() => handleToggle(option)}
-              >
-                <span className="text-gray-900">{option.name}</span>
-                {value.includes(option.id) && (
-                  <Check size={16} className="text-blue-600" />
-                )}
-              </div>
-            ))
+            <table className="border border-gray-200 rounded-md w-full">
+              <thead>
+                <tr className="bg-gray-100 font-semibold text-gray-700 text-sm text-left">
+                  <th className="p-2 border-b">Email</th>
+                  <th className="p-2 border-b">Assigned Campaigns</th>
+                  <th className="p-2 border-b">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {userPermissions.map((user, index) => (
+                  <tr key={index} className="text-gray-800 text-sm">
+                    <td className="p-2 border-b">{user.email}</td>
+                    <td className="p-2 border-b">
+                      {user.campaigns?.length > 0 ? (
+                        <div className="flex flex-wrap gap-2">
+                          {user.campaigns.slice(0, 2).map((c) => (
+                            <span
+                              key={c.id}
+                              className="bg-blue-100 px-2 py-1 rounded-md text-blue-700 text-xs"
+                            >
+                              {c.name}
+                            </span>
+                          ))}
+
+                          {user.campaigns.length > 2 && (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded-md text-gray-700 text-xs cursor-pointer">
+                                  +{user.campaigns.length - 2} more
+                                </span>
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-xs max-h-80 overflow-y-auto">
+                                <div className="flex flex-wrap gap-1">
+                                  {user.campaigns.slice(2).map((c) => (
+                                    <span
+                                      key={c.id}
+                                      className="bg-blue-50 px-2 py-0.5 rounded text-blue-700 text-xs"
+                                    >
+                                      {c.name}
+                                    </span>
+                                  ))}
+                                </div>
+                              </TooltipContent>
+                            </Tooltip>
+                          )}
+                        </div>
+                      ) : (
+                        <span className="text-gray-400 italic">
+                          No campaigns
+                        </span>
+                      )}
+                    </td>
+
+                    <td className="p-2 border-b">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() =>
+                          router.push(
+                            `/permissions/edit?email=${encodeURIComponent(
+                              user.email
+                            )}`
+                          )
+                        }
+                      >
+                        Edit
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           )}
         </div>
-      )}
-    </div>
-  );
-};
-
-const PermissionsPage = () => {
-  const [email, setEmail] = useState("");
-  const [selectedCampaigns, setSelectedCampaigns] = useState<number[]>([]);
-  const { data: campaigns, isLoading, isError } = useCampaigns("");
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Email:", email);
-    console.log("Campaign IDs:", selectedCampaigns);
-  };
-
-  return (
-    <div className="bg-gray-50 px-4 py-8">
-      <div className="mx-auto">
-        <div className="bg-white p-8 rounded-xl">
-          <h2 className="mb-2 font-bold text-gray-900 text-2xl">
-            Assign Campaigns
-          </h2>
-
-          {/* Email input */}
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="px-4 py-3 border border-gray-300 rounded-lg w-full"
-            placeholder="Enter user email address"
-          />
-
-          {/* Campaigns */}
-          <div className="mt-6">
-            <label className="block font-semibold text-gray-700 text-sm">
-              Select Campaigns *
-            </label>
-            {isLoading && <p className="text-gray-500">Loading campaigns...</p>}
-            {isError && (
-              <p className="text-red-500">Failed to load campaigns</p>
-            )}
-            {campaigns && (
-              <MultiSelect
-                options={campaigns}
-                value={selectedCampaigns}
-                onChange={setSelectedCampaigns}
-                placeholder="Choose campaigns..."
-              />
-            )}
-          </div>
-
-          {/* Submit */}
-          <Button
-            type="submit"
-            disabled={!email || selectedCampaigns.length === 0}
-            onClick={handleSubmit}
-            className="mt-4 w-full"
-          >
-            Save Permissions
-          </Button>
-        </div>
       </div>
-    </div>
+    </TooltipProvider>
   );
 };
 
