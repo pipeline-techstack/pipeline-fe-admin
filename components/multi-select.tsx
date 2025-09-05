@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Check, X, ChevronDown, Search } from "lucide-react";
 
 interface Option {
@@ -25,12 +25,39 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState(search);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   // debounce
   useEffect(() => {
     const handler = setTimeout(() => setDebouncedSearch(search), 400);
     return () => clearTimeout(handler);
   }, [search]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, []);
 
   const filteredOptions = options.filter((o) =>
     o.name.toLowerCase().includes(debouncedSearch.toLowerCase())
@@ -48,11 +75,18 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
     onChange(value.filter((item) => item !== id));
   };
 
+  const handleDropdownToggle = () => {
+    setIsOpen(!isOpen);
+    if (!isOpen) {
+      setSearch("");
+    }
+  };
+
   return (
-    <div className="relative">
+    <div className="relative" ref={dropdownRef}>
       <div
         className="bg-white px-3 py-2 border border-gray-300 focus-within:border-blue-500 rounded-lg cursor-pointer"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={handleDropdownToggle}
       >
         <div className="flex flex-wrap items-center gap-1">
           {value.length === 0 ? (
@@ -97,6 +131,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search campaigns..."
               className="flex-1 outline-none text-sm"
+              onClick={(e) => e.stopPropagation()} 
             />
           </div>
 
