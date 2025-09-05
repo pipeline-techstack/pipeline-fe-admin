@@ -21,6 +21,16 @@ const CampaignFormPage = () => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const campaignOptions = Array.isArray(campaigns) 
+    ? campaigns.map(campaign => ({
+        ...campaign,
+        id: String(campaign.id)
+      }))
+    : Object.entries(campaigns || {}).map(([id, name]) => ({
+        id,
+        name: String(name)
+      }));
+
   // 🔹 Fetch user campaigns in edit mode
   useEffect(() => {
     const fetchUserData = async () => {
@@ -94,7 +104,7 @@ const CampaignFormPage = () => {
                 Select Campaigns *
               </label>
               <MultiSelect
-                options={campaigns}
+                options={campaignOptions}
                 value={selectedCampaigns}
                 onChange={setSelectedCampaigns}
                 placeholder="Choose campaigns..."
