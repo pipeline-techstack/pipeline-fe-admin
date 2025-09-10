@@ -3,10 +3,11 @@
 import React from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Users, Copyright, KeyRound } from "lucide-react";
+import { Users, Copyright, KeyRound, Building2 } from "lucide-react";
 
 const navigation = [
-  { name: "Organization", href: "/", icon: Users },
+  { name: "Customers", href: "/customers", icon: Users },
+  { name: "Organizations", href: "/", icon: Building2  },
   { name: "Permissions", href: "/permissions", icon: KeyRound },
 ];
 
