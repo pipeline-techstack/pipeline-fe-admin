@@ -1,11 +1,27 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { Check, ChevronsUpDown } from "lucide-react";
 import MultiSelect from "@/components/multi-select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 import { useHeyreach } from "@/hooks/use-heyreach";
 import { assignCampaignsApi, getUserCampaigns } from "@/services/heyreach-apis";
+import { useCustomerSearch } from "@/hooks/use-customers";
 
 const CampaignFormPage = () => {
   const router = useRouter();
@@ -15,20 +31,24 @@ const CampaignFormPage = () => {
   const { data: campaigns = [] } = campaignsQuery;
 
   const mode = pathname.includes("edit") ? "edit" : "new";
+
+  const { customers, isLoading: customersLoading } = useCustomerSearch();
+
   const [email, setEmail] = useState("");
   const [selectedCampaigns, setSelectedCampaigns] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [open, setOpen] = useState(false);
 
-  const campaignOptions = Array.isArray(campaigns) 
-    ? campaigns.map(campaign => ({
+  const campaignOptions = Array.isArray(campaigns)
+    ? campaigns.map((campaign) => ({
         ...campaign,
-        id: String(campaign.id)
+        id: String(campaign.id),
       }))
     : Object.entries(campaigns || {}).map(([id, name]) => ({
         id,
-        name: String(name)
+        name: String(name),
       }));
 
   // 🔹 Fetch user campaigns in edit mode
@@ -46,7 +66,6 @@ const CampaignFormPage = () => {
           setSelectedCampaigns(campaignIds);
         } catch (err: any) {
           console.error("Failed to fetch user campaigns", err);
-
           setError(
             err.detail || "Failed to fetch user campaigns. Please try again."
           );
@@ -72,6 +91,10 @@ const CampaignFormPage = () => {
     }
   };
 
+  const selectedCustomer = customers.find(
+    (customer) => customer.email === email
+  );
+
   return (
     <div className="bg-gray-50 px-4 py-8">
       <div className="bg-white shadow-sm mx-auto p-8 rounded-xl max-w-2xl">
@@ -86,20 +109,92 @@ const CampaignFormPage = () => {
         ) : (
           <form onSubmit={handleSubmit}>
             {/* Email */}
-            <label className="block font-semibold text-gray-700 text-sm">
-              Email *
-            </label>
-            <Input
-              type="email"
-              required
-              value={email}
-              disabled={mode === "edit"}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter user email address"
-            />
+            <div className="space-y-2">
+              <label className="block font-semibold text-gray-700 text-sm">
+                Email *
+              </label>
+              {mode === "edit" ? (
+                <Input
+                  type="email"
+                  required
+                  value={email}
+                  disabled
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="bg-gray-50"
+                />
+              ) : (
+                <Popover open={open} onOpenChange={setOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={open}
+                      className="justify-between w-full font-normal"
+                    >
+                      {selectedCustomer ? (
+                        <span className="truncate">
+                          {selectedCustomer.email}
+                        </span>
+                      ) : (
+                        <span className="text-muted-foreground">
+                          Select user email...
+                        </span>
+                      )}
+                      <ChevronsUpDown className="opacity-50 ml-2 w-4 h-4 shrink-0" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    align="start"
+                    className="p-0 w-[--radix-popover-trigger-width]"
+                  >
+                    <Command>
+                      <CommandInput
+                        placeholder="Search users..."
+                        className="h-9"
+                      />
+                      <CommandList>
+                        <CommandEmpty>
+                          {customersLoading ? "Loading..." : "No users found."}
+                        </CommandEmpty>
+                        <CommandGroup>
+                          {customers.map((customer) => (
+                            <CommandItem
+                              key={customer.userId}
+                              value={`${customer.email} ${customer.firstName} ${customer.lastName}`}
+                              onSelect={() => {
+                                setEmail(customer.email);
+                                setOpen(false);
+                              }}
+                              className="flex justify-between items-center w-full"
+                            >
+                              <div className="flex flex-col">
+                                <span className="font-medium">
+                                  {customer.email}
+                                </span>
+                                <span className="text-muted-foreground text-sm">
+                                  {customer.firstName} {customer.lastName}
+                                </span>
+                              </div>
+                              <Check
+                                className={cn(
+                                  "ml-auto w-4 h-4",
+                                  email === customer.email
+                                    ? "opacity-100"
+                                    : "opacity-0"
+                                )}
+                              />
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+              )}
+            </div>
 
             {/* Campaigns */}
-            <div className="mt-6">
+            <div className="space-y-2 mt-6">
               <label className="block font-semibold text-gray-700 text-sm">
                 Select Campaigns *
               </label>
@@ -112,11 +207,11 @@ const CampaignFormPage = () => {
             </div>
 
             {/* Actions */}
-            <div className="flex gap-3 mt-6">
+            <div className="flex gap-3 mt-8">
               <Button
                 type="submit"
                 disabled={!email || selectedCampaigns.length === 0 || saving}
-                className="w-full"
+                className="flex-1"
               >
                 {saving ? "Saving..." : "Save Permissions"}
               </Button>
@@ -124,7 +219,7 @@ const CampaignFormPage = () => {
                 type="button"
                 variant="outline"
                 onClick={() => router.push("/permissions")}
-                className="w-full"
+                className="flex-1"
               >
                 Cancel
               </Button>
