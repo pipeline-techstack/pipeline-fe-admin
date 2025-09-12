@@ -92,7 +92,7 @@ const CampaignFormPage = () => {
   };
 
   const selectedCustomer = customers.find(
-    (customer) => customer.email === email
+    (customer: any) => customer.email === email
   );
 
   return (
@@ -157,7 +157,7 @@ const CampaignFormPage = () => {
                           {customersLoading ? "Loading..." : "No users found."}
                         </CommandEmpty>
                         <CommandGroup>
-                          {customers.map((customer) => (
+                          {customers.map((customer: any) => (
                             <CommandItem
                               key={customer.userId}
                               value={`${customer.email} ${customer.firstName} ${customer.lastName}`}
