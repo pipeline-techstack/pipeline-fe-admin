@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { Check, X, ChevronDown, Search } from "lucide-react";
+import { Button } from "./ui/button";
 
 interface Option {
   id: string;
@@ -100,13 +101,13 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
                   className="inline-flex items-center gap-1 bg-blue-100 px-2 py-1 rounded-md font-medium text-blue-800 text-sm"
                 >
                   {campaign?.name || id}
-                  <button
+                  <Button
                     type="button"
                     onClick={(e) => handleRemove(id, e)}
                     className="hover:bg-blue-200 p-0.5 rounded-full"
                   >
                     <X size={12} />
-                  </button>
+                  </Button>
                 </span>
               );
             })

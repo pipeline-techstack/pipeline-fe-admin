@@ -14,7 +14,7 @@ export default function Home() {
       <div className="p-6">
         <div className="flex justify-between items-center mb-4">
           <div>
-            <h1 className="mb-2 font-medium text-gray-900 text-2xl">
+            <h1 className="mb-2 font-bold text-gray-900 text-2xl">
               Organization
             </h1>
             <p className="text-gray-600">

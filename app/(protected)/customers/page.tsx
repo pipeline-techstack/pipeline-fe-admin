@@ -5,6 +5,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Pencil, Check, X, Search } from "lucide-react";
 import { useState, useMemo } from "react";
 import Fuse from "fuse.js";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const CustomersPage = () => {
   const queryClient = useQueryClient();
@@ -152,7 +154,7 @@ const CustomersPage = () => {
                     {/* Name */}
                     <td className="px-6 py-4">
                       {isEditing ? (
-                        <input
+                        <Input
                           type="text"
                           value={formData.name || ""}
                           onChange={(e) =>
@@ -179,7 +181,7 @@ const CustomersPage = () => {
                     {/* Phone */}
                     <td className="px-6 py-4">
                       {isEditing ? (
-                        <input
+                        <Input
                           type="tel"
                           value={formData.phone_e164 || ""}
                           onChange={(e) =>
@@ -202,18 +204,18 @@ const CustomersPage = () => {
                     <td className="flex justify-end px-6 py-4">
                       {isEditing ? (
                         <div className="flex justify-end gap-2">
-                          <button
+                          <Button
                             onClick={() => saveEdit(customer.userId)}
                             className="bg-green-600 hover:bg-green-700 px-3 py-2 rounded-md text-white"
                           >
                             <Check className="w-4 h-4" />
-                          </button>
-                          <button
+                          </Button>
+                          <Button
                             onClick={cancelEdit}
                             className="bg-gray-100 px-3 py-2 rounded-md"
                           >
                             <X className="w-4 h-4" />
-                          </button>
+                          </Button>
                         </div>
                       ) : (
                         <button
