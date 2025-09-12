@@ -1,17 +1,20 @@
 "use client";
 
 import React from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Users, Copyright } from "lucide-react";
+import { Users, Copyright, KeyRound, Building2 } from "lucide-react";
 
-const navigation = [{ name: "Organization", key: "organization", icon: Users }];
-
-interface SidebarProps {
-  currentView: string;
-  onNavigate: (view: string) => void;
-}
+const navigation = [
+  { name: "Customers", href: "/customers", icon: Users },
+  { name: "Organizations", href: "/", icon: Building2  },
+  { name: "Permissions", href: "/permissions", icon: KeyRound },
+];
 
 export function Sidebar() {
+  const pathname = usePathname();
+  const router = useRouter();
+
   return (
     <div className="flex flex-col w-64">
       {/* Logo */}
@@ -23,12 +26,14 @@ export function Sidebar() {
       {/* Navigation */}
       <nav className="flex-1 space-y-1 px-4 py-4">
         {navigation.map((item) => {
-          const isActive = item.key === "organization";
+          const isActive = pathname === item.href;
+
           return (
             <button
               key={item.name}
+              onClick={() => router.push(item.href)}
               className={cn(
-                "flex items-center w-full px-3 py-2 text-sm font-medium rounded-lg transition-colors text-left",
+                "flex items-center px-3 py-2 rounded-lg w-full font-medium text-sm text-left transition-colors",
                 isActive
                   ? "bg-blue-50 text-blue-700 border-r-2 border-blue-700"
                   : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
