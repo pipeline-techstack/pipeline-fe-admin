@@ -1,184 +1,116 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
-import { ChevronDown, Calendar } from 'lucide-react';
-import { DatePickerProps } from "../types/dashboard";
 
-const DatePicker = ({ 
-  selected, 
-  onChange, 
-  placeholderText 
-}: DatePickerProps) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(selected || new Date());
-  const [currentMonth, setCurrentMonth] = useState(new Date());
-  const wrapperRef = useRef<HTMLDivElement>(null);
+import { useState, useRef, useEffect, ReactNode } from "react";
+import { DateRangePicker as ReactDateRangePicker, Range } from "react-date-range";
+import "react-date-range/dist/styles.css";
+import "react-date-range/dist/theme/default.css";
+import { DashboardFilters } from "./filters-section";
 
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', { 
-      month: 'short', 
-      day: 'numeric', 
-      year: 'numeric' 
+interface DateRangePickerProps {
+  filters: DashboardFilters;
+  show: boolean;
+  onToggle: () => void;
+  onChange: (dateRange: { start: string; end: string }) => void;
+  children: ReactNode;
+}
+
+export default function DateRangePicker({
+  filters,
+  show,
+  onToggle,
+  onChange,
+  children,
+}: DateRangePickerProps) {
+  const datePickerRef = useRef<HTMLDivElement>(null);
+
+  // Convert YYYY-MM-DD string to Date
+  const parseDate = (str: string) => {
+    if (!str) return new Date();
+    const [year, month, day] = str.split("-").map(Number);
+    return new Date(year, month - 1, day);
+  };
+
+  // Format Date to YYYY-MM-DD
+  const formatDate = (date: Date) =>
+    `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(
+      date.getDate()
+    ).padStart(2, "0")}`;
+
+  // State for react-date-range
+  const [selectionRange, setSelectionRange] = useState<Range>({
+    startDate: parseDate(filters.dateRange.start),
+    endDate: parseDate(filters.dateRange.end),
+    key: "selection",
+  });
+
+  // Sync with external filters
+  useEffect(() => {
+    setSelectionRange({
+      startDate: parseDate(filters.dateRange.start),
+      endDate: parseDate(filters.dateRange.end),
+      key: "selection",
     });
-  };
+  }, [filters.dateRange]);
 
-  const handleDateChange = (date: Date) => {
-    setSelectedDate(date);
-    onChange(date);
-    setIsOpen(false);
-  };
-
-  const getDaysInMonth = (date: Date) => {
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    const daysInMonth = lastDay.getDate();
-    const startingDayOfWeek = firstDay.getDay();
-
-    const days = [];
-    for (let i = 0; i < startingDayOfWeek; i++) days.push(null);
-    for (let day = 1; day <= daysInMonth; day++) days.push(new Date(year, month, day));
-    return days;
-  };
-
-  const navigateMonth = (direction: number) => {
-    const newMonth = new Date(currentMonth);
-    newMonth.setMonth(currentMonth.getMonth() + direction);
-    setCurrentMonth(newMonth);
-  };
-
-  const navigateYear = (direction: number) => {
-    const newMonth = new Date(currentMonth);
-    newMonth.setFullYear(currentMonth.getFullYear() + direction);
-    setCurrentMonth(newMonth);
-  };
-
-  const isSelectedDate = (date: Date) => date && selectedDate && date.toDateString() === selectedDate.toDateString();
-  const isToday = (date: Date) => date && new Date().toDateString() === date.toDateString();
-
-  const days = getDaysInMonth(currentMonth);
-  const monthNames = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
-  ];
-  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
+  // Close on outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
+      if (datePickerRef.current && !datePickerRef.current.contains(event.target as Node)) {
+        onToggle();
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+    if (show) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [show, onToggle]);
+
+  const handleSelect = (ranges: { [key: string]: Range }) => {
+    const range = ranges.selection;
+    setSelectionRange(range);
+
+    if (range.startDate && range.endDate) {
+      onChange({
+        start: formatDate(range.startDate),
+        end: formatDate(range.endDate),
+      });
+      onToggle();
+    }
+  };
 
   return (
-    <div ref={wrapperRef} className="relative">
-      <div 
-        className="w-full bg-white border border-gray-300 rounded-md px-3 py-2 pr-8 text-sm cursor-pointer
-                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 flex items-center"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <Calendar className="h-4 w-4 text-gray-400 mr-2" />
-        <span>{formatDate(selectedDate)}</span>
-        <ChevronDown className="absolute right-2 top-2.5 h-4 w-4 text-gray-400 pointer-events-none" />
+    <div className="relative w-full max-w-md" ref={datePickerRef}>
+      <div className="space-y-2">
+        <span className="font-medium text-gray-700 text-sm">Select Date Range:</span>
+
+        <div className="flex items-center gap-2 w-full">
+          {/* Display current date range */}
+          <div
+            className="flex flex-1 items-center gap-2 bg-white px-4 py-2 border border-gray-300 hover:border-gray-400 rounded-md min-w-[240px] text-sm transition-colors cursor-pointer"
+            onClick={onToggle}
+          >
+            <span className="whitespace-nowrap">
+              {filters.dateRange.start || "Start"} – {filters.dateRange.end || "End"}
+            </span>
+          </div>
+          {children}
+        </div>
       </div>
-      
-      {isOpen && (
-        <div className="absolute z-50 mt-1 bg-white border border-gray-300 rounded-md shadow-lg w-80 p-4">
-          {/* Calendar Header */}
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-2">
-              <button
-                onClick={() => navigateYear(-1)}
-                className="p-1 hover:bg-gray-100 rounded text-gray-600"
-              >
-                &#171;
-              </button>
-              <button
-                onClick={() => navigateMonth(-1)}
-                className="p-1 hover:bg-gray-100 rounded text-gray-600"
-              >
-                &#8249;
-              </button>
-            </div>
-            
-            <div className="flex items-center space-x-2">
-              <span className="font-semibold text-gray-900">
-                {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
-              </span>
-            </div>
-            
-            <div className="flex items-center space-x-2">
-              <button
-                onClick={() => navigateMonth(1)}
-                className="p-1 hover:bg-gray-100 rounded text-gray-600"
-              >
-                &#8250;
-              </button>
-              <button
-                onClick={() => navigateYear(1)}
-                className="p-1 hover:bg-gray-100 rounded text-gray-600"
-              >
-                &#187;
-              </button>
-            </div>
-          </div>
 
-          {/* Day Names */}
-          <div className="grid grid-cols-7 gap-1 mb-2">
-            {dayNames.map((day) => (
-              <div key={day} className="text-center text-xs font-medium text-gray-500 py-2">
-                {day}
-              </div>
-            ))}
-          </div>
-
-          {/* Calendar Days */}
-          <div className="grid grid-cols-7 gap-1">
-            {days.map((date, index) => (
-              <div key={index} className="text-center">
-                {date ? (
-                  <button
-                    onClick={() => handleDateChange(date)}
-                    className={`w-8 h-8 text-sm rounded-full hover:bg-blue-100 ${
-                      isSelectedDate(date) 
-                        ? 'bg-blue-500 text-white hover:bg-blue-600' 
-                        : isToday(date)
-                        ? 'bg-blue-100 text-blue-600 font-semibold'
-                        : 'text-gray-700'
-                    }`}
-                  >
-                    {date.getDate()}
-                  </button>
-                ) : (
-                  <div className="w-8 h-8"></div>
-                )}
-              </div>
-            ))}
-          </div>
-
-          {/* Quick Actions */}
-          <div className="flex justify-between mt-4 pt-3 border-t border-gray-200">
-            <button
-              onClick={() => handleDateChange(new Date())}
-              className="text-sm text-blue-600 hover:text-blue-800 font-medium"
-            >
-              Today
-            </button>
-            <button
-              onClick={() => setIsOpen(false)}
-              className="text-sm text-gray-500 hover:text-gray-700"
-            >
-              Cancel
-            </button>
-          </div>
+      {show && (
+        <div className="top-full left-0 z-20 absolute bg-white shadow-lg mt-2 border border-gray-200 rounded-lg">
+          <ReactDateRangePicker
+            ranges={[selectionRange]}
+            onChange={handleSelect}
+            showSelectionPreview
+            moveRangeOnFirstSelection={false}
+            months={1}
+            direction="horizontal"
+            className="border-0"
+          />
         </div>
       )}
     </div>
   );
-};
-
-export default DatePicker;
+}

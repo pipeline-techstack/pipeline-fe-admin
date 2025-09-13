@@ -3,17 +3,25 @@ import { useQuery } from "@tanstack/react-query";
 import { getOrganizations } from "@/services/org-apis";
 import { useHeyreach } from "@/hooks/use-heyreach";
 import MultiSelect from "@/components/multi-select";
+import DateRangePicker from "./date-picker";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "lucide-react";
 
 export interface DashboardFilters {
   client: string[];
   campaign: string[];
+  dateRange: {
+    start: string;
+    end: string;
+  };
 }
 interface FiltersSectionProps {
   selectedDate: Date;
   filters: DashboardFilters;
   onDateChange: (date: Date) => void;
-  onFilterChange: (filterType: string, value: string[]) => void; // now string[]
-}
+  onFilterChange: (filterType: keyof DashboardFilters, value: any) => void;
+};
 
 const FiltersSection = ({
   selectedDate,
@@ -47,19 +55,25 @@ const FiltersSection = ({
       id: c.id?.toString(),
       name: c.name,
     })) ?? [];
+const [calendarOpen, setCalendarOpen] = useState(false);
 
   return (
     <div className="gap-4 grid grid-cols-1 md:grid-cols-4 mb-6">
       {/* Date Filter */}
-      <div className="flex flex-col">
-        <label className="mb-1 font-medium text-gray-700 text-sm">Date</label>
-        <input
-          type="date"
-          value={selectedDate.toISOString().split("T")[0]}
-          onChange={(e) => onDateChange(new Date(e.target.value))}
-          className="px-3 py-2 border border-gray-300 rounded-lg"
-        />
-      </div>
+      <DateRangePicker
+        filters={filters}
+        show={calendarOpen}
+        onToggle={() => setCalendarOpen((prev) => !prev)}
+        onChange={(dateRange) => {
+          onFilterChange("dateRange", dateRange);
+          setCalendarOpen(false);
+        }}
+      >
+        <Button variant="secondary" onClick={() => setCalendarOpen(true)}>
+          <Calendar className="w-4 h-4" />
+        </Button>
+      </DateRangePicker>
+
 
       {/* Client Filter */}
       <div className="flex flex-col">

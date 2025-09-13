@@ -4,12 +4,12 @@ export interface FilterOption {
   options?: string[];
 }
 
-export interface FilterDropdownProps {
+interface FilterDropdownProps {
   label: string;
   value: string;
   options?: string[];
   isDatePicker?: boolean;
-  onDateChange?: (date: Date) => void;
+  onDateChange?: (date: Date | { startDate: Date; endDate: Date }) => void;
   onChange?: (value: string) => void;
 }
 
@@ -55,8 +55,14 @@ export interface TableTabsProps {
   onTableChange: (tableId: string) => void;
 }
 
+export interface DateRangeSelection {
+  startDate: Date;
+  endDate: Date;
+  key: string;
+}
+
 export interface DatePickerProps {
   selected?: Date;
-  onChange: (date: Date) => void;
+  onChange: (date: Date | DateRangeSelection) => void;
   placeholderText?: string;
 }

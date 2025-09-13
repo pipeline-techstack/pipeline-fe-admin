@@ -1,12 +1,14 @@
 import { useState, useMemo } from "react";
 import { categoryConfigurations, dashboardData } from "../components/dashboard-data";
+import { DashboardFilters } from "../components/filters-section";
 
 export const useDashboardFilters = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [filters, setFilters] = useState({
-    client: [],
-    campaign: [],
-  });
+  const [filters, setFilters] = useState<DashboardFilters>({
+  client: [],
+  campaign: [],
+  dateRange: { start: "", end: "" },
+});
 
   const handleDateChange = (date: Date) => {
     setSelectedDate(date);
