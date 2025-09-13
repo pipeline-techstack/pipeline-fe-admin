@@ -282,7 +282,7 @@ export const categoryConfigurations = {
         key: 'targetVsDelivered', 
         header: 'Target vs Delivered',
         render: (value: string) => (
-          <StatusIndicator value={value} type="ratio" />
+          <StatusIndicator value={value} type="ratio" showBadge={false} />
         )
       },
       { key: 'connectionRequests', header: 'Connection Requests' },
@@ -290,7 +290,7 @@ export const categoryConfigurations = {
         key: 'connectionAcceptance', 
         header: 'Acceptance Rate',
         render: (value: string) => (
-          <StatusIndicator value={value} type="percentage" />
+          <StatusIndicator value={value} type="percentage" showBadge={false} />
         )
       },
       { key: 'newConversations', header: 'New Conversations' },
@@ -298,7 +298,7 @@ export const categoryConfigurations = {
         key: 'positiveResponse', 
         header: 'Positive Response',
         render: (value: string) => (
-          <StatusIndicator value={value} type="percentage" />
+          <StatusIndicator value={value} type="percentage" showBadge={false} />
         )
       },
       { key: 'timeToResponse', header: 'Time to Response' },
@@ -308,20 +308,20 @@ export const categoryConfigurations = {
         key: 'showUpRate', 
         header: 'Show-Up Rate',
         render: (value: string) => (
-          <StatusIndicator value={value} type="percentage" />
+          <StatusIndicator value={value} type="percentage" showBadge={false} />
         )
       },
       { 
         key: 'qualifiedMeetings', 
         header: 'Qualified Meetings',
         render: (value: string) => (
-          <StatusIndicator value={value} type="percentage" />
+          <StatusIndicator value={value} type="percentage" showBadge={false} />
         )
       },
       { key: 'salesAcceptedLeads', header: 'SALs' }
     ] as TableColumn[]
   },
-  
+
   sla: {
     name: 'SLA Compliance',
     columns: [
@@ -330,47 +330,47 @@ export const categoryConfigurations = {
         key: 'responseSLA', 
         header: 'Response SLA',
         render: (value: string) => (
-          <StatusIndicator value={value} type="percentage" showBadge />
+          <StatusIndicator value={value} type="percentage" showBadge={false} />
         )
       },
       { 
         key: 'leadDeliverySLA', 
         header: 'Lead Delivery SLA',
         render: (value: string) => (
-          <StatusIndicator value={value} type="percentage" showBadge />
+          <StatusIndicator value={value} type="percentage" showBadge={false} />
         )
       },
       { 
         key: 'followUpSLA', 
         header: 'Follow-Up SLA',
         render: (value: string) => (
-          <StatusIndicator value={value} type="percentage" showBadge />
+          <StatusIndicator value={value} type="percentage" showBadge={false} />
         )
       },
       { 
         key: 'meetingBookingSLA', 
         header: 'Meeting Booking SLA',
         render: (value: string) => (
-          <StatusIndicator value={value} type="percentage" showBadge />
+          <StatusIndicator value={value} type="percentage" showBadge={false} />
         )
       },
       { 
         key: 'leadRefreshSLA', 
         header: 'Lead Refresh SLA',
         render: (value: string) => (
-          <StatusIndicator value={value} type="percentage" showBadge />
+          <StatusIndicator value={value} type="percentage" showBadge={false} />
         )
       },
       { 
         key: 'feedbackLoggingSLA', 
         header: 'Feedback Logging SLA',
         render: (value: string) => (
-          <StatusIndicator value={value} type="percentage" showBadge />
+          <StatusIndicator value={value} type="percentage" showBadge={false} />
         )
       }
     ] as TableColumn[]
   },
-  
+
   health: {
     name: 'Campaign Health',
     columns: [
@@ -380,56 +380,56 @@ export const categoryConfigurations = {
         key: 'daysUntilDepletion', 
         header: 'Days Until Depletion',
         render: (value: string) => (
-          <StatusIndicator value={value} type="days" showBadge />
+          <StatusIndicator value={value} type="days" showBadge={false} />
         )
       },
       { 
         key: 'campaignsAtRisk', 
         header: 'Campaigns at Risk',
         render: (value: string) => (
-          <StatusIndicator value={value} type="count" showBadge />
+          <StatusIndicator value={value} type="count" showBadge={false} />
         )
       },
       { 
         key: 'followUpCompletion', 
         header: 'Follow-Up Completion',
         render: (value: string) => (
-          <StatusIndicator value={value} type="percentage" />
+          <StatusIndicator value={value} type="percentage" showBadge={false} />
         )
       },
       { 
         key: 'recoveryRate', 
         header: 'Recovery Rate',
         render: (value: string) => (
-          <StatusIndicator value={value} type="percentage" />
+          <StatusIndicator value={value} type="percentage" showBadge={false} />
         )
       },
       { 
         key: 'errorRate', 
         header: 'Error Rate',
         render: (value: string) => (
-          <StatusIndicator value={value} type="error" showBadge />
+          <StatusIndicator value={value} type="error" showBadge={false} />
         )
       },
       { 
         key: 'experimentationRate', 
         header: 'Experimentation Rate',
         render: (value: string) => (
-          <StatusIndicator value={value} type="percentage" />
+          <StatusIndicator value={value} type="percentage" showBadge={false} />
         )
       },
       { 
         key: 'clientOnTrack', 
         header: 'Client On-Track',
         render: (value: string) => (
-          <StatusIndicator value={value} type="ratio" />
+          <StatusIndicator value={value} type="ratio" showBadge={false} />
         )
       },
       { 
         key: 'campaignOnTrack', 
         header: 'Campaign On-Track',
         render: (value: string) => (
-          <StatusIndicator value={value} type="ratio" />
+          <StatusIndicator value={value} type="ratio" showBadge={false} />
         )
       }
     ] as TableColumn[]
