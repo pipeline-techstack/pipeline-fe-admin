@@ -37,23 +37,23 @@ const FilterDropdown = ({
     label === "Campaign Filter" ||
     label === "Company Filter";
 
-  if (isDatePicker) {
-    return (
-      <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
-        <div className="relative">
-          <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-            {hasFilterIcon && <Filter className="h-4 w-4 text-gray-500" />}
-            {label}
-          </label>
-          <DatePicker
-            selected={selectedDate}
-            onChange={handleDateChange}
-            placeholderText="Select date"
-          />
-        </div>
-      </div>
-    );
-  }
+  // if (isDatePicker) {
+  //   return (
+  //     <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
+  //       <div className="relative">
+  //         <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+  //           {hasFilterIcon && <Filter className="h-4 w-4 text-gray-500" />}
+  //           {label}
+  //         </label>
+  //         <DatePicker
+  //           selected={selectedDate}
+  //           onChange={handleDateChange}
+  //           placeholderText="Select date"
+  //         />
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   const selectId = `filter-dropdown-${
     label?.toString().replace(/\s+/g, "-").toLowerCase() || "select"

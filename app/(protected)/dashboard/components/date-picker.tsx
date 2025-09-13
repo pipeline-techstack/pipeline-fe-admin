@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, ReactNode } from "react";
 import { DateRangePicker as ReactDateRangePicker, Range } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
+import { Calendar } from "lucide-react";
 import { DashboardFilters } from "./filters-section";
 
 interface DateRangePickerProps {
@@ -11,7 +12,7 @@ interface DateRangePickerProps {
   show: boolean;
   onToggle: () => void;
   onChange: (dateRange: { start: string; end: string }) => void;
-  children: ReactNode;
+  children?: ReactNode;
 }
 
 export default function DateRangePicker({
@@ -19,9 +20,10 @@ export default function DateRangePicker({
   show,
   onToggle,
   onChange,
-  children,
 }: DateRangePickerProps) {
-  const datePickerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
 
   // Convert YYYY-MM-DD string to Date
   const parseDate = (str: string) => {
@@ -43,6 +45,19 @@ export default function DateRangePicker({
     key: "selection",
   });
 
+  // Calculate dropdown position when showing
+  useEffect(() => {
+    if (show && inputRef.current) {
+      const rect = inputRef.current.getBoundingClientRect();
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+      setDropdownPosition({
+        top: rect.bottom + scrollTop + 8, // 8px gap
+        left: rect.left,
+      });
+    }
+  }, [show]);
+
   // Sync with external filters
   useEffect(() => {
     setSelectionRange({
@@ -55,7 +70,13 @@ export default function DateRangePicker({
   // Close on outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (datePickerRef.current && !datePickerRef.current.contains(event.target as Node)) {
+      const target = event.target as Node;
+      if (
+        inputRef.current &&
+        !inputRef.current.contains(target) &&
+        dropdownRef.current &&
+        !dropdownRef.current.contains(target)
+      ) {
         onToggle();
       }
     };
@@ -80,26 +101,35 @@ export default function DateRangePicker({
   };
 
   return (
-    <div className="relative w-full max-w-md" ref={datePickerRef}>
-      <div className="space-y-2">
-        <span className="font-medium text-gray-700 text-sm">Select Date Range:</span>
+    <>
+      <div className="relative w-full">
+        <span className="block font-medium text-gray-700 text-sm mb-1">
+          Select Date Range:
+        </span>
 
-        <div className="flex items-center gap-2 w-full">
-          {/* Display current date range */}
-          <div
-            className="flex flex-1 items-center gap-2 bg-white px-4 py-2 border border-gray-300 hover:border-gray-400 rounded-md min-w-[240px] text-sm transition-colors cursor-pointer"
-            onClick={onToggle}
-          >
-            <span className="whitespace-nowrap">
-              {filters.dateRange.start || "Start"} – {filters.dateRange.end || "End"}
-            </span>
-          </div>
-          {children}
+        {/* Input container */}
+        <div
+          ref={inputRef}
+          className="flex items-center justify-between bg-white px-3 py-[10px] border border-gray-300 hover:border-gray-400 rounded-md min-w-[240px] text-sm cursor-pointer"
+          onClick={onToggle}
+        >
+          <span className="text-gray-900">
+            {filters.dateRange.start || "Start"} – {filters.dateRange.end || "End"}
+          </span>
+          <Calendar className="w-4 h-4 text-gray-500 ml-2" />
         </div>
       </div>
 
+      {/* Portal-style dropdown positioned absolutely */}
       {show && (
-        <div className="top-full left-0 z-20 absolute bg-white shadow-lg mt-2 border border-gray-200 rounded-lg">
+        <div
+          ref={dropdownRef}
+          className="fixed z-50 bg-white shadow-lg border border-gray-200 rounded-lg"
+          style={{
+            top: `${dropdownPosition.top}px`,
+            left: `${dropdownPosition.left}px`,
+          }}
+        >
           <ReactDateRangePicker
             ranges={[selectionRange]}
             onChange={handleSelect}
@@ -111,6 +141,6 @@ export default function DateRangePicker({
           />
         </div>
       )}
-    </div>
+    </>
   );
 }

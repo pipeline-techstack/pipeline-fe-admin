@@ -64,6 +64,8 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
     o.name.toLowerCase().includes(debouncedSearch.toLowerCase())
   );
 
+  const selectedOptions = options.filter(option => value.includes(option.id));
+
   const handleToggle = (option: Option) => {
     const newValue = value.includes(option.id)
       ? value.filter((id) => id !== option.id)
@@ -76,6 +78,11 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
     onChange(value.filter((item) => item !== id));
   };
 
+  const handleClear = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onChange([]);
+  };
+
   const handleDropdownToggle = () => {
     setIsOpen(!isOpen);
     if (!isOpen) {
@@ -83,76 +90,121 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
     }
   };
 
+  const getDisplayText = () => {
+    if (value.length === 0) return placeholder;
+    if (value.length === 1) return selectedOptions[0]?.name || '';
+    return `${value.length} selected`;
+  };
+
   return (
     <div className="relative" ref={dropdownRef}>
-      <div
-        className="bg-white px-3 py-2 border border-gray-300 focus-within:border-blue-500 rounded-lg cursor-pointer"
+      {/* Main trigger button */}
+      <button
+        type="button"
         onClick={handleDropdownToggle}
+        className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2.5 text-left text-sm
+                   hover:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500
+                   transition-colors duration-200 flex items-center justify-between min-h-[42px]"
       >
-        <div className="flex flex-wrap items-center gap-1">
-          {value.length === 0 ? (
-            <span className="text-gray-500">{placeholder}</span>
-          ) : (
-            value.map((id) => {
-              const campaign = options.find((c) => c.id === id);
-              return (
-                <span
-                  key={id}
-                  className="inline-flex items-center gap-1 bg-blue-100 px-2 py-1 rounded-md font-medium text-blue-800 text-sm"
-                >
-                  {campaign?.name || id}
-                  <Button
-                    type="button"
-                    onClick={(e) => handleRemove(id, e)}
-                    className="hover:bg-blue-200 p-0.5 rounded-full"
-                  >
-                    <X size={12} />
-                  </Button>
-                </span>
-              );
-            })
+        <span className={`flex-1 truncate ${value.length === 0 ? 'text-gray-500' : 'text-gray-900'}`}>
+          {getDisplayText()}
+        </span>
+        <div className="flex items-center gap-2 ml-2">
+          {value.length > 0 && (
+            <Button
+              type="button"
+              onClick={handleClear}
+              className="p-0.5 h-auto hover:bg-gray-100 rounded-full transition-colors bg-transparent border-0 shadow-none"
+            >
+              <X className="h-3.5 w-3.5 text-gray-400" />
+            </Button>
           )}
-          <ChevronDown
-            size={16}
-            className={`ml-auto text-gray-400 transition-transform ${
-              isOpen ? "rotate-180" : ""
-            }`}
-          />
+          <ChevronDown className={`h-4 w-4 text-gray-400 transition-transform duration-200 flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`} />
         </div>
-      </div>
+      </button>
 
+      {/* Selected items tags - only show if multiple selected */}
+      {value.length > 1 && (
+        <div className="flex flex-wrap gap-1 mt-2">
+          {selectedOptions.slice(0, 3).map((option) => (
+            <span
+              key={option.id}
+              className="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded-md"
+            >
+              <span className="max-w-[120px] truncate">{option.name}</span>
+              <button
+                type="button"
+                onClick={(e) => handleRemove(option.id, e)}
+                className="p-0.5 hover:bg-blue-200 rounded-full transition-colors ml-1 flex-shrink-0"
+                title={`Remove ${option.name}`}
+              >
+                <X className="h-3 w-3 text-blue-600 hover:text-blue-800" />
+              </button>
+            </span>
+          ))}
+          {selectedOptions.length > 3 && (
+            <span className="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-md">
+              +{selectedOptions.length - 3} more
+            </span>
+          )}
+        </div>
+      )}
+
+      {/* Dropdown */}
       {isOpen && (
-        <div className="z-10 absolute bg-white shadow-lg mt-1 border border-gray-300 rounded-lg w-full max-h-72 overflow-auto">
-          {/* Search */}
-          <div className="flex items-center px-3 py-2 border-b">
-            <Search size={14} className="mr-2 text-gray-400" />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search campaigns..."
-              className="flex-1 outline-none text-sm"
-              onClick={(e) => e.stopPropagation()} 
-            />
+        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-80 overflow-hidden">
+          {/* Search input */}
+          <div className="p-3 border-b border-gray-100">
+            <div className="flex items-center">
+              <Search size={14} className="mr-2 text-gray-400 flex-shrink-0" />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search..."
+                className="w-full text-sm outline-none focus:outline-none"
+                onClick={(e) => e.stopPropagation()}
+                autoFocus
+              />
+            </div>
           </div>
 
-          {isLoading ? (
-            <p className="p-3 text-gray-500 text-sm">Loading...</p>
-          ) : filteredOptions.length === 0 ? (
-            <p className="p-3 text-gray-500 text-sm">No campaigns found</p>
-          ) : (
-            filteredOptions.map((option) => (
-              <div
-                key={option.id}
-                className="flex justify-between items-center hover:bg-gray-50 px-3 py-2 cursor-pointer"
-                onClick={() => handleToggle(option)}
-              >
-                <span>{option.name}</span>
-                {value.includes(option.id) && (
-                  <Check size={16} className="text-blue-600" />
-                )}
+          {/* Options list */}
+          <div className="max-h-60 overflow-y-auto">
+            {isLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
               </div>
-            ))
+            ) : filteredOptions.length === 0 ? (
+              <div className="px-3 py-8 text-center text-sm text-gray-500">
+                {search ? 'No options found' : 'No options available'}
+              </div>
+            ) : (
+              filteredOptions.map((option) => {
+                const isSelected = value.includes(option.id);
+                return (
+                  <button
+                    key={option.id}
+                    onClick={() => handleToggle(option)}
+                    className="w-full px-3 py-2.5 text-left text-sm hover:bg-gray-50 flex items-center justify-between group transition-colors"
+                  >
+                    <span className={`flex-1 truncate ${isSelected ? 'font-medium text-blue-700' : 'text-gray-900'}`}>
+                      {option.name}
+                    </span>
+                    {isSelected && (
+                      <Check className="h-4 w-4 text-blue-600 flex-shrink-0 ml-2" />
+                    )}
+                  </button>
+                );
+              })
+            )}
+          </div>
+
+          {/* Selected count footer */}
+          {value.length > 0 && (
+            <div className="px-3 py-2 bg-gray-50 border-t border-gray-100 text-xs text-gray-600">
+              {value.length} item{value.length !== 1 ? 's' : ''} selected
+            </div>
           )}
         </div>
       )}

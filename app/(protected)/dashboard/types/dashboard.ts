@@ -4,7 +4,7 @@ export interface FilterOption {
   options?: string[];
 }
 
-interface FilterDropdownProps {
+export interface FilterDropdownProps {
   label: string;
   value: string;
   options?: string[];
