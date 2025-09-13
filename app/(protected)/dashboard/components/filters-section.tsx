@@ -16,12 +16,13 @@ export interface DashboardFilters {
     end: string;
   };
 }
+
 interface FiltersSectionProps {
   selectedDate: Date;
   filters: DashboardFilters;
   onDateChange: (date: Date) => void;
   onFilterChange: (filterType: keyof DashboardFilters, value: any) => void;
-};
+}
 
 const FiltersSection = ({
   selectedDate,
@@ -55,11 +56,12 @@ const FiltersSection = ({
       id: c.id?.toString(),
       name: c.name,
     })) ?? [];
-const [calendarOpen, setCalendarOpen] = useState(false);
+
+  const [calendarOpen, setCalendarOpen] = useState(false);
 
   return (
-    <div className="gap-4 grid grid-cols-1 md:grid-cols-4 mb-6">
-      {/* Date Filter */}
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      {/* Date Range Filter */}
       <DateRangePicker
         filters={filters}
         show={calendarOpen}
@@ -77,7 +79,7 @@ const [calendarOpen, setCalendarOpen] = useState(false);
 
       {/* Client Filter */}
       <div className="flex flex-col">
-        <label className="mb-1 font-medium text-gray-700 text-sm">Client Filter</label>
+        <label className="text-sm font-medium text-gray-700 mb-1">Client Filter</label>
         <MultiSelect
           value={filters.client}
           onChange={(val) => onFilterChange("client", val)}
@@ -89,7 +91,7 @@ const [calendarOpen, setCalendarOpen] = useState(false);
 
       {/* Campaign Filter */}
       <div className="flex flex-col">
-        <label className="mb-1 font-medium text-gray-700 text-sm">Campaign Filter</label>
+        <label className="text-sm font-medium text-gray-700 mb-1">Campaign Filter</label>
         <MultiSelect
           value={filters.campaign}
           onChange={(val) => onFilterChange("campaign", val)}
@@ -99,10 +101,12 @@ const [calendarOpen, setCalendarOpen] = useState(false);
         />
       </div>
 
-      {/* Threshold Card */}
-      <div className="flex flex-col justify-center bg-white shadow-sm p-4 border border-gray-200 rounded-lg">
-        <div className="mb-2 font-medium text-gray-700 text-sm">Threshold</div>
-        <div className="font-semibold text-gray-900 text-lg">90% SLA</div>
+      {/* Threshold */}
+      <div className="flex flex-col">
+        <label className="text-sm font-medium text-gray-700 mb-1">Threshold</label>
+        <div className="flex items-center justify-start h-10 px-3 bg-white border border-gray-300 rounded-md">
+          <span className="text-sm font-semibold text-gray-900">90% SLA</span>
+        </div>
       </div>
     </div>
   );

@@ -1,5 +1,8 @@
 "use client";
+import CustomTooltip from "@/components/ui/custom-tooltip";
 import { DataTableProps, TableColumn } from "../types/dashboard";
+
+import { formulaMapping } from "./formula-mapping";
 
 const DataTable = ({ title, columns, data }: DataTableProps) => {
   return (
@@ -16,7 +19,15 @@ const DataTable = ({ title, columns, data }: DataTableProps) => {
                   key={column.key}
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-                  {column.header}
+                  <div className="flex items-center">
+                    {column.header}
+                    {formulaMapping[column.header] && (
+                      <CustomTooltip
+                        tooltip={formulaMapping[column.header]}
+                        side="top"
+                      />
+                    )}
+                  </div>
                 </th>
               ))}
             </tr>
