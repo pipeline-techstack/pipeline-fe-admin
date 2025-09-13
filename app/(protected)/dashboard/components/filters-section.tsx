@@ -1,54 +1,94 @@
 "use client";
-import FilterDropdown from "./filter-dropdown";
+import { useQuery } from "@tanstack/react-query";
+import { getOrganizations } from "@/services/org-apis";
+import { useHeyreach } from "@/hooks/use-heyreach";
+import MultiSelect from "@/components/multi-select";
 
+export interface DashboardFilters {
+  client: string[];
+  campaign: string[];
+}
 interface FiltersSectionProps {
   selectedDate: Date;
-  filters: {
-    client: string;
-    campaign: string;
-    company: string;
-  };
+  filters: DashboardFilters;
   onDateChange: (date: Date) => void;
-  onFilterChange: (filterType: string, value: string) => void;
+  onFilterChange: (filterType: string, value: string[]) => void; // now string[]
 }
 
 const FiltersSection = ({
   selectedDate,
   filters,
   onDateChange,
-  onFilterChange
+  onFilterChange,
 }: FiltersSectionProps) => {
+  // Clients
+  const {
+    data: orgsData = [],
+    isLoading: orgsLoading,
+  } = useQuery({
+    queryKey: ["organizations"],
+    queryFn: getOrganizations,
+    retry: false,
+  });
+
+  console.log("orgsData", orgsData.data);
+  const clientOptions =
+    orgsData?.data?.map((org: any) => ({
+      id: org._id?.toString(),
+      name: org.name,
+    })) ?? [];
+
+  // Campaigns
+  const { campaignsQuery } = useHeyreach({ enableCampaigns: true });
+  const { data: campaigns = [], isLoading: campaignsLoading } = campaignsQuery;
+
+  const campaignOptions =
+    campaigns?.map((c: any) => ({
+      id: c.id?.toString(),
+      name: c.name,
+    })) ?? [];
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
-      <FilterDropdown 
-        label="Date" 
-        value="Select Date" 
-        isDatePicker={true}
-        onDateChange={onDateChange}
-      />
-      <FilterDropdown 
-        label="Client Filter" 
-        value={filters.client} 
-        options={['All Clients', 'Tech Solutions Inc', 'Global Marketing Co', 'Enterprise Corp']}
-        onChange={(value) => onFilterChange('client', value)}
-      />
-      <FilterDropdown 
-        label="Campaign Filter" 
-        value={filters.campaign} 
-        options={['All Campaigns', 'Q1 Outreach Campaign', 'Lead Generation Drive', 'Enterprise Outbound']}
-        onChange={(value) => onFilterChange('campaign', value)}
-      />
-      <FilterDropdown 
-        label="Company Filter" 
-        value={filters.company} 
-        options={['All Companies', 'Pipeline AI', 'Partner Companies']}
-        onChange={(value) => onFilterChange('company', value)}
-      />
-      
+    <div className="gap-4 grid grid-cols-1 md:grid-cols-4 mb-6">
+      {/* Date Filter */}
+      <div className="flex flex-col">
+        <label className="mb-1 font-medium text-gray-700 text-sm">Date</label>
+        <input
+          type="date"
+          value={selectedDate.toISOString().split("T")[0]}
+          onChange={(e) => onDateChange(new Date(e.target.value))}
+          className="px-3 py-2 border border-gray-300 rounded-lg"
+        />
+      </div>
+
+      {/* Client Filter */}
+      <div className="flex flex-col">
+        <label className="mb-1 font-medium text-gray-700 text-sm">Client Filter</label>
+        <MultiSelect
+          value={filters.client}
+          onChange={(val) => onFilterChange("client", val)}
+          options={clientOptions}
+          placeholder="Select Clients..."
+          isLoading={orgsLoading}
+        />
+      </div>
+
+      {/* Campaign Filter */}
+      <div className="flex flex-col">
+        <label className="mb-1 font-medium text-gray-700 text-sm">Campaign Filter</label>
+        <MultiSelect
+          value={filters.campaign}
+          onChange={(val) => onFilterChange("campaign", val)}
+          options={campaignOptions}
+          placeholder="Select Campaigns..."
+          isLoading={campaignsLoading}
+        />
+      </div>
+
       {/* Threshold Card */}
-      <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4 flex flex-col justify-center">
-        <div className="text-sm font-medium text-gray-700 mb-2">Threshold</div>
-        <div className="text-lg font-semibold text-gray-900">90% SLA</div>
+      <div className="flex flex-col justify-center bg-white shadow-sm p-4 border border-gray-200 rounded-lg">
+        <div className="mb-2 font-medium text-gray-700 text-sm">Threshold</div>
+        <div className="font-semibold text-gray-900 text-lg">90% SLA</div>
       </div>
     </div>
   );

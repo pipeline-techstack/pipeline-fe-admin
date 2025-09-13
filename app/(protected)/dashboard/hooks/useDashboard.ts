@@ -4,9 +4,8 @@ import { categoryConfigurations, dashboardData } from "../components/dashboard-d
 export const useDashboardFilters = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [filters, setFilters] = useState({
-    client: 'All Clients',
-    campaign: 'All Campaigns',
-    company: 'All Companies'
+    client: [],
+    campaign: [],
   });
 
   const handleDateChange = (date: Date) => {
