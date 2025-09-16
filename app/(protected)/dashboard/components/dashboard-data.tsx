@@ -281,9 +281,9 @@ export const categoryConfigurations = {
       { 
         key: 'targetVsDelivered', 
         header: 'Target vs Delivered',
-        render: (value: string) => (
-          <StatusIndicator value={value} type="ratio" showBadge={false} />
-        )
+        // render: (value: string) => (
+        //   <StatusIndicator value={value} type="ratio" showBadge={false} />
+        // )
       },
       { key: 'connectionRequests', header: 'Connection Requests' },
       { 
@@ -386,52 +386,52 @@ export const categoryConfigurations = {
       { 
         key: 'campaignsAtRisk', 
         header: 'Campaigns at Risk',
-        render: (value: string) => (
-          <StatusIndicator value={value} type="count" showBadge={false} />
-        )
+        // render: (value: string) => (
+        //   <StatusIndicator value={value} type="count" showBadge={false} />
+        // )
       },
-      { 
-        key: 'followUpCompletion', 
-        header: 'Follow-Up Completion',
-        render: (value: string) => (
-          <StatusIndicator value={value} type="percentage" showBadge={false} />
-        )
-      },
-      { 
-        key: 'recoveryRate', 
-        header: 'Recovery Rate',
-        render: (value: string) => (
-          <StatusIndicator value={value} type="percentage" showBadge={false} />
-        )
-      },
-      { 
-        key: 'errorRate', 
-        header: 'Error Rate',
-        render: (value: string) => (
-          <StatusIndicator value={value} type="error" showBadge={false} />
-        )
-      },
-      { 
-        key: 'experimentationRate', 
-        header: 'Experimentation Rate',
-        render: (value: string) => (
-          <StatusIndicator value={value} type="percentage" showBadge={false} />
-        )
-      },
-      { 
-        key: 'clientOnTrack', 
-        header: 'Client On-Track',
-        render: (value: string) => (
-          <StatusIndicator value={value} type="ratio" showBadge={false} />
-        )
-      },
-      { 
-        key: 'campaignOnTrack', 
-        header: 'Campaign On-Track',
-        render: (value: string) => (
-          <StatusIndicator value={value} type="ratio" showBadge={false} />
-        )
-      }
+      // { 
+      //   key: 'followUpCompletion', 
+      //   header: 'Follow-Up Completion',
+      //   render: (value: string) => (
+      //     <StatusIndicator value={value} type="percentage" showBadge={false} />
+      //   )
+      // },
+      // { 
+      //   key: 'recoveryRate', 
+      //   header: 'Recovery Rate',
+      //   render: (value: string) => (
+      //     <StatusIndicator value={value} type="percentage" showBadge={false} />
+      //   )
+      // },
+      // { 
+      //   key: 'errorRate', 
+      //   header: 'Error Rate',
+      //   render: (value: string) => (
+      //     <StatusIndicator value={value} type="error" showBadge={false} />
+      //   )
+      // },
+      // { 
+      //   key: 'experimentationRate', 
+      //   header: 'Experimentation Rate',
+      //   render: (value: string) => (
+      //     <StatusIndicator value={value} type="percentage" showBadge={false} />
+      //   )
+      // },
+      // { 
+      //   key: 'clientOnTrack', 
+      //   header: 'Client On-Track',
+      //   render: (value: string) => (
+      //     <StatusIndicator value={value} type="ratio" showBadge={false} />
+      //   )
+      // },
+      // { 
+      //   key: 'campaignOnTrack', 
+      //   header: 'Campaign On-Track',
+      //   render: (value: string) => (
+      //     <StatusIndicator value={value} type="ratio" showBadge={false} />
+      //   )
+      // }
     ] as TableColumn[]
   }
 };

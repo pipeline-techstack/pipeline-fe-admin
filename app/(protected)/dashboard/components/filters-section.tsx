@@ -4,7 +4,7 @@ import { getOrganizations } from "@/services/org-apis";
 import { useHeyreach } from "@/hooks/use-heyreach";
 import MultiSelect from "@/components/multi-select";
 import DateRangePicker from "./date-picker";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "lucide-react";
 
@@ -40,7 +40,6 @@ const FiltersSection = ({
     retry: false,
   });
 
-  console.log("orgsData", orgsData.data);
   const clientOptions =
     orgsData?.data?.map((org: any) => ({
       id: org._id?.toString(),
@@ -59,8 +58,25 @@ const FiltersSection = ({
 
   const [calendarOpen, setCalendarOpen] = useState(false);
 
+  // 🟢 Set default date range (today - 6 days → today)
+  useEffect(() => {
+    if (!filters.dateRange.start || !filters.dateRange.end) {
+      const today = new Date();
+      const pastDate = new Date();
+      pastDate.setDate(today.getDate() - 6);
+
+      const formatDate = (d: Date) =>
+        d.toISOString().split("T")[0]; // YYYY-MM-DD
+
+      onFilterChange("dateRange", {
+        start: formatDate(pastDate),
+        end: formatDate(today),
+      });
+    }
+  }, [filters.dateRange, onFilterChange]);
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+    <div className="gap-4 grid grid-cols-1 md:grid-cols-4 mb-6">
       {/* Date Range Filter */}
       <DateRangePicker
         filters={filters}
@@ -76,10 +92,9 @@ const FiltersSection = ({
         </Button>
       </DateRangePicker>
 
-
       {/* Client Filter */}
       <div className="flex flex-col">
-        <label className="text-sm font-medium text-gray-700 mb-1">Client Filter</label>
+        <label className="mb-1 font-medium text-gray-700 text-sm">Client Filter</label>
         <MultiSelect
           value={filters.client}
           onChange={(val) => onFilterChange("client", val)}
@@ -91,7 +106,7 @@ const FiltersSection = ({
 
       {/* Campaign Filter */}
       <div className="flex flex-col">
-        <label className="text-sm font-medium text-gray-700 mb-1">Campaign Filter</label>
+        <label className="mb-1 font-medium text-gray-700 text-sm">Campaign Filter</label>
         <MultiSelect
           value={filters.campaign}
           onChange={(val) => onFilterChange("campaign", val)}
@@ -103,9 +118,9 @@ const FiltersSection = ({
 
       {/* Threshold */}
       <div className="flex flex-col">
-        <label className="text-sm font-medium text-gray-700 mb-1">Threshold</label>
-        <div className="flex items-center justify-start h-10 px-3 bg-white border border-gray-300 rounded-md">
-          <span className="text-sm font-semibold text-gray-900">90% SLA</span>
+        <label className="mb-1 font-medium text-gray-700 text-sm">Threshold</label>
+        <div className="flex justify-start items-center bg-white px-3 border border-gray-300 rounded-md h-10">
+          <span className="font-semibold text-gray-900 text-sm">90% SLA</span>
         </div>
       </div>
     </div>

@@ -25,10 +25,11 @@ const DashboardPage = () => {
   const typedActiveTable = activeTable as "performance" | "sla" | "health";
   const typedActiveCategory = activeCategory as "performance" | "sla" | "health";
 
-  const currentTableData = useDashboardData(typedActiveTable, typedActiveCategory);
+  const currentTableData = useDashboardData(typedActiveTable, typedActiveCategory, filters);
+  console.log("currentTableData", currentTableData)
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="bg-gray-50 p-6 min-h-screen">
       {/* Header */}
       <DashboardHeader />
 
@@ -60,7 +61,7 @@ const DashboardPage = () => {
       </div>
 
       {/* Footer */}
-      <div className="mt-4 text-sm text-gray-500">
+      <div className="mt-4 text-gray-500 text-sm">
         Total records: {currentTableData.data.length}
       </div>
     </div>
