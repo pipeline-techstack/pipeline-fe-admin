@@ -20,8 +20,8 @@ export const getDashboardMetrics = async (
     body: JSON.stringify({
       // client_ids: filters.client,
       campaign_ids: filters.campaign,
-      from: filters.dateRange.start,
-      to: filters.dateRange.end,
+      start_date: filters.dateRange.start,
+      end_date: filters.dateRange.end,
     }),
   });
 

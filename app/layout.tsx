@@ -1,3 +1,5 @@
+
+import "../styles/fonts.css";
 import Providers from "./providers";
 
 export default function RootLayout({
