@@ -11,6 +11,7 @@ import {
   LayoutDashboard,
   ChevronsLeft,
   ChevronsRight,
+  Stars,
 } from "lucide-react";
 import {
   Tooltip,
@@ -24,6 +25,7 @@ const navigation = [
   { name: "Organizations", href: "/", icon: Building2 },
   { name: "Permissions", href: "/permissions", icon: KeyRound },
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { name: "Feedback", href: "/feedback", icon: Stars },
 ];
 
 export function Sidebar() {
@@ -71,7 +73,7 @@ export function Sidebar() {
                 className={cn(
                   "flex items-center px-3 py-2 rounded-lg w-full font-medium text-sm transition-colors",
                   isActive
-                    ? "bg-blue-50 text-blue-700 border-r-2 border-blue-700"
+                    ? "bg-blue-50 text-blue-800 border-r-2 border-blue-800"
                     : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
                 )}
               >
