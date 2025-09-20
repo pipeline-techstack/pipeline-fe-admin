@@ -24,7 +24,6 @@ export default function LoginCard() {
 
     try {
       await loginApi(email, password);
-      alert("Login Successful");
       router.push("/");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error occurred");
