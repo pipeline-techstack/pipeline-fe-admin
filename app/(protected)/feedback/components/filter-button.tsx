@@ -17,9 +17,9 @@ import "react-date-range/dist/theme/default.css";
 import { getCampaignsApi } from "@/lib/api";
 
 export interface FeedbackFilters {
-  status: 'all' | 'responded' | 'sent' | 'follow-up';
+  status: 'all' | 'responded' | 'follow-up';
   responded?: boolean;
-  sent?: boolean;
+  // sent?: boolean;
   campaign: boolean;
   dateOfMeeting: boolean;
   dateOfMeetingRange?: {

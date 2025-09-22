@@ -11,8 +11,8 @@ export const getStatusColor = (status: FeedbackStatus): string => {
       return 'yellow';
     case FeedbackStatus.RESPONDED:
       return 'green';
-    case FeedbackStatus.SENT:
-      return 'blue';
+    // case FeedbackStatus.SENT:
+    //   return 'blue';
     default:
       return 'gray';
   }

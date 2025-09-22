@@ -16,7 +16,7 @@ export interface FeedbackLead {
 }
 
 export interface FeedbackFilters {
-  status: 'all' | 'follow-up' | 'responded' | 'sent';
+  status: 'all' | 'follow-up' | 'responded' ;
   searchQuery?: string;
   dateRange?: {
     start: string;
@@ -30,13 +30,13 @@ export interface FeedbackFilters {
   };
   selectedCampaigns?: SelectOption[];
   responded?: boolean;
-  sent?: boolean;
+  // sent?: boolean;
 }
 
 export enum FeedbackStatus {
   FOLLOW_UP = 'follow-up',
   RESPONDED = 'responded',
-  SENT = 'sent'
+  // SENT = 'sent'
 }
 
 export interface FeedbackApiResponse {

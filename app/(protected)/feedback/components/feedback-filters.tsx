@@ -19,13 +19,13 @@ const FeedbackFilters = ({
   const filterTabs = [
     { key: 'all', label: 'Feedback Follow-up' },
     { key: 'responded', label: 'Responded' },
-    { key: 'sent', label: 'Sent' }
+    // { key: 'sent', label: 'Sent' }
   ];
 
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
       {/* Filter Tabs */}
-<div className="grid grid-cols-3 gap-1 bg-white rounded-lg p-1 border border-gray-200">
+<div className="grid grid-cols-2 gap-1 bg-white rounded-lg p-1 border border-gray-200">
   {filterTabs.map((tab) => (
     <button
       key={tab.key}
@@ -55,7 +55,7 @@ const FeedbackFilters = ({
     selectedCampaigns: filters.selectedCampaigns,
     status: filters.status ?? "all",
     responded: filters.responded ?? false,
-    sent: filters.sent ?? false,
+    // sent: filters.sent ?? false,
   }}
         setFilter={(updatedFilter) => {
             Object.entries(updatedFilter).forEach(([key, value]) => {

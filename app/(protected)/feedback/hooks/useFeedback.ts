@@ -105,7 +105,7 @@ const mockFeedbackApi = async (filters: FeedbackFilters): Promise<FeedbackLead[]
       name: "Robert Wilson", 
       company: "Manufacturing Co",
       timestamp: "7d ago",
-      status: FeedbackStatus.SENT
+      status: FeedbackStatus.RESPONDED,
     },
     {
       id: "4",
@@ -128,7 +128,7 @@ const mockFeedbackApi = async (filters: FeedbackFilters): Promise<FeedbackLead[]
       name: "Emily Davis",
       company: "Growth Partners",
       timestamp: "15d ago",
-      status: FeedbackStatus.SENT
+      status: FeedbackStatus.FOLLOW_UP,
     },
     {
       id: "7",

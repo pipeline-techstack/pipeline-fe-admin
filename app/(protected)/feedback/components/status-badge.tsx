@@ -15,13 +15,13 @@ const StatusBadge = ({ status, size = 'sm' }: StatusBadgeProps) => {
   const statusStyles = {
     [FeedbackStatus.FOLLOW_UP]: 'bg-yellow-100 text-yellow-800 border-yellow-200',
     [FeedbackStatus.RESPONDED]: 'bg-green-100 text-green-800 border-green-200',
-    [FeedbackStatus.SENT]: 'bg-blue-100 text-blue-800 border-blue-200'
+    // [FeedbackStatus.SENT]: 'bg-blue-100 text-blue-800 border-blue-200'
   };
 
   const statusLabels = {
     [FeedbackStatus.FOLLOW_UP]: 'Follow-up',
     [FeedbackStatus.RESPONDED]: 'Responded',
-    [FeedbackStatus.SENT]: 'Sent'
+    // [FeedbackStatus.SENT]: 'Sent'
   };
 
   return (
