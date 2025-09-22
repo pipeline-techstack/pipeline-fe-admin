@@ -2,6 +2,7 @@
 import LeadAvatar from "./lead-avatar";
 import StatusBadge from "./status-badge";
 import { FeedbackLead } from "../types/feedback";
+import { formatTimeAgo } from "../utils/feedback-utils";
 
 interface FeedbackCardProps {
   lead: FeedbackLead;
@@ -35,7 +36,7 @@ const FeedbackCard = ({ lead, onClick }: FeedbackCardProps) => {
           </div>
         </div>
         <span className="text-xs text-gray-400 whitespace-nowrap ml-2">
-          {lead.timestamp}
+          {formatTimeAgo(lead.timestamp)}
         </span>
       </div>
       
