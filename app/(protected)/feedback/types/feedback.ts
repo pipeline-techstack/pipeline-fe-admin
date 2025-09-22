@@ -7,12 +7,12 @@ export interface FeedbackLead {
   email?: string; 
   avatar?: string;
   timestamp: string;
-  status: FeedbackStatus | string; // allow mapped backend statuses
+  status: FeedbackStatus; // allow mapped backend statuses
   hasFollowUp?: boolean;
   feedbackText?: string;
   rating?: number;
-  createdAt?: string;
-  updatedAt?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface FeedbackFilters {

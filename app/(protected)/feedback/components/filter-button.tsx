@@ -41,79 +41,62 @@ const FilterButton: React.FC<FeedbackFilterButtonProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [campaignOptions, setCampaignOptions] = useState<SelectOption[]>([]);
+
+  // keep pending filters in local state
   const [pendingCampaigns, setPendingCampaigns] = useState<SelectOption[]>(
     filter.selectedCampaigns || []
   );
-
-  // Date picker states
-  const [showDateOfMeetingBookedPicker, setShowDateOfMeetingBookedPicker] =
-    useState(false);
-  const [showDateOfMeetingPicker, setShowDateOfMeetingPicker] = useState(false);
-
-  // Helper functions for date handling - moved before usage
-  const parseDate = (str: string) => {
-    if (!str) return new Date();
-    const [year, month, day] = str.split("-").map(Number);
-    return new Date(year, month - 1, day);
-  };
-
-  const formatDate = (date: Date) =>
-    `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
-      2,
-      "0"
-    )}-${String(date.getDate()).padStart(2, "0")}`;
-
-  const [meetingRange, setMeetingRange] = useState<Range>({
+  const [pendingDateRange, setPendingDateRange] = useState<Range>({
     startDate: filter.dateOfMeetingRange?.start
-      ? parseDate(filter.dateOfMeetingRange.start)
+      ? new Date(filter.dateOfMeetingRange.start)
       : new Date(),
     endDate: filter.dateOfMeetingRange?.end
-      ? parseDate(filter.dateOfMeetingRange.end)
+      ? new Date(filter.dateOfMeetingRange.end)
       : new Date(),
     key: "selection",
   });
 
-  // Check if there are active filters
-  const hasActiveFilters =
-    filter.dateOfMeeting ||
-    pendingCampaigns.length > 0;
+  const [showDateOfMeetingPicker, setShowDateOfMeetingPicker] = useState(false);
 
-  // Clear all filters
-  const clearFilters = () => {
-    setFilter({
-      ...filter,
-      dateOfMeeting: false,
-      dateOfMeetingRange: { start: "", end: "" },
-      selectedCampaigns: [],
-    });
-    setPendingCampaigns([]);
+  const formatDate = (date: Date) =>
+    `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(
+      date.getDate()
+    ).padStart(2, "0")}`;
+
+  const handleMeetingDateSelect = (ranges: { [key: string]: Range }) => {
+    const range = ranges.selection;
+    setPendingDateRange(range);
   };
 
-  // Apply filters
   const applyFilters = () => {
     setFilter({
       ...filter,
       selectedCampaigns: pendingCampaigns,
+      dateOfMeetingRange: {
+        start: pendingDateRange.startDate ? formatDate(pendingDateRange.startDate) : "",
+        end: pendingDateRange.endDate ? formatDate(pendingDateRange.endDate) : "",
+      },
     });
     setIsOpen(false);
   };
 
-  // Handle date range selection for Meeting
-  const handleMeetingDateSelect = (ranges: { [key: string]: Range }) => {
-    const range = ranges.selection;
-    setMeetingRange(range);
-
-    if (range.startDate && range.endDate) {
-      setFilter({
-        ...filter,
-        dateOfMeetingRange: {
-          start: formatDate(range.startDate),
-          end: formatDate(range.endDate),
-        },
-      });
-      setShowDateOfMeetingPicker(false);
-    }
+  const clearFilters = () => {
+    setFilter({
+      ...filter,
+      selectedCampaigns: [],
+      dateOfMeetingRange: { start: "", end: "" },
+    });
+    setPendingCampaigns([]);
+    setPendingDateRange({
+      startDate: new Date(),
+      endDate: new Date(),
+      key: "selection",
+    });
   };
+
+const hasActiveFilters =
+  (filter.selectedCampaigns?.length ?? 0) > 0 ||
+  (!!filter.dateOfMeetingRange?.start && !!filter.dateOfMeetingRange?.end);
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -121,18 +104,18 @@ const FilterButton: React.FC<FeedbackFilterButtonProps> = ({
         <Button
           variant="outline"
           size="sm"
-          className={`relative ${hasActiveFilters ? "border-primary" : ""}`}
+          className={`relative ${hasActiveFilters ? "border-blue-600" : ""}`}
         >
           <ListFilter className="w-4 h-4" />
           {hasActiveFilters && (
-            <div className="-top-1 -right-1 absolute bg-primary rounded-full w-2 h-2" />
+            <div className="-top-1 -right-1 absolute bg-blue-600 rounded-full w-2 h-2" />
           )}
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent align="start" side="bottom" className="p-0 w-80 mt-2 -translate-x-6">
+      <PopoverContent align="start" side="bottom" className="mt-2 p-0 w-80 -translate-x-6">
         <div className="space-y-4 p-4">
-          {/* Campaign Filter */}
+          {/* Campaigns */}
           <div className="space-y-2">
             <div className="font-medium text-gray-700 text-sm">Campaigns</div>
             <AsyncMultiSelect
@@ -146,64 +129,58 @@ const FilterButton: React.FC<FeedbackFilterButtonProps> = ({
             />
           </div>
 
-          {/* Date of Meeting Filter */}
+          {/* Date */}
           <div className="space-y-2">
-            <div className="font-medium text-gray-700 text-sm">
-              Date of Meeting
+            <div className="font-medium text-gray-700 text-sm">Date of Meeting</div>
+            <div
+              className="flex justify-between items-center bg-white px-3 py-2 border border-gray-300 hover:border-gray-400 rounded-md text-sm transition-colors cursor-pointer"
+              onClick={() => setShowDateOfMeetingPicker(!showDateOfMeetingPicker)}
+            >
+              <span className="text-xs truncate">
+                {pendingDateRange.startDate
+                  ? formatDate(pendingDateRange.startDate)
+                  : "Start"}{" "}
+                –{" "}
+                {pendingDateRange.endDate
+                  ? formatDate(pendingDateRange.endDate)
+                  : "End"}
+              </span>
+              <Calendar className="ml-2 w-4 h-4 text-gray-500" />
             </div>
-            <div className="relative">
-              <div
-                className="flex justify-between items-center bg-white px-3 py-2 border border-gray-300 hover:border-gray-400 rounded-md text-sm transition-colors cursor-pointer"
-                onClick={() =>
-                  setShowDateOfMeetingPicker(!showDateOfMeetingPicker)
-                }
-              >
-                <span className="text-xs truncate">
-                  {filter.dateOfMeetingRange?.start || "Start"} –{" "}
-                  {filter.dateOfMeetingRange?.end || "End"}
-                </span>
-                <Calendar className="ml-2 w-4 h-4 text-gray-500" />
-              </div>
 
-              {showDateOfMeetingPicker && (
-                <div className="-top-32 right-80 z-30 absolute bg-white shadow-lg mt-2 border border-gray-200 rounded-lg min-w-[20rem] max-w-[calc(100vw-2rem)] overflow-auto">
-                  <ReactDateRangePicker
-                    ranges={[meetingRange]}
-                    onChange={handleMeetingDateSelect}
-                    showSelectionPreview
-                    moveRangeOnFirstSelection={false}
-                    months={1}
-                    direction="horizontal"
-                    className="border-0"
-                  />
-                </div>
-              )}
-            </div>
+            {showDateOfMeetingPicker && (
+              <div className="-top-32 right-80 z-30 absolute bg-white shadow-lg mt-2 border border-gray-200 rounded-lg min-w-[20rem] max-w-[calc(100vw-2rem)] overflow-auto">
+                <ReactDateRangePicker
+                  ranges={[pendingDateRange]}
+                  onChange={handleMeetingDateSelect}
+                  showSelectionPreview
+                  moveRangeOnFirstSelection={false}
+                  months={1}
+                  direction="horizontal"
+                  className="border-0"
+                />
+              </div>
+            )}
           </div>
         </div>
 
         {/* Footer */}
         <div className="flex gap-2 p-4 pt-0">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={clearFilters}
-            className="flex-1"
-          >
+          <Button variant="outline" size="sm" onClick={clearFilters} className="flex-1">
             Clear
           </Button>
           <Button
-  size="sm"
-  onClick={applyFilters}
-  className="flex-1 bg-[#4A5BAA]/80 hover:bg-[#4A5BAA]"
->
-  Apply
-</Button>
-
+            size="sm"
+            onClick={applyFilters}
+            className="flex-1 bg-[#4A5BAA]/80 hover:bg-[#4A5BAA]"
+          >
+            Apply
+          </Button>
         </div>
       </PopoverContent>
     </Popover>
   );
 };
+
 
 export default FilterButton;

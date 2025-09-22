@@ -1,12 +1,46 @@
-import { Engagement, FeedbackLead, FeedbackStatus } from "../types/feedback";
+// services/feedback-apis.ts
+import { Engagement, FeedbackLead, FeedbackStatus, FeedbackFilters } from "../types/feedback";
 
 const API_URL = `${process.env.NEXT_PUBLIC_WORKBOOK_URL_DEV}/engagements`;
 
-export const getFeedbackData = async (): Promise<FeedbackLead[]> => {
+export const mapStatus = (status: string) => {
+  switch (status) {
+    case "follow-up":
+      return "waiting_feedback";
+    case "responded":
+      return "verified";
+    default:
+    return "waiting_feedback";
+  }
+};
+
+export const getFeedbackData = async (
+  filters: FeedbackFilters,
+  searchQuery: string
+): Promise<FeedbackLead[]> => {
   const token = localStorage.getItem("st_access_token");
   if (!token) throw new Error("User is not authenticated");
 
-  const res = await fetch(API_URL, {
+  // build query params
+  const params = new URLSearchParams();
+
+  if (filters.status && filters.status !== "all") {
+    params.append("engagement_status", mapStatus(filters.status));
+  }
+  if (filters.selectedCampaigns?.length) {
+    filters.selectedCampaigns.forEach((c) => params.append("campaign_id", c.value));
+  }
+  if (filters.dateOfMeetingRange?.start && filters.dateOfMeetingRange?.end) {
+    params.append("from_date", filters.dateOfMeetingRange.start);
+    params.append("to_date", filters.dateOfMeetingRange.end);
+  }
+  if (searchQuery) {
+    params.append("lead_name", searchQuery);
+  }
+
+  const url = `${API_URL}?${params.toString()}`;
+
+  const res = await fetch(url, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -21,26 +55,21 @@ export const getFeedbackData = async (): Promise<FeedbackLead[]> => {
   }
 
   const json = await res.json();
-  const engagements: Engagement[] = json.items || []; // Correct key from API response
-
-
+  const engagements: Engagement[] = json.items || [];
 
   // Map Engagement → FeedbackLead
-const feedbackLeads: FeedbackLead[] = engagements.map((e) => ({
-  id: e.id,
-  name: e.lead_name,
-  company: e.client_name,
-  email: e.lead_email ?? undefined,
-  timestamp: e.scheduled_time,
-  status:
-    e.status === "waiting_feedback"
-      ? FeedbackStatus.FOLLOW_UP
-      : FeedbackStatus.RESPONDED,
-  feedbackText: e.feedback?.feedback_notes ?? "", // ✅ map nested feedback_notes
-  createdAt: e.created_at,
-  updatedAt: e.updated_at,
-}));
-
-
-  return feedbackLeads;
+  return engagements.map((e) => ({
+    id: e.id,
+    name: e.lead_name,
+    company: e.client_name,
+    email: e.lead_email ?? undefined,
+    timestamp: e.scheduled_time,
+    status:
+      e.status === "waiting_feedback"
+        ? FeedbackStatus.FOLLOW_UP
+        : FeedbackStatus.RESPONDED,
+    feedbackText: e.feedback?.feedback_notes ?? "",
+    createdAt: e.created_at,
+    updatedAt: e.updated_at,
+  }));
 };

@@ -16,35 +16,35 @@ const FeedbackCard = ({ lead, onClick }: FeedbackCardProps) => {
 
   return (
     <div 
-      className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md hover:border-gray-300 transition-all cursor-pointer group"
+      className="group bg-white hover:shadow-md p-4 border border-gray-200 hover:border-gray-300 rounded-lg transition-all cursor-pointer"
       onClick={handleClick}
     >
-      <div className="flex items-start justify-between mb-3">
-        <div className="flex items-center space-x-3 flex-1 min-w-0">
+      <div className="flex justify-between items-start mb-3">
+        <div className="flex flex-1 items-center space-x-3 min-w-0">
           <LeadAvatar 
             name={lead.name}
             avatar={lead.avatar}
             size="md"
           />
           <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-medium text-gray-900 truncate group-hover:text-blue-800 transition-colors">
+            <h3 className="font-medium text-gray-900 group-hover:text-blue-800 text-sm truncate transition-colors">
               {lead.name}
             </h3>
-            <p className="text-xs text-gray-500 truncate">
+            <p className="text-gray-500 text-xs truncate">
               {lead.company}
             </p>
           </div>
         </div>
-        <span className="text-xs text-gray-400 whitespace-nowrap ml-2">
-          {formatTimeAgo(lead.timestamp)}
+        <span className="ml-2 text-gray-400 text-xs whitespace-nowrap">
+          {formatTimeAgo(lead.updatedAt)}
         </span>
       </div>
       
-      <div className="flex items-center justify-between">
+      <div className="flex justify-between items-center">
         <StatusBadge status={lead.status} />
         {/* {lead.hasFollowUp && (
           <div className="flex items-center">
-            <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+            <div className="bg-red-500 rounded-full w-2 h-2"></div>
           </div>
         )} */}
       </div>

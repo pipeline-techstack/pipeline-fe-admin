@@ -1,42 +1,19 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import {  useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { FeedbackFilters, FeedbackStatus, FeedbackLead } from "../types/feedback";
+import { FeedbackFilters,  FeedbackLead } from "../types/feedback";
 import { getFeedbackData } from "../services/feedback-apis";
 
 export const useFeedbackData = (filters: FeedbackFilters, searchQuery: string) => {
-  const { data: apiData, isLoading, error } = useQuery<FeedbackLead[]>({
-    queryKey: ["feedback", filters, searchQuery],
-    queryFn: () => getFeedbackData(),
+  const { data, isLoading, error } = useQuery<FeedbackLead[]>({
+    queryKey: ["feedback", filters, searchQuery], 
+    queryFn: () => getFeedbackData(filters, searchQuery),
     retry: false,
   });
 
-  const filteredData = useMemo(() => {
-    if (!apiData) return [];
-
-    let filtered = apiData;
-
-    // Filter by status
-    if (filters.status !== "all") {
-      filtered = filtered.filter((lead) => lead.status === filters.status);
-    }
-
-    // Filter by search query
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (lead) =>
-          lead.name?.toLowerCase().includes(query) || // <-- use `name` instead of `lead_name`
-          lead.company?.toLowerCase().includes(query) // <-- use `company` instead of `client_name`
-      );
-    }
-
-    return filtered;
-  }, [apiData, filters, searchQuery]);
-
   return {
-    feedbackData: filteredData || [],
+    feedbackData: data || [],
     isLoading,
     error,
   };
