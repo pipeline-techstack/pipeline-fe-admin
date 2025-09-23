@@ -40,13 +40,14 @@ const FeedbackCard = ({ lead, onClick }: FeedbackCardProps) => {
         </span>
       </div>
       
-      <div className="flex justify-between items-center">
-        <StatusBadge status={lead.status} />
-        {/* {lead.hasFollowUp && (
-          <div className="flex items-center">
-            <div className="bg-red-500 rounded-full w-2 h-2"></div>
+      <div className="pt-2 flex justify-between items-center">
+        <StatusBadge status={lead.status} size="md" className="px-16" />
+
+        {lead.reminderCycle !== undefined && (
+          <div className="flex items-center justify-center w-7 h-7 rounded-full bg-gray-200 text-gray-700 text-xs font-medium">
+            {lead.reminderCycle}
           </div>
-        )} */}
+        )}
       </div>
     </div>
   );

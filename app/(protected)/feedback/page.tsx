@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FeedbackHeader from "./components/feedback-header";
 import FeedbackFilters from "./components/feedback-filters";
 import FeedbackGrid from "./components/feedback-grid";
@@ -21,6 +21,9 @@ const FeedbackPage = () => {
   );
 
   const totalPages = Math.ceil(total / limit);
+  useEffect(() => {
+    setPage(1);
+  }, [filters.status]);
 
   const getButtonClasses = (enabled: boolean) =>
     enabled

@@ -80,7 +80,7 @@ export const getFeedbackData = async (
       feedback: {
         meetingStatus: e.feedback?.meeting_status ?? "",
         prospectFit: e.feedback?.prospect_fit ?? "",
-        feedbackNotes: e.feedback?.feedback_notes ?? e.notes ?? "",
+        feedbackNotes: e.feedback?.feedback_notes ?? "",
         confidence: e.feedback?.confidence ?? "",
         actor: e.feedback?.actor ?? "",
         timestamp: e.feedback?.timestamp ?? "",
