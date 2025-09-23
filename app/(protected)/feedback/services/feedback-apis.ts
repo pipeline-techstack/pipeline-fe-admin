@@ -1,4 +1,3 @@
-// services/feedback-apis.ts
 import { Engagement, FeedbackLead, FeedbackStatus, FeedbackFilters } from "../types/feedback";
 
 const API_URL = `${process.env.NEXT_PUBLIC_WORKBOOK_URL_DEV}/engagements`;
@@ -10,25 +9,31 @@ export const mapStatus = (status: string) => {
     case "responded":
       return "verified";
     default:
-    return "waiting_feedback";
+      return "waiting_feedback";
   }
 };
 
 export const getFeedbackData = async (
   filters: FeedbackFilters,
-  searchQuery: string
-): Promise<FeedbackLead[]> => {
+  searchQuery: string,
+  page: number,
+  limit: number
+): Promise<{ data: FeedbackLead[]; total: number }> => {
   const token = localStorage.getItem("st_access_token");
   if (!token) throw new Error("User is not authenticated");
 
   // build query params
   const params = new URLSearchParams();
+  params.append("page", String(page));
+  params.append("limit", String(limit));
 
   if (filters.status && filters.status !== "all") {
     params.append("engagement_status", mapStatus(filters.status));
   }
   if (filters.selectedCampaigns?.length) {
-    filters.selectedCampaigns.forEach((c) => params.append("campaign_id", c.value));
+    filters.selectedCampaigns.forEach((c) =>
+      params.append("campaign_id", c.value)
+    );
   }
   if (filters.dateOfMeetingRange?.start && filters.dateOfMeetingRange?.end) {
     params.append("from_date", filters.dateOfMeetingRange.start);
@@ -51,25 +56,30 @@ export const getFeedbackData = async (
 
   if (!res.ok) {
     const errorData = await res.json().catch(() => ({}));
-    throw new Error(errorData.message || `Failed to fetch feedback data (${res.status})`);
+    throw new Error(
+      errorData.message || `Failed to fetch feedback data (${res.status})`
+    );
   }
 
   const json = await res.json();
   const engagements: Engagement[] = json.items || [];
+  const total: number = json.total_count || 0;
 
-  // Map Engagement → FeedbackLead
-  return engagements.map((e) => ({
-    id: e.id,
-    name: e.lead_name,
-    company: e.client_name,
-    email: e.lead_email ?? undefined,
-    timestamp: e.scheduled_time,
-    status:
-      e.status === "waiting_feedback"
-        ? FeedbackStatus.FOLLOW_UP
-        : FeedbackStatus.RESPONDED,
-    feedbackText: e.feedback?.feedback_notes ?? "",
-    createdAt: e.created_at,
-    updatedAt: e.updated_at,
-  }));
+  return {
+    data: engagements.map((e) => ({
+      id: e.id,
+      name: e.lead_name,
+      company: e.client_name,
+      email: e.lead_email ?? undefined,
+      timestamp: e.scheduled_time,
+      status:
+        e.status === "waiting_feedback"
+          ? FeedbackStatus.FOLLOW_UP
+          : FeedbackStatus.RESPONDED,
+      feedbackText: e.feedback?.feedback_notes ?? "",
+      createdAt: e.created_at,
+      updatedAt: e.updated_at,
+    })),
+    total,
+  };
 };

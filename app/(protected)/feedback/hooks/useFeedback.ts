@@ -1,19 +1,28 @@
 "use client";
 
-import {  useState } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { FeedbackFilters,  FeedbackLead } from "../types/feedback";
+import { FeedbackFilters, FeedbackLead } from "../types/feedback";
 import { getFeedbackData } from "../services/feedback-apis";
 
-export const useFeedbackData = (filters: FeedbackFilters, searchQuery: string) => {
-  const { data, isLoading, error } = useQuery<FeedbackLead[]>({
-    queryKey: ["feedback", filters, searchQuery], 
-    queryFn: () => getFeedbackData(filters, searchQuery),
+export const useFeedbackData = (
+  filters: FeedbackFilters,
+  searchQuery: string,
+  page: number,
+  limit: number
+) => {
+  const { data, isLoading, error } = useQuery<{
+    data: FeedbackLead[];
+    total: number;
+  }>({
+    queryKey: ["feedback", filters, searchQuery, page, limit],
+    queryFn: () => getFeedbackData(filters, searchQuery, page, limit),
     retry: false,
   });
 
   return {
-    feedbackData: data || [],
+    feedbackData: data?.data || [],
+    total: data?.total || 0,
     isLoading,
     error,
   };
@@ -32,7 +41,10 @@ export const useFeedbackFilters = () => {
     setFilters((prev) => ({ ...prev, searchQuery: query }));
   };
 
-  const handleFilterChange = <K extends keyof FeedbackFilters>(filterType: K, value: FeedbackFilters[K]) => {
+  const handleFilterChange = <K extends keyof FeedbackFilters>(
+    filterType: K,
+    value: FeedbackFilters[K]
+  ) => {
     setFilters((prev) => ({ ...prev, [filterType]: value }));
   };
 

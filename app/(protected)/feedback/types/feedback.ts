@@ -4,10 +4,10 @@ export interface FeedbackLead {
   id: string;
   name: string;
   company: string;
-  email?: string; 
+  email?: string;
   avatar?: string;
   timestamp: string;
-  status: FeedbackStatus; // allow mapped backend statuses
+  status: FeedbackStatus; 
   hasFollowUp?: boolean;
   feedbackText?: string;
   rating?: number;
@@ -43,8 +43,11 @@ export interface FeedbackApiResponse {
   page: number;
   limit: number;
 }
+export interface EngagementFeedback {
+  feedback_notes?: string | null;
+  rating?: number | null;
+}
 
-// Backend engagement type (from your API)
 export interface Engagement {
   id: string;
   client_id: string;
@@ -54,13 +57,12 @@ export interface Engagement {
   lead_linkedIn_url?: string | null;
   lead_email?: string | null;
   lead_phone?: string | null;
-  feedback_notes?: string | null;
   channel: string;
   scheduled_time: string;
   delivery_time?: string | null;
   status: string; // e.g. "waiting_feedback"
   reminder_cycle?: number;
-  feedback?: string | null;
+  feedback?: EngagementFeedback | null; 
   created_at: string;
   updated_at: string;
   client_name: string;
