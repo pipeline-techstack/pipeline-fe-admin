@@ -1,6 +1,16 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { X, Mail, Calendar, User, FileText } from "lucide-react";
+import {
+  X,
+  Mail,
+  Calendar,
+  User,
+  FileText,
+  MessageSquare,
+  Users,
+  Video,
+  RotateCcw,
+} from "lucide-react";
 import LeadAvatar from "./lead-avatar";
 import { FeedbackLead, FeedbackStatus } from "../types/feedback";
 
@@ -38,33 +48,47 @@ const LeadDetailModal = ({ lead, isOpen, onClose }: LeadDetailModalProps) => {
   // Map status for display
   const meetingStatus =
     lead.status === FeedbackStatus.FOLLOW_UP ? "Follow Up" : "Responded";
-  const notes = lead.feedbackText || "No notes available";
+
+  const notes = lead.feedback?.feedbackNotes || "No notes available";
+
+  // Helper function to get status badge colors
+  const getStatusBadgeStyle = (status: string) => {
+    switch (status.toLowerCase()) {
+      case "happened":
+        return "bg-blue-100 text-blue-800";
+      case "qualified":
+        return "bg-green-100 text-green-800";
+      case "responded":
+        return "bg-green-100 text-green-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div
         ref={modalRef}
-        className="bg-white rounded-lg max-w-md w-full mx-4 relative shadow-2xl"
+        className="bg-white rounded-lg max-w-md w-full mx-4 relative shadow-2xl max-h-[90vh] overflow-y-auto"
       >
         {/* Close button */}
         <button
           onClick={onClose}
           aria-label="Close"
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors z-10"
         >
           <X size={20} />
         </button>
 
         {/* Header */}
         <div className="p-6 border-b border-gray-100">
-          {/* <h2 className="text-lg font-medium text-gray-600 mb-4">Lead Name</h2> */}
-          <div className="flex items-start space-x-3">
+          <div className="flex items-start space-x-3 pr-8">
             <LeadAvatar name={lead.name} avatar={lead.avatar} size="lg" />
-            <div className="flex-1">
-              <h3 className="text-xl font-semibold text-gray-900 mb-1">
+            <div className="flex-1 min-w-0">
+              <h3 className="text-xl font-semibold text-gray-900 mb-1 break-words">
                 {lead.name}
               </h3>
-              <p className="text-gray-500 flex items-center">
+              <p className="text-gray-500 flex items-center break-words">
                 <span className="mr-2">Client's name: </span>
                 {lead.company}
               </p>
@@ -79,8 +103,8 @@ const LeadDetailModal = ({ lead, isOpen, onClose }: LeadDetailModalProps) => {
             <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
               <Mail size={16} className="text-blue-600" />
             </div>
-            <div>
-              <p className="text-sm text-blue-600 font-medium">
+            <div className="min-w-0 flex-1">
+              <p className="text-sm text-blue-600 font-medium break-all">
                 {lead.email ||
                   `${lead.name.toLowerCase().replace(" ", "")}@${lead.company
                     .toLowerCase()
@@ -91,17 +115,69 @@ const LeadDetailModal = ({ lead, isOpen, onClose }: LeadDetailModalProps) => {
 
           {/* Meeting Status */}
           <div className="flex items-start space-x-3">
-            <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
-              <Calendar size={16} className="text-purple-600" />
+            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <Calendar size={16} className="text-blue-600" />
             </div>
             <div>
               <p className="text-sm text-gray-600 font-medium mb-2">
                 Meeting Status
               </p>
-              <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                <div className="w-1.5 h-1.5 bg-green-500 rounded-full mr-2"></div>
-                {meetingStatus}
+              <div
+                className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getStatusBadgeStyle(
+                  lead.feedback?.meetingStatus || "unknown"
+                )}`}
+              >
+                <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
+                {lead.feedback?.meetingStatus || "Not provided"}
               </div>
+            </div>
+          </div>
+
+          {/* Prospect Fit */}
+          <div className="flex items-start space-x-3">
+            <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <Users size={16} className="text-green-600" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-600 font-medium mb-2">
+                Prospect Fit
+              </p>
+              <div
+                className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getStatusBadgeStyle(
+                  lead.feedback?.prospectFit || "unknown"
+                )}`}
+              >
+                <div className="w-1.5 h-1.5 bg-green-500 rounded-full mr-2"></div>
+                {lead.feedback?.prospectFit || "Not provided"}
+              </div>
+            </div>
+          </div>
+
+          {/* Channel */}
+          <div className="flex items-start space-x-3">
+            <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <Video size={16} className="text-purple-600" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm text-gray-600 font-medium mb-2">Channel</p>
+              <p className="text-sm text-gray-900">
+                {lead.channel || "Not provided"}
+              </p>
+            </div>
+          </div>
+
+          {/* Reminder Cycle */}
+          <div className="flex items-start space-x-3">
+            <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <RotateCcw size={16} className="text-orange-600" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm text-gray-600 font-medium mb-2">
+                Reminder Cycle
+              </p>
+              <p className="text-sm text-gray-900">
+                {lead.reminderCycle ?? "Not provided"}
+              </p>
             </div>
           </div>
 
@@ -110,10 +186,16 @@ const LeadDetailModal = ({ lead, isOpen, onClose }: LeadDetailModalProps) => {
             <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
               <FileText size={16} className="text-purple-600" />
             </div>
-            <div>
-              <p className="text-sm text-gray-600 font-medium mb-2">Notes</p>
-              <div className="inline-flex items-center px-3 py-1 text-xs font-medium">
-                {notes}
+            <div className="min-w-0 flex-1">
+              <p className="text-sm text-gray-600 font-medium mb-3">Notes</p>
+              <div className="relative bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 shadow-sm flex items-start space-x-2">
+                <MessageSquare
+                  size={20}
+                  className="text-gray-400 flex-shrink-0 mt-1"
+                />
+                <p className="text-sm text-gray-700 leading-relaxed break-all whitespace-pre-wrap">
+                  {notes}
+                </p>
               </div>
             </div>
           </div>

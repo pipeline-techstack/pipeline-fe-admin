@@ -7,12 +7,25 @@ export interface FeedbackLead {
   email?: string;
   avatar?: string;
   timestamp: string;
-  status: FeedbackStatus; 
+  status: FeedbackStatus;
   hasFollowUp?: boolean;
   feedbackText?: string;
   rating?: number;
   createdAt: string;
   updatedAt: string;
+
+  channel: string;
+  reminderCycle?: number;
+  feedback?: {
+    meetingStatus?: string;
+    prospectFit?: string;
+    disqTags?: string[];
+    feedbackNotes?: string;
+    actor?: string;
+    confidence?: string;
+    timestamp?: string;
+    note?: string | null;
+  };
 }
 
 export interface FeedbackFilters {
@@ -43,8 +56,16 @@ export interface FeedbackApiResponse {
   page: number;
   limit: number;
 }
+
 export interface EngagementFeedback {
+  meeting_status?: string | null;
+  prospect_fit?: string | null;
+  disq_tags?: string[];
   feedback_notes?: string | null;
+  actor?: string | null;
+  confidence?: string | null;
+  timestamp?: string | null;
+  note?: string | null;
   rating?: number | null;
 }
 
@@ -62,8 +83,9 @@ export interface Engagement {
   delivery_time?: string | null;
   status: string; // e.g. "waiting_feedback"
   reminder_cycle?: number;
-  feedback?: EngagementFeedback | null; 
+  feedback?: EngagementFeedback | null;
   created_at: string;
   updated_at: string;
   client_name: string;
+  notes?: string | null;
 }

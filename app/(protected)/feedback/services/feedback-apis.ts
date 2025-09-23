@@ -22,7 +22,6 @@ export const getFeedbackData = async (
   const token = localStorage.getItem("st_access_token");
   if (!token) throw new Error("User is not authenticated");
 
-  // build query params
   const params = new URLSearchParams();
   params.append("page", String(page));
   params.append("limit", String(limit));
@@ -76,7 +75,16 @@ export const getFeedbackData = async (
         e.status === "waiting_feedback"
           ? FeedbackStatus.FOLLOW_UP
           : FeedbackStatus.RESPONDED,
-      feedbackText: e.feedback?.feedback_notes ?? "",
+      channel: e.channel,
+      reminderCycle: e.reminder_cycle,
+      feedback: {
+        meetingStatus: e.feedback?.meeting_status ?? "",
+        prospectFit: e.feedback?.prospect_fit ?? "",
+        feedbackNotes: e.feedback?.feedback_notes ?? e.notes ?? "",
+        confidence: e.feedback?.confidence ?? "",
+        actor: e.feedback?.actor ?? "",
+        timestamp: e.feedback?.timestamp ?? "",
+      },
       createdAt: e.created_at,
       updatedAt: e.updated_at,
     })),
