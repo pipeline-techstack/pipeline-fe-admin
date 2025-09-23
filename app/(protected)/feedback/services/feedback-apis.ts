@@ -69,7 +69,7 @@ export const getFeedbackData = async (
       id: e.id,
       name: e.lead_name,
       company: e.client_name,
-      email: e.lead_email ?? undefined,
+      email: e.lead_email ?? e.client_name,
       timestamp: e.scheduled_time,
       status:
         e.status === "waiting_feedback"
@@ -80,7 +80,7 @@ export const getFeedbackData = async (
       feedback: {
         meetingStatus: e.feedback?.meeting_status ?? "",
         prospectFit: e.feedback?.prospect_fit ?? "",
-        feedbackNotes: e.feedback?.feedback_notes ?? e.notes ?? "",
+        feedbackNotes: e.feedback?.feedback_notes ?? "",
         confidence: e.feedback?.confidence ?? "",
         actor: e.feedback?.actor ?? "",
         timestamp: e.feedback?.timestamp ?? "",
