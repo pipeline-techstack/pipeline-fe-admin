@@ -24,6 +24,7 @@ const navigation = [
   { name: "Organizations", href: "/", icon: Building2 },
   { name: "Permissions", href: "/permissions", icon: KeyRound },
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+   { name: "Workbook Configurations", href: "/workbook-configurations", icon: LayoutDashboard },
 ];
 
 export function Sidebar() {
