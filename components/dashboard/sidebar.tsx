@@ -11,6 +11,7 @@ import {
   LayoutDashboard,
   ChevronsLeft,
   ChevronsRight,
+  BookOpen,
 } from "lucide-react";
 import {
   Tooltip,
@@ -22,9 +23,10 @@ import {
 const navigation = [
   { name: "Customers", href: "/customers", icon: Users },
   { name: "Organizations", href: "/", icon: Building2 },
+  { name: "WB Configs", href: "/wb-config", icon: BookOpen },
   { name: "Permissions", href: "/permissions", icon: KeyRound },
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-   { name: "Workbook Configurations", href: "/workbook-configurations", icon: LayoutDashboard },
+  
 ];
 
 export function Sidebar() {
