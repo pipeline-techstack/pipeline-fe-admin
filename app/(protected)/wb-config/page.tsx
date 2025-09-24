@@ -8,10 +8,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  fetchWorkbookConfigurations,
-  WorkbookConfiguration,
-} from "./services/config-apis";
+import { fetchWorkbookConfigurations } from "./services/config-apis";
+import { WorkbookConfiguration } from "./types/api";
 
 const WorkbookConfigurationPage = () => {
   const router = useRouter();
@@ -44,11 +42,11 @@ const WorkbookConfigurationPage = () => {
               <h2 className="font-bold text-gray-900 text-2xl">
                 Workbook Configuration
               </h2>
-              <p className="text-gray-600 text-sm mt-1">
+              <p className="mt-1 text-gray-600 text-sm">
                 What is user and campaign Permission
               </p>
             </div>
-            <Button onClick={() => router.push("/workbook-configurations/new")}>
+            <Button onClick={() => router.push("/wb-config/new")}>
               New Configuration
             </Button>
           </div>
@@ -69,93 +67,103 @@ const WorkbookConfigurationPage = () => {
                 </tr>
               </thead>
               <tbody>
-                {Array.isArray(workbookConfigurations) && workbookConfigurations.length > 0 ? (
-                    workbookConfigurations.map((config) => (
+                {Array.isArray(workbookConfigurations) &&
+                workbookConfigurations.length > 0 ? (
+                  workbookConfigurations.map((config) => (
                     <tr
-                        key={config.id}
-                        className="text-gray-800 text-sm hover:bg-gray-50"
+                      key={config.id}
+                      className="hover:bg-gray-50 text-gray-800 text-sm"
                     >
-                        <td className="p-3 border-b">
+                      <td className="p-3 border-b">
                         <span className="font-medium">{config.campaign}</span>
-                        </td>
-                        <td className="p-3 border-b">
+                      </td>
+                      <td className="p-3 border-b">
                         <div className="flex flex-wrap gap-2">
-                            {config.workbooks.slice(0, 2).map((workbook, idx) => (
+                          {config.workbooks.slice(0, 2).map((workbook, idx) => (
                             <span
-                                key={idx}
-                                className="bg-blue-100 px-2 py-1 rounded-md text-blue-700 text-xs"
+                              key={idx}
+                              className="bg-blue-100 px-2 py-1 rounded-md text-blue-700 text-xs"
                             >
-                                {workbook}
+                              {workbook}
                             </span>
-                            ))}
+                          ))}
 
-                            {config.workbooks.length > 2 && (
+                          {config.workbooks.length > 2 && (
                             <Tooltip>
-                                <TooltipTrigger asChild>
+                              <TooltipTrigger asChild>
                                 <span className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded-md text-gray-700 text-xs cursor-pointer">
-                                    +{config.workbooks.length - 2} more
+                                  +{config.workbooks.length - 2} more
                                 </span>
-                                </TooltipTrigger>
-                                <TooltipContent className="max-w-xs max-h-80 overflow-y-auto">
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-xs max-h-80 overflow-y-auto">
                                 <div className="flex flex-wrap gap-1">
-                                    {config.workbooks.slice(2).map((workbook, idx) => (
-                                    <span
+                                  {config.workbooks
+                                    .slice(2)
+                                    .map((workbook, idx) => (
+                                      <span
                                         key={idx}
                                         className="bg-blue-50 px-2 py-0.5 rounded text-blue-700 text-xs"
-                                    >
+                                      >
                                         {workbook}
-                                    </span>
+                                      </span>
                                     ))}
                                 </div>
-                                </TooltipContent>
+                              </TooltipContent>
                             </Tooltip>
-                            )}
+                          )}
 
-                            {config.additionalCount > 0 && (
+                          {config.additionalCount > 0 && (
                             <Tooltip>
-                                <TooltipTrigger asChild>
+                              <TooltipTrigger asChild>
                                 <span className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded-md text-gray-700 text-xs cursor-pointer">
-                                    +{config.additionalCount} more additional
+                                  +{config.additionalCount} more additional
                                 </span>
-                                </TooltipTrigger>
-                                <TooltipContent className="max-w-xs">
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-xs">
                                 <div className="text-xs">
-                                    <p className="font-medium mb-1">Additional Workbooks:</p>
-                                    <div className="space-y-1">
-                                    {Array.from({ length: config.additionalCount }, (_, i) => (
+                                  <p className="mb-1 font-medium">
+                                    Additional Workbooks:
+                                  </p>
+                                  <div className="space-y-1">
+                                    {Array.from(
+                                      { length: config.additionalCount },
+                                      (_, i) => (
                                         <div key={i}>
-                                        Workbook {config.workbooks.length + i + 1} Ready
+                                          Workbook{" "}
+                                          {config.workbooks.length + i + 1}{" "}
+                                          Ready
                                         </div>
-                                    ))}
-                                    </div>
+                                      )
+                                    )}
+                                  </div>
                                 </div>
-                                </TooltipContent>
+                              </TooltipContent>
                             </Tooltip>
-                            )}
+                          )}
                         </div>
-                        </td>
-                        <td className="p-3 border-b text-center">
+                      </td>
+                      <td className="p-3 border-b text-center">
                         <Button
-                            size="sm"
-                            variant="outline"
-                            // className="bg-blue-600 hover:bg-blue-700 text-white px-4"
-                            onClick={() =>
-                            router.push(`/workbook-configurations/edit/${config.id}`)
-                            }
+                          size="sm"
+                          variant="outline"
+                          // className="bg-blue-600 hover:bg-blue-700 px-4 text-white"
+                          onClick={() =>
+                            router.push(`/wb-config/edit?id=${config.id}&campaign=${config.campaign_id}`)
+                          }
                         >
-                            Edit
+                          Edit
                         </Button>
-                        </td>
+                      </td>
                     </tr>
-                    ))
+                  ))
                 ) : (
-                    <tr>
-                    <td colSpan={3} className="text-gray-500 text-center p-4">
-                        {error || "No workbook configurations found"}
+                  <tr>
+                    <td colSpan={3} className="p-4 text-gray-500 text-center">
+                      {error || "No workbook configurations found"}
                     </td>
-                    </tr>
+                  </tr>
                 )}
-                </tbody>
+              </tbody>
             </table>
           )}
         </div>
