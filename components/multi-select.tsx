@@ -109,6 +109,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
                   {campaign?.name || id}
                   <button
                     type="button"
+                    aria-label="Remove"
                     onClick={(e) => handleRemove(id, e)}
                     className="hover:bg-blue-200 p-0.5 rounded-full"
                   >

@@ -1,7 +1,5 @@
 "use client";
 
-import type React from "react";
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -24,6 +22,7 @@ export default function LoginCard() {
 
     try {
       await loginApi(email, password);
+      alert("Login Successful");
       router.push("/");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error occurred");
@@ -39,33 +38,15 @@ export default function LoginCard() {
         <CardTitle>Login</CardTitle>
       </CardHeader>
       <CardContent>
-        {error && (
-          <div className="bg-red-100 mb-4 p-3 rounded-md text-red-800">
-            {error}
-          </div>
-        )}
+        {error && <div className="bg-red-100 mb-4 p-3 rounded-md text-red-800">{error}</div>}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="your@email.com"
-              required
-            />
+            <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="your@email.com" required />
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              required
-            />
+            <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required />
           </div>
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? "Logging in..." : "Login"}
