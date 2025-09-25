@@ -69,7 +69,7 @@ export const getFeedbackData = async (
       id: e.id,
       name: e.lead_name,
       company: e.client_name,
-      email: e.lead_email ?? e.client_name,
+      email: e.lead_email ?? e.client_email ?? undefined,
       timestamp: e.scheduled_time,
       status:
         e.status === "waiting_feedback"

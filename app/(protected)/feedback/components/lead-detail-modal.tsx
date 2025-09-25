@@ -104,7 +104,7 @@ const LeadDetailModal = ({ lead, isOpen, onClose }: LeadDetailModalProps) => {
               <Mail size={16} className="text-blue-600" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-mediumtext-sm break-all">
+              <p className="font-medium text-sm break-all">
                 {lead.email ?? "Email not provided"}
               </p>
             </div>

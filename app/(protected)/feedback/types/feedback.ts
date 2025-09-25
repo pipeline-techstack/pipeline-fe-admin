@@ -77,6 +77,7 @@ export interface Engagement {
   lead_name: string;
   lead_linkedIn_url?: string | null;
   lead_email?: string | null;
+  client_email?: string| null;
   lead_phone?: string | null;
   channel: string;
   scheduled_time: string;
