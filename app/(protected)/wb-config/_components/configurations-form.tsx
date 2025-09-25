@@ -22,7 +22,7 @@ export const ConfigurationForm = ({ formData, columns, onChange }: Props) => (
         <>
           {["companyNameColumn", "companyLinkedInUrlColumn", "accountScoringColumn"].map((field) => (
             <div key={field}>
-              <Label>{field.replace(/([A-Z])/g, " $1")}</Label>
+              <Label className="capitalize">{field.replace(/([A-Z])/g, " $1")}</Label>
               <Select value={formData[field as keyof FormData]} onValueChange={(val) => onChange(field as keyof FormData, val)}>
                 <SelectTrigger><SelectValue placeholder="Select column" /></SelectTrigger>
                 <SelectContent>

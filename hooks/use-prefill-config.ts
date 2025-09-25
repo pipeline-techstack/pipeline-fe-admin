@@ -12,39 +12,53 @@ type WorkbookConfig = {
 export const usePrefillConfiguration = (
   mode: string,
   workbookId: string,
+  campaignId: string,
   setConfigs: React.Dispatch<React.SetStateAction<WorkbookConfig[]>>,
   loadColumns: (id: string) => Promise<Column[]>
 ) => {
   useEffect(() => {
-    if (workbookId) {
-      const prefill = async () => {
-        if (mode === "edit") {
-          const cols = await loadColumns(workbookId);
-          const config = await getWorkbookConfiguration(workbookId);
+    const prefill = async () => {
+      if (mode === "edit" && campaignId) {
+        const configResponse = await getWorkbookConfiguration(campaignId);
 
-          if (config?.campaign_configuration) {
-            const { campaign_configuration } = config;
+        if (configResponse?.workbooks?.length > 0) {
+          const workbookConfigs: WorkbookConfig[] = [];
 
+          for (const wb of configResponse.workbooks) {
+            const cols = await loadColumns(wb.workbook_id);
+
+            const campaignConfig = wb.campaign_configuration;
             const formData: FormData = {
-              workbookName: workbookId,
-              researchType: campaign_configuration.company_research ? "company" : "lead",
-              companyNameColumn: campaign_configuration.company_name_column_id || "",
-              companyLinkedInUrlColumn: campaign_configuration.company_linkedin_url_column_id || "",
-              accountScoringColumn: campaign_configuration.account_scoring_column_id || "",
-              leadLinkedInUrlColumn: campaign_configuration.lead_linkedin_url_column_id || "",
-              leadScoringColumn: campaign_configuration.lead_scoring_column_id || "",
+              workbookName: wb.workbook_name || wb.workbook_id,
+              researchType: campaignConfig.company_research
+                ? "company"
+                : "lead",
+              companyNameColumn:
+                campaignConfig.company_name_column_id || "",
+              companyLinkedInUrlColumn:
+                campaignConfig.company_linkedin_url_column_id || "",
+              accountScoringColumn:
+                campaignConfig.account_scoring_column_id || "",
+              leadLinkedInUrlColumn:
+                campaignConfig.lead_linkedin_url_column_id || "",
+              leadScoringColumn:
+                campaignConfig.lead_scoring_column_id || "",
             };
 
-            setConfigs([{
-              workbookId,
+            workbookConfigs.push({
+              workbookId: wb.workbook_id,
               researchType: formData.researchType,
               formData,
               columns: cols,
-            }]);
+            });
           }
-        } else {
-          // new mode → always start with one empty config
-          setConfigs([{
+
+          setConfigs(workbookConfigs);
+        }
+      } else {
+        // new mode → always start with one empty config
+        setConfigs([
+          {
             workbookId: "",
             researchType: "company",
             formData: {
@@ -57,11 +71,11 @@ export const usePrefillConfiguration = (
               leadScoringColumn: "",
             },
             columns: [],
-          }]);
-        }
-      };
+          },
+        ]);
+      }
+    };
 
-      prefill();
-    }
-  }, [mode, workbookId]);
+    prefill();
+  }, [mode, campaignId, workbookId]);
 };

@@ -42,6 +42,7 @@ export interface ColumnsApiResponse {
 }
 export interface WorkbookConfigurationRequest {
   campaign_id: string;
+  workbook_id: string;
   company_research: boolean;
   company_name_column_id?: string;
   company_linkedin_url_column_id?: string;

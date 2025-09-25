@@ -29,7 +29,7 @@ const EditConfigurations = () => {
 
   const mode = params.mode as string;
   const workbookIdFromParams = searchParams.get("id") || "";
-  const campaignIdFromParams = searchParams.get("campaignId") || "";
+  const campaignIdFromParams = searchParams.get("campaign") || "";
 
   const { workbooks } = useWorkbookConfigurations();
   const { loadColumns: fetchColumns } = useWorkbookColumns();
@@ -45,7 +45,7 @@ const EditConfigurations = () => {
     campaigns?.map((c: any) => ({ id: c.id?.toString(), name: c.name })) ?? [];
 
   // Prefill for edit mode (single workbook for now)
-  usePrefillConfiguration(mode, workbookIdFromParams, setConfigs, fetchColumns);
+  usePrefillConfiguration(mode, workbookIdFromParams, campaignIdFromParams, setConfigs, fetchColumns);
 
   const { save } = useSaveConfiguration(
     configs.map((c) => c.formData),

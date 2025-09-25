@@ -84,9 +84,9 @@ export async function fetchWorkbookColumns(workbookId: string): Promise<Column[]
   }
 }
 
-export async function getWorkbookConfiguration(workbookId: string): Promise<WorkbookConfigurationResponse | null> {
+export async function getWorkbookConfiguration(campaignId: string): Promise<WorkbookConfigurationResponse | null> {
   try {
-    const API_URL = `${BASE_URL}/admin/configure/workbook-campaign/${workbookId}`;
+    const API_URL = `${BASE_URL}/admin/configure/workbook-campaign/${campaignId}`;
     const res = await fetch(API_URL, {
       method: "GET",
       headers: getAuthHeaders(),
@@ -109,22 +109,21 @@ export async function getWorkbookConfiguration(workbookId: string): Promise<Work
 }
 
 export async function saveWorkbookConfiguration(
-  workbookId: string,
-  configuration: WorkbookConfigurationRequest
-): Promise<WorkbookConfigurationResponse> {
+  configurations: WorkbookConfigurationRequest[]
+): Promise<WorkbookConfigurationResponse[]> {
   try {
-    const API_URL = `${BASE_URL}/admin/configure/workbook-campaign/${workbookId}`;
+    const API_URL = `${BASE_URL}/admin/configure/workbook-campaign`;
     const res = await fetch(API_URL, {
       method: "POST",
       headers: getAuthHeaders(),
-      body: JSON.stringify(configuration),
+      body: JSON.stringify(configurations),
     });
 
     if (!res.ok) {
       throw new Error(`Failed to save workbook configuration: ${res.status}`);
     }
 
-    const data: WorkbookConfigurationResponse = await res.json();
+    const data: WorkbookConfigurationResponse[] = await res.json();
     return data;
   } catch (error) {
     console.error("Error saving workbook configuration:", error);
