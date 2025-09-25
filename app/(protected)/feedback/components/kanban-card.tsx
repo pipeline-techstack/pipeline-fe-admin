@@ -14,7 +14,8 @@ interface KanbanCardProps {
 const KanbanCard = ({ item }: KanbanCardProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const formatDateTime = (dateString: string) => {
+  const formatDateTime = (dateString?: string | null) => {
+    if (!dateString) return null;
     const date = new Date(dateString);
     return {
       date: date.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
@@ -22,7 +23,7 @@ const KanbanCard = ({ item }: KanbanCardProps) => {
     };
   };
 
-  const { date, time } = formatDateTime(item.scheduled_time);
+  const dateTime = formatDateTime(item.scheduled_time);
 
   const getChannelIcon = (channel?: string) => {
     switch (channel?.toLowerCase()) {
@@ -53,12 +54,15 @@ const KanbanCard = ({ item }: KanbanCardProps) => {
           </div>
         </div>
 
-        <div className="flex items-center space-x-2 mb-2">
-          <Calendar className="w-4 h-4 text-gray-400" />
-          <span className="text-sm text-gray-600">{date}</span>
-          <Clock className="w-4 h-4 text-gray-400 ml-2" />
-          <span className="text-sm text-gray-600">{time}</span>
-        </div>
+        {/* Only show if scheduled_time exists */}
+        {dateTime && (
+          <div className="flex items-center space-x-2 mb-2">
+            <Calendar className="w-4 h-4 text-gray-400" />
+            <span className="text-sm text-gray-600">{dateTime.date}</span>
+            <Clock className="w-4 h-4 text-gray-400 ml-2" />
+            <span className="text-sm text-gray-600">{dateTime.time}</span>
+          </div>
+        )}
 
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center space-x-2">
