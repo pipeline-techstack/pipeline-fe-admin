@@ -1,5 +1,60 @@
 import { SelectOption } from "@/lib/types/misc";
 
+export interface FeedbackItem {
+  id: string;
+  client_id: string;
+  campaign_id: number;
+  conversation_id: string;
+  lead_name: string;
+  lead_linkedIn_url?: string | null;
+  lead_email?: string | null;
+  lead_phone?: string | null;
+  notes?: string | null;
+  channel: string;
+  scheduled_time: string;
+  delivery_time?: string | null;
+  status: string;
+  reminder_cycle: number;
+  feedback?: EngagementFeedback | null;
+  created_at: string;
+  updated_at: string;
+  client_name: string;
+  client_email?: string | null;
+  company?: string;
+  avatar?: string;
+}
+
+export interface EngagementFeedback {
+  meeting_status?: string | null;
+  prospect_fit?: string | null;
+  disq_tags?: string[];
+  feedback_notes?: string | null;
+  actor?: string | null;
+  confidence?: string | null;
+  timestamp?: string | null;
+  note?: string | null;
+  rating?: number | null;
+}
+
+// Kanban specific types
+export interface KanbanColumn {
+  id: string;
+  title: string;
+  items: FeedbackItem[];
+  color: string;
+  headerColor: string;
+  count: number;
+}
+
+export interface KanbanCategories {
+  meetingBooked: FeedbackItem[];
+  reminder1: FeedbackItem[];
+  reminder2: FeedbackItem[];
+  reminder3: FeedbackItem[];
+  feedbackReceived: FeedbackItem[];
+  feedbackNotReceived: FeedbackItem[];
+}
+
 export interface FeedbackLead {
   id: string;
   name: string;
@@ -13,7 +68,6 @@ export interface FeedbackLead {
   rating?: number;
   createdAt: string;
   updatedAt: string;
-
   channel: string;
   reminderCycle?: number;
   feedback?: {
@@ -29,7 +83,7 @@ export interface FeedbackLead {
 }
 
 export interface FeedbackFilters {
-  status: "all" | "follow-up" | "responded";
+  status?: "all" | "follow-up" | "responded";
   searchQuery?: string;
   dateRange?: {
     start: string;
@@ -51,22 +105,10 @@ export enum FeedbackStatus {
 }
 
 export interface FeedbackApiResponse {
-  data: FeedbackLead[];
-  total: number;
-  page: number;
-  limit: number;
-}
-
-export interface EngagementFeedback {
-  meeting_status?: string | null;
-  prospect_fit?: string | null;
-  disq_tags?: string[];
-  feedback_notes?: string | null;
-  actor?: string | null;
-  confidence?: string | null;
-  timestamp?: string | null;
-  note?: string | null;
-  rating?: number | null;
+  items: FeedbackItem[];
+  total?: number;
+  page?: number;
+  limit?: number;
 }
 
 export interface Engagement {
@@ -77,12 +119,12 @@ export interface Engagement {
   lead_name: string;
   lead_linkedIn_url?: string | null;
   lead_email?: string | null;
-  client_email?: string| null;
+  client_email?: string | null;
   lead_phone?: string | null;
   channel: string;
   scheduled_time: string;
   delivery_time?: string | null;
-  status: string; // e.g. "waiting_feedback"
+  status: string;
   reminder_cycle?: number;
   feedback?: EngagementFeedback | null;
   created_at: string;

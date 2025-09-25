@@ -1,12 +1,12 @@
 "use client";
 
-interface LeadAvatarProps {
+interface ClientAvatarProps {
   name: string;
   avatar?: string;
   size?: 'sm' | 'md' | 'lg';
 }
 
-const LeadAvatar = ({ name, avatar, size = 'md' }: LeadAvatarProps) => {
+const ClientAvatar = ({ name, avatar, size = 'md' }: ClientAvatarProps) => {
   const sizeClasses = {
     sm: 'w-8 h-8 text-xs',
     md: 'w-10 h-10 text-sm',
@@ -54,4 +54,4 @@ const LeadAvatar = ({ name, avatar, size = 'md' }: LeadAvatarProps) => {
   );
 };
 
-export default LeadAvatar;
+export default ClientAvatar;

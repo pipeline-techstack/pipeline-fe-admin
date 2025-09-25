@@ -2,10 +2,29 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { FeedbackFilters, FeedbackLead } from "../types/feedback";
+import { FeedbackFilters, FeedbackLead, FeedbackItem } from "../types/feedback";
 import { getFeedbackData } from "../services/feedback-apis";
 
-export const useFeedbackData = (
+export const useFeedbackData = () => {
+  const { data, isLoading, error } = useQuery<{
+    items: FeedbackItem[];
+    total?: number;
+  }>({
+    queryKey: ["feedback-kanban"],
+    queryFn: () => getFeedbackData(),
+    retry: false,
+  });
+
+  return {
+    feedbackData: data?.items || [],
+    total: data?.total || data?.items?.length || 0,
+    isLoading,
+    error,
+  };
+};
+
+// Legacy hook (keeping for backward compatibility with existing components)
+export const useFeedbackDataPaginated = (
   filters: FeedbackFilters,
   searchQuery: string,
   page: number,
@@ -16,7 +35,7 @@ export const useFeedbackData = (
     total: number;
   }>({
     queryKey: ["feedback", filters, searchQuery, page, limit],
-    queryFn: () => getFeedbackData(filters, searchQuery, page, limit),
+    queryFn: () => getFeedbackDataLegacy(filters, searchQuery, page, limit),
     retry: false,
   });
 
@@ -49,4 +68,14 @@ export const useFeedbackFilters = () => {
   };
 
   return { searchQuery, filters, handleSearchChange, handleFilterChange };
+};
+
+// Mock legacy function 
+const getFeedbackDataLegacy = async (
+  filters: FeedbackFilters,
+  searchQuery: string,
+  page: number,
+  limit: number
+): Promise<{ data: FeedbackLead[]; total: number }> => {
+  return { data: [], total: 0 };
 };
