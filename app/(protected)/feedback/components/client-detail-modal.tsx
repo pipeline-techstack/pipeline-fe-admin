@@ -63,14 +63,14 @@ const ClientDetailModal = ({ item, onClose }: ClientDetailModalProps) => {
 
         <div className="p-6 border-gray-100 border-b">
           <div className="flex items-start space-x-3 pr-8">
-            <ClientAvatar name={item.company || item.client_name} avatar={item.avatar} size="lg" />
+            <ClientAvatar name={item.company || item.lead_name} avatar={item.avatar} size="lg" />
             <div className="flex-1 min-w-0">
               <h3 className="mb-1 font-semibold text-gray-900 text-xl break-words">
-                {item.company || item.client_name}
+                {item.company || item.lead_name}
               </h3>
               <p className="flex items-center text-gray-500 break-words">
-                <span className="mr-2">Lead's name: </span>
-                {item.lead_name}
+                <span className="mr-2">Client's name: </span>
+                {item.client_name}
               </p>
             </div>
           </div>

@@ -45,10 +45,10 @@ const KanbanCard = ({ item }: KanbanCardProps) => {
       >
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center space-x-3 flex-1 min-w-0">
-            <ClientAvatar name={item.client_name} size="sm" />
+            <ClientAvatar name={item.lead_name} size="sm" />
             <div className="flex-1 min-w-0">
-              <h4 className="font-medium text-gray-900 text-sm truncate">{item.client_name}</h4>
-              <p className="text-xs text-gray-500 truncate">{item.lead_name}</p>
+              <h4 className="font-medium text-gray-900 text-sm truncate">{item.lead_name}</h4>
+              <p className="text-xs text-gray-500 truncate">{item.client_name}</p>
             </div>
           </div>
         </div>
