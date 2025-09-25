@@ -22,16 +22,16 @@ const FeedbackCard = ({ lead, onClick }: FeedbackCardProps) => {
       <div className="flex justify-between items-start mb-3">
         <div className="flex flex-1 items-center space-x-3 min-w-0">
           <LeadAvatar 
-            name={lead.name}
+            name={lead.company}
             avatar={lead.avatar}
             size="md"
           />
           <div className="flex-1 min-w-0">
             <h3 className="font-medium text-gray-900 group-hover:text-blue-800 text-sm truncate transition-colors">
-              {lead.name}
+              {lead.company}
             </h3>
             <p className="text-gray-500 text-xs truncate">
-              {lead.company}
+              {lead.name}
             </p>
           </div>
         </div>
@@ -40,11 +40,11 @@ const FeedbackCard = ({ lead, onClick }: FeedbackCardProps) => {
         </span>
       </div>
       
-      <div className="pt-2 flex justify-between items-center">
+      <div className="flex justify-between items-center pt-2">
         <StatusBadge status={lead.status} size="md" className="px-16" />
 
         {lead.reminderCycle !== undefined && (
-          <div className="flex items-center justify-center w-7 h-7 rounded-full bg-gray-200 text-gray-700 text-xs font-medium">
+          <div className="flex justify-center items-center bg-gray-200 rounded-full w-7 h-7 font-medium text-gray-700 text-xs">
             {lead.reminderCycle}
           </div>
         )}

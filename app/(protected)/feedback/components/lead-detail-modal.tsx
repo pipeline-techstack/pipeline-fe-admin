@@ -66,60 +66,57 @@ const LeadDetailModal = ({ lead, isOpen, onClose }: LeadDetailModalProps) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div className="z-50 fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 p-4">
       <div
         ref={modalRef}
-        className="bg-white rounded-lg max-w-2xl w-full mx-4 relative shadow-2xl max-h-[90vh] overflow-y-auto"
+        className="relative bg-white shadow-2xl mx-4 rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto"
       >
         {/* Close button */}
         <button
           onClick={onClose}
           aria-label="Close"
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors z-10"
+          className="top-4 right-4 z-10 absolute text-gray-400 hover:text-gray-600 transition-colors"
         >
           <X size={20} />
         </button>
 
         {/* Header */}
-        <div className="p-6 border-b border-gray-100">
+        <div className="p-6 border-gray-100 border-b">
           <div className="flex items-start space-x-3 pr-8">
-            <LeadAvatar name={lead.name} avatar={lead.avatar} size="lg" />
+            <LeadAvatar name={lead.company} avatar={lead.avatar} size="lg" />
             <div className="flex-1 min-w-0">
-              <h3 className="text-xl font-semibold text-gray-900 mb-1 break-words">
-                {lead.name}
-              </h3>
-              <p className="text-gray-500 flex items-center break-words">
-                <span className="mr-2">Client's name: </span>
+              <h3 className="mb-1 font-semibold text-gray-900 text-xl break-words">
                 {lead.company}
+              </h3>
+              <p className="flex items-center text-gray-500 break-words">
+                <span className="mr-2">Lead's name: </span>
+                {lead.name}
               </p>
             </div>
           </div>
         </div>
 
         {/* Content */}
-        <div className="p-6 space-y-6">
+        <div className="space-y-6 p-6">
           {/* Email */}
           <div className="flex items-start space-x-3">
-            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <div className="flex flex-shrink-0 justify-center items-center bg-blue-100 rounded-full w-8 h-8">
               <Mail size={16} className="text-blue-600" />
             </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-sm text-blue-600 font-medium break-all">
-                {lead.email ||
-                  `${lead.name.toLowerCase().replace(" ", "")}@${lead.company
-                    .toLowerCase()
-                    .replace(" ", "")}.com`}
+            <div className="flex-1 min-w-0">
+              <p className="font-mediumtext-sm break-all">
+                {lead.email ?? "Email not provided"}
               </p>
             </div>
           </div>
 
           {/* Meeting Status */}
           <div className="flex items-start space-x-3">
-            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <div className="flex flex-shrink-0 justify-center items-center bg-blue-100 rounded-full w-8 h-8">
               <Calendar size={16} className="text-blue-600" />
             </div>
             <div>
-              <p className="text-sm text-gray-600 font-medium mb-2">
+              <p className="mb-2 font-medium text-gray-600 text-sm">
                 Meeting Status
               </p>
               <div
@@ -127,7 +124,7 @@ const LeadDetailModal = ({ lead, isOpen, onClose }: LeadDetailModalProps) => {
                   lead.feedback?.meetingStatus || "unknown"
                 )}`}
               >
-                <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
+                <div className="bg-blue-500 mr-2 rounded-full w-1.5 h-1.5"></div>
                 {lead.feedback?.meetingStatus || "Not provided"}
               </div>
             </div>
@@ -135,11 +132,11 @@ const LeadDetailModal = ({ lead, isOpen, onClose }: LeadDetailModalProps) => {
 
           {/* Prospect Fit */}
           <div className="flex items-start space-x-3">
-            <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <div className="flex flex-shrink-0 justify-center items-center bg-green-100 rounded-full w-8 h-8">
               <Users size={16} className="text-green-600" />
             </div>
             <div>
-              <p className="text-sm text-gray-600 font-medium mb-2">
+              <p className="mb-2 font-medium text-gray-600 text-sm">
                 Prospect Fit
               </p>
               <div
@@ -147,7 +144,7 @@ const LeadDetailModal = ({ lead, isOpen, onClose }: LeadDetailModalProps) => {
                   lead.feedback?.prospectFit || "unknown"
                 )}`}
               >
-                <div className="w-1.5 h-1.5 bg-green-500 rounded-full mr-2"></div>
+                <div className="bg-green-500 mr-2 rounded-full w-1.5 h-1.5"></div>
                 {lead.feedback?.prospectFit || "Not provided"}
               </div>
             </div>
@@ -155,12 +152,12 @@ const LeadDetailModal = ({ lead, isOpen, onClose }: LeadDetailModalProps) => {
 
           {/* Channel */}
           <div className="flex items-start space-x-3">
-            <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <div className="flex flex-shrink-0 justify-center items-center bg-purple-100 rounded-full w-8 h-8">
               <Video size={16} className="text-purple-600" />
             </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-sm text-gray-600 font-medium mb-2">Channel</p>
-              <p className="text-sm text-gray-900">
+            <div className="flex-1 min-w-0">
+              <p className="mb-2 font-medium text-gray-600 text-sm">Channel</p>
+              <p className="text-gray-900 text-sm">
                 {lead.channel || "Not provided"}
               </p>
             </div>
@@ -168,14 +165,14 @@ const LeadDetailModal = ({ lead, isOpen, onClose }: LeadDetailModalProps) => {
 
           {/* Reminder Cycle */}
           <div className="flex items-start space-x-3">
-            <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <div className="flex flex-shrink-0 justify-center items-center bg-orange-100 rounded-full w-8 h-8">
               <RotateCcw size={16} className="text-orange-600" />
             </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-sm text-gray-600 font-medium mb-2">
+            <div className="flex-1 min-w-0">
+              <p className="mb-2 font-medium text-gray-600 text-sm">
                 Reminder Cycle
               </p>
-              <p className="text-sm text-gray-900">
+              <p className="text-gray-900 text-sm">
                 {lead.reminderCycle ?? "Not provided"}
               </p>
             </div>
@@ -183,17 +180,17 @@ const LeadDetailModal = ({ lead, isOpen, onClose }: LeadDetailModalProps) => {
 
           {/* Notes */}
           <div className="flex items-start space-x-3">
-            <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <div className="flex flex-shrink-0 justify-center items-center bg-purple-100 rounded-full w-8 h-8">
               <FileText size={16} className="text-purple-600" />
             </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-sm text-gray-600 font-medium mb-3">Notes</p>
-              <div className="relative bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 shadow-sm flex items-start space-x-2">
+            <div className="flex-1 min-w-0">
+              <p className="mb-3 font-medium text-gray-600 text-sm">Notes</p>
+              <div className="relative flex items-start space-x-2 bg-gray-50 shadow-sm px-4 py-3 border border-gray-200 rounded-2xl">
                 <MessageSquare
                   size={20}
-                  className="text-gray-400 flex-shrink-0 mt-1"
+                  className="flex-shrink-0 mt-1 text-gray-400"
                 />
-                <p className="text-sm text-gray-700 leading-relaxed break-all whitespace-pre-wrap">
+                <p className="text-gray-700 text-sm break-all leading-relaxed whitespace-pre-wrap">
                   {notes}
                 </p>
               </div>
