@@ -71,3 +71,9 @@ export interface FormData {
   leadLinkedInUrlColumn?: string;
   leadScoringColumn?: string;
 }
+
+export type Workbook = {
+  id: string;
+  name: string;
+};
+

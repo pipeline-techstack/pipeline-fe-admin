@@ -30,7 +30,13 @@ const EditConfigurations = () => {
   const mode = params.mode as string;
   const campaignIdFromParams = searchParams.get("campaign") || "";
 
-  const { workbooks } = useWorkbookConfigurations(); 
+  const {
+    workbooks,
+    hasMore,
+    loadWorkbooks,
+    loading: workbooksLoading,
+    handleSearch,
+  } = useWorkbookConfigurations();
   const { loadColumns: fetchColumns } = useWorkbookColumns();
 
   const [configs, setConfigs] = useState<WorkbookConfig[]>([]);
@@ -44,7 +50,12 @@ const EditConfigurations = () => {
     campaigns?.map((c: any) => ({ id: c.id?.toString(), name: c.name })) ?? [];
 
   // Prefill edit mode
-  usePrefillConfiguration(mode, campaignIdFromParams, setConfigs, fetchColumns);
+  const { loading: prefillLoading } = usePrefillConfiguration(
+    mode,
+    campaignIdFromParams,
+    setConfigs,
+    fetchColumns
+  );
 
   const { save } = useSaveConfiguration(
     configs.map((c) => c.formData),
@@ -77,6 +88,13 @@ const EditConfigurations = () => {
     );
   };
 
+  if (prefillLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loader2 className="animate-spin" />
+      </div>
+    );
+  }
   return (
     <div className="space-y-6 bg-white mx-auto p-6 max-w-2xl">
       {mode === "new" && (
@@ -96,7 +114,12 @@ const EditConfigurations = () => {
           {/* Workbook selector */}
           <WorkbookSelect
             value={config.workbookId}
-            workbooks={workbooks[0].workbooks}
+            workbooks={workbooks}
+            loadMore={loadWorkbooks}
+            hasMore={hasMore}
+            loading={workbooksLoading}
+            onSearch={handleSearch}
+            prefillName={config.formData.workbookName}
             onChange={async (val) => {
               updateConfig(idx, { workbookId: val });
 
