@@ -11,7 +11,6 @@ type WorkbookConfig = {
 
 export const usePrefillConfiguration = (
   mode: string,
-  workbookId: string,
   campaignId: string,
   setConfigs: React.Dispatch<React.SetStateAction<WorkbookConfig[]>>,
   loadColumns: (id: string) => Promise<Column[]>
@@ -29,7 +28,7 @@ export const usePrefillConfiguration = (
 
             const campaignConfig = wb.campaign_configuration;
             const formData: FormData = {
-              workbookName: wb.workbook_name || wb.workbook_id,
+              workbookName: wb.workbook_name,
               researchType: campaignConfig.company_research
                 ? "company"
                 : "lead",
@@ -77,5 +76,5 @@ export const usePrefillConfiguration = (
     };
 
     prefill();
-  }, [mode, campaignId, workbookId]);
+  }, [mode, campaignId]);
 };

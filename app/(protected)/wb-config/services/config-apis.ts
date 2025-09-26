@@ -40,20 +40,31 @@ export async function fetchWorkbookConfigurations(): Promise<WorkbookConfigurati
     }
 
     const data = await res.json();
-    const workbooks: WorkbookApiResponse[] = Array.isArray(data.workbooks) ? data.workbooks : [];
-    
-    return workbooks.map((wb: WorkbookApiResponse) => ({
-      id: wb.workbook_id,
-      campaign_id: wb.campaign_configuration.campaign_id,
-      campaign: wb.campaign_configuration.campaign_name,
-      workbooks: [wb.workbook_name],
-      additionalCount: 0,
-    }));
+
+    // Response: { message, campaigns: [{ campaign_id, campaign_name, workbooks: [...] }] }
+    const campaigns = Array.isArray(data.campaigns) ? data.campaigns : [];
+
+    return campaigns.map((campaign) => {
+      const workbooks =
+        campaign.workbooks?.map((wb: any) => ({
+          id: wb.workbook_id,
+          name: wb.workbook_name,
+        })) || [];
+
+      return {
+        campaign_id: campaign.campaign_id,
+        campaign: campaign.campaign_name,
+        workbooks, 
+        additionalCount: 0,
+      };
+    });
   } catch (error) {
     console.error("API error:", error);
     return [];
   }
 }
+
+
 
 export async function fetchWorkbookColumns(workbookId: string): Promise<Column[]> {
   try {

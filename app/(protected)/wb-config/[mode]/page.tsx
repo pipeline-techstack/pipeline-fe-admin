@@ -28,24 +28,23 @@ const EditConfigurations = () => {
   const router = useRouter();
 
   const mode = params.mode as string;
-  const workbookIdFromParams = searchParams.get("id") || "";
   const campaignIdFromParams = searchParams.get("campaign") || "";
 
-  const { workbooks } = useWorkbookConfigurations();
+  const { workbooks } = useWorkbookConfigurations(); 
   const { loadColumns: fetchColumns } = useWorkbookColumns();
 
   const [configs, setConfigs] = useState<WorkbookConfig[]>([]);
   const [selectedCampaign, setSelectedCampaign] = useState<string>("");
   const [loading, setLoading] = useState(false);
-  const [loadingColumns, setLoadingColumns] = useState<number | null>(null); // track per card
+  const [loadingColumns, setLoadingColumns] = useState<number | null>(null);
 
   const { campaignsQuery } = useHeyreach({ enableCampaigns: mode === "new" });
   const { data: campaigns = [], isLoading: campaignsLoading } = campaignsQuery;
   const campaignOptions =
     campaigns?.map((c: any) => ({ id: c.id?.toString(), name: c.name })) ?? [];
 
-  // Prefill for edit mode (single workbook for now)
-  usePrefillConfiguration(mode, workbookIdFromParams, campaignIdFromParams, setConfigs, fetchColumns);
+  // Prefill edit mode
+  usePrefillConfiguration(mode, campaignIdFromParams, setConfigs, fetchColumns);
 
   const { save } = useSaveConfiguration(
     configs.map((c) => c.formData),
@@ -97,26 +96,30 @@ const EditConfigurations = () => {
           {/* Workbook selector */}
           <WorkbookSelect
             value={config.workbookId}
-            workbooks={workbooks}
+            workbooks={workbooks[0].workbooks}
             onChange={async (val) => {
               updateConfig(idx, { workbookId: val });
-              updateFormData(idx, "workbookName", val);
 
-              setLoadingColumns(idx); // set loader for this card
+              // find workbook name by id
+              const wb = workbooks.find((w) => w.id === val);
+              if (wb) {
+                updateFormData(idx, "workbookName", wb.name);
+              }
+
+              // fetch columns
+              setLoadingColumns(idx);
               const cols = await fetchColumns(val);
               updateConfig(idx, { columns: cols });
-              setLoadingColumns(null); // stop loader
+              setLoadingColumns(null);
             }}
           />
 
-          {/* Spinner while fetching columns */}
           {loadingColumns === idx && (
             <div className="flex items-center gap-2 text-gray-500 text-sm">
               <Loader2 className="w-4 h-4 animate-spin" /> Loading columns...
             </div>
           )}
 
-          {/* Show research type only if workbook is selected */}
           {config.workbookId && (
             <ResearchTypeSelector
               value={config.researchType}
@@ -127,7 +130,6 @@ const EditConfigurations = () => {
             />
           )}
 
-          {/* Show configuration form only if research type is chosen */}
           {config.workbookId && config.researchType && (
             <ConfigurationForm
               formData={config.formData}
@@ -138,7 +140,7 @@ const EditConfigurations = () => {
         </div>
       ))}
 
-      {/* Add workbook button */}
+      {/* Add workbook */}
       <Button
         type="button"
         variant="outline"
@@ -165,7 +167,7 @@ const EditConfigurations = () => {
         <Plus className="mr-2 w-4 h-4" /> Add Workbook
       </Button>
 
-      {/* Save + Cancel buttons */}
+      {/* Save + Cancel */}
       <ActionButtons
         loading={loading}
         onSave={async () => {

@@ -33,6 +33,8 @@ const WorkbookConfigurationPage = () => {
     loadData();
   }, []);
 
+  console.log("workbookConfigurations", workbookConfigurations);
+
   return (
     <TooltipProvider>
       <div className="bg-gray-50 px-4 py-8">
@@ -67,102 +69,91 @@ const WorkbookConfigurationPage = () => {
                 </tr>
               </thead>
               <tbody>
-                {Array.isArray(workbookConfigurations) &&
-                workbookConfigurations.length > 0 ? (
-                  workbookConfigurations.map((config) => (
-                    <tr
-                      key={config.id}
-                      className="hover:bg-gray-50 text-gray-800 text-sm"
-                    >
-                      <td className="p-3 border-b">
-                        <span className="font-medium">{config.campaign}</span>
-                      </td>
-                      <td className="p-3 border-b">
-                        <div className="flex flex-wrap gap-2">
-                          {config.workbooks.slice(0, 2).map((workbook, idx) => (
-                            <span
-                              key={idx}
-                              className="bg-blue-100 px-2 py-1 rounded-md text-blue-700 text-xs"
-                            >
-                              {workbook}
-                            </span>
-                          ))}
+                {workbookConfigurations.map((config) => (
+                  <tr
+                    key={config.campaign_id}
+                    className="hover:bg-gray-50 text-gray-800 text-sm"
+                  >
+                    <td className="p-3 border-b">
+                      <span className="font-medium">{config.campaign}</span>
+                    </td>
+                    <td className="p-3 border-b">
+                      <div className="flex flex-wrap gap-2">
+                        {/* Show first 2 workbooks */}
+                        {config.workbooks.slice(0, 2).map((workbook) => (
+                          <span
+                            key={workbook.id}
+                            className="bg-blue-100 px-2 py-1 rounded-md text-blue-700 text-xs"
+                          >
+                            {workbook.name}
+                          </span>
+                        ))}
 
-                          {config.workbooks.length > 2 && (
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <span className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded-md text-gray-700 text-xs cursor-pointer">
-                                  +{config.workbooks.length - 2} more
-                                </span>
-                              </TooltipTrigger>
-                              <TooltipContent className="max-w-xs max-h-80 overflow-y-auto">
-                                <div className="flex flex-wrap gap-1">
-                                  {config.workbooks
-                                    .slice(2)
-                                    .map((workbook, idx) => (
-                                      <span
-                                        key={idx}
-                                        className="bg-blue-50 px-2 py-0.5 rounded text-blue-700 text-xs"
-                                      >
-                                        {workbook}
-                                      </span>
-                                    ))}
-                                </div>
-                              </TooltipContent>
-                            </Tooltip>
-                          )}
+                        {/* Show tooltip if more than 2 workbooks */}
+                        {config.workbooks.length > 2 && (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded-md text-gray-700 text-xs cursor-pointer">
+                                +{config.workbooks.length - 2} more
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent className="max-w-xs max-h-80 overflow-y-auto">
+                              <div className="flex flex-wrap gap-1">
+                                {config.workbooks.slice(2).map((workbook) => (
+                                  <span
+                                    key={workbook.id}
+                                    className="bg-blue-50 px-2 py-0.5 rounded text-blue-700 text-xs"
+                                  >
+                                    {workbook.name}
+                                  </span>
+                                ))}
+                              </div>
+                            </TooltipContent>
+                          </Tooltip>
+                        )}
 
-                          {config.additionalCount > 0 && (
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <span className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded-md text-gray-700 text-xs cursor-pointer">
-                                  +{config.additionalCount} more additional
-                                </span>
-                              </TooltipTrigger>
-                              <TooltipContent className="max-w-xs">
-                                <div className="text-xs">
-                                  <p className="mb-1 font-medium">
-                                    Additional Workbooks:
-                                  </p>
-                                  <div className="space-y-1">
-                                    {Array.from(
-                                      { length: config.additionalCount },
-                                      (_, i) => (
-                                        <div key={i}>
-                                          Workbook{" "}
-                                          {config.workbooks.length + i + 1}{" "}
-                                          Ready
-                                        </div>
-                                      )
-                                    )}
-                                  </div>
+                        {/* If additionalCount > 0 */}
+                        {config.additionalCount > 0 && (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded-md text-gray-700 text-xs cursor-pointer">
+                                +{config.additionalCount} more additional
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent className="max-w-xs">
+                              <div className="text-xs">
+                                <p className="mb-1 font-medium">
+                                  Additional Workbooks:
+                                </p>
+                                <div className="space-y-1">
+                                  {Array.from(
+                                    { length: config.additionalCount },
+                                    (_, i) => (
+                                      <div key={i}>
+                                        Workbook {config.workbooks.length + i + 1} Ready
+                                      </div>
+                                    )
+                                  )}
                                 </div>
-                              </TooltipContent>
-                            </Tooltip>
-                          )}
-                        </div>
-                      </td>
-                      <td className="p-3 border-b text-center">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          // className="bg-blue-600 hover:bg-blue-700 px-4 text-white"
-                          onClick={() =>
-                            router.push(`/wb-config/edit?id=${config.id}&campaign=${config.campaign_id}`)
-                          }
-                        >
-                          Edit
-                        </Button>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={3} className="p-4 text-gray-500 text-center">
-                      {error || "No workbook configurations found"}
+                              </div>
+                            </TooltipContent>
+                          </Tooltip>
+                        )}
+                      </div>
+                    </td>
+                    <td className="p-3 border-b text-center">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() =>
+                          router.push(`/wb-config/edit?campaign=${config.campaign_id}`)
+                        }
+                      >
+                        Edit
+                      </Button>
                     </td>
                   </tr>
-                )}
+                ))}
               </tbody>
             </table>
           )}

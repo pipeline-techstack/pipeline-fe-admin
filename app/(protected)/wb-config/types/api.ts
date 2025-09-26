@@ -1,6 +1,5 @@
 // types/api.ts
 export interface WorkbookConfiguration {
-  id: string;
   campaign_id: string;
   campaign: string;
   workbooks: string[];
