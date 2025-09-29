@@ -10,7 +10,7 @@ type Props = {
 
 export const ActionButtons = ({ loading, onSave, onCancel }: Props) => (
   <div className="flex space-x-4 pt-6">
-    <Button onClick={onSave} disabled={loading}>
+    <Button className="bg-zinc-800 hover:bg-zinc-700" onClick={onSave} disabled={loading}>
       <Save className="mr-2 w-4 h-4" />
       {loading ? "Saving..." : "Save"}
     </Button>

@@ -46,7 +46,7 @@ const WorkbookConfigurationPage = () => {
                 What is user and campaign Permission
               </p>
             </div>
-            <Button onClick={() => router.push("/wb-config/new")}>
+            <Button className="bg-zinc-800 hover:bg-zinc-700" onClick={() => router.push("/wb-config/new")}>
               New Configuration
             </Button>
           </div>
