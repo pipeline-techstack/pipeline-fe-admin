@@ -69,14 +69,14 @@ const SenderCard = ({ sender, onAction }: SenderCardProps) => {
           </div>
         </div>
 
-        <div className="flex items-center justify-between mb-4">
+        {/* <div className="flex items-center justify-between mb-4">
           {getStatusBadge()}
           <span className="text-sm text-gray-600">
             <span className="font-semibold text-gray-900">{sender.messages_sent}</span> sent
           </span>
-        </div>
+        </div> */}
 
-        <Button
+        {/* <Button
           onClick={handleAction}
           variant={currentStatus === 'active' ? 'outline' : 'default'}
           className={
@@ -97,7 +97,7 @@ const SenderCard = ({ sender, onAction }: SenderCardProps) => {
               Engage
             </>
           )}
-        </Button>
+        </Button> */}
       </CardContent>
     </Card>
   );

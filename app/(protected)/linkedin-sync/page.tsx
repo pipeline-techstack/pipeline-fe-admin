@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { toast } from "sonner";
 import LinkedInSyncHeader from "./components/shared/ls-header";
 import TabNavigation from "./components/shared/tab-nav";
 import SendersHeader from "./components/senders/senders-header";
@@ -10,34 +11,66 @@ import CampaignsHeader from "./components/campaigns/campaigns-header";
 import CampaignTable from "./components/campaigns/campaign-table";
 import { useLinkedInSenders } from "./hooks/useLinkedInSenders";
 import { useCampaignTasks } from "./hooks/useCampaignTasks";
+import { updateCampaignTask } from "./services/campaign-apis";
 
 const LinkedInSyncPage = () => {
   const [activeTab, setActiveTab] = useState('senders');
   
   // Sender data
-  const { senders, total: senderTotal, isLoading: sendersLoading, error: senderError, refreshSenders } = useLinkedInSenders();
+  const { 
+    senders, 
+    total: senderTotal, 
+    isLoading: sendersLoading, 
+    error: senderError, 
+    refreshSenders 
+  } = useLinkedInSenders();
   
   // Campaign data
-  const { campaigns, total: campaignTotal, isLoading: campaignsLoading, error: campaignError, refreshCampaigns } = useCampaignTasks();
+  const { 
+    campaigns, 
+    total: campaignTotal, 
+    isLoading: campaignsLoading, 
+    error: campaignError, 
+    refreshCampaigns 
+  } = useCampaignTasks();
 
   const handleSenderAction = (senderId: string, action: 'pause' | 'engage') => {
     console.log('Sender action:', senderId, action);
-    // API call will be added here
+    toast.info(`Action "${action}" for sender ${senderId} - Coming soon`);
   };
 
   const handleAddSender = () => {
     console.log('Add new sender');
-    // Modal or navigation will be added here
+    toast.info("Add sender functionality - Coming soon");
   };
 
-  const handleCampaignUpdate = (campaignId: string) => {
-    console.log('Update campaign:', campaignId);
-    // API call will be added here
+  const handleCampaignUpdate = async (taskId: string, heyreachCampaignId: string) => {
+    try {
+      toast.loading("Updating campaign task...", { id: "campaign-update" });
+      
+      await updateCampaignTask(taskId, heyreachCampaignId);
+      
+      toast.success("Campaign task updated successfully", { id: "campaign-update" });
+      
+      // Refresh the campaigns list to show updated data
+      await refreshCampaigns();
+    } catch (error) {
+      console.error("Error updating campaign task:", error);
+      toast.error("Failed to update campaign task", {
+        id: "campaign-update",
+        description: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
   };
 
-  const handleGlobalUpdate = () => {
-    console.log('Trigger global campaign update');
-    refreshCampaigns();
+  const handleGlobalUpdate = async () => {
+    try {
+      toast.loading("Refreshing campaigns...", { id: "refresh-campaigns" });
+      await refreshCampaigns();
+      toast.success("Campaigns refreshed successfully", { id: "refresh-campaigns" });
+    } catch (error) {
+      toast.error("Failed to refresh campaigns", { id: "refresh-campaigns" });
+    }
   };
 
   return (

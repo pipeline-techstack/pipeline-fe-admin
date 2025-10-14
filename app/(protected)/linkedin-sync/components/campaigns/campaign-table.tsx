@@ -16,25 +16,27 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import CreateCampaignDialog from "./create-campaign-dialog";
 import { CampaignTask } from "../../types/campaign";
+import { getLinkedInSenderNames, getTaskTypeDisplay, getTaskType } from "../../utils/campaign-utils";
 
 interface CampaignTableProps {
   campaigns: CampaignTask[];
-  onUpdate?: (campaignId: string, heyreachCampaignId: string) => void;
+  onUpdate?: (taskId: string, heyreachCampaignId: string) => void;
   isLoading?: boolean;
 }
 
 const CampaignTable = ({ campaigns, onUpdate, isLoading }: CampaignTableProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedCampaignId, setSelectedCampaignId] = useState<string>("");
+  const [selectedTaskId, setSelectedTaskId] = useState<string>("");
 
-  const handleUpdateClick = (campaignId: string) => {
-    setSelectedCampaignId(campaignId);
+  const handleUpdateClick = (taskId: string) => {
+    setSelectedTaskId(taskId);
     setIsDialogOpen(true);
   };
 
   const handleLinkCampaign = (heyreachCampaignId: string) => {
-    if (selectedCampaignId && onUpdate) {
-      onUpdate(selectedCampaignId, heyreachCampaignId);
+    if (selectedTaskId && onUpdate) {
+      onUpdate(selectedTaskId, heyreachCampaignId);
+      setIsDialogOpen(false);
     }
   };
 
@@ -52,7 +54,7 @@ const CampaignTable = ({ campaigns, onUpdate, isLoading }: CampaignTableProps) =
     );
   }
 
-  if (campaigns.length === 0) {
+  if (!campaigns || campaigns.length === 0) {
     return (
       <Card>
         <CardContent className="p-8 text-center">
@@ -69,30 +71,40 @@ const CampaignTable = ({ campaigns, onUpdate, isLoading }: CampaignTableProps) =
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Campaign Name</TableHead>
+                <TableHead>Campaign ID</TableHead>
                 <TableHead>LinkedIn Senders</TableHead>
                 <TableHead>Task Type</TableHead>
+                <TableHead>Status</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
 
             <TableBody>
-              {campaigns.map((campaign) => {
-                const taskType = campaign.task_type?.toLowerCase();
+              {campaigns.map((task) => {
+                const senderNames = getLinkedInSenderNames(task);
+                const taskType = getTaskType(task.type);
+                const taskTypeDisplay = getTaskTypeDisplay(task.type);
 
                 return (
-                  <TableRow key={campaign.id}>
-                    <TableCell className="font-medium">
-                      {campaign.campaign_name}
-                    </TableCell>
+                  <TableRow key={task._id}>
+                    {/* <TableCell className="font-medium">
+                      {task.campaign_id}
+                    </TableCell> */}
+                    <TableCell className="font-medium" title={task.campaign_id}>
+  {task.campaign_name?.trim() || "Unknown"}
+</TableCell>
 
                     <TableCell>
                       <div className="flex flex-wrap gap-2">
-                        {campaign.linkedin_senders.map((sender) => (
-                          <Badge key={sender.id} variant="outline">
-                            {sender.name}
-                          </Badge>
-                        ))}
+                        {senderNames.length > 0 ? (
+                          senderNames.map((name, index) => (
+                            <Badge key={index} variant="outline">
+                              {name}
+                            </Badge>
+                          ))
+                        ) : (
+                          <span className="text-sm text-gray-500">No senders</span>
+                        )}
                       </div>
                     </TableCell>
 
@@ -101,12 +113,24 @@ const CampaignTable = ({ campaigns, onUpdate, isLoading }: CampaignTableProps) =
                         className={`px-3 py-1 font-medium transition-colors ${
                           taskType === "create"
                             ? "bg-green-100 text-green-800 hover:bg-green-200"
-                            : "bg-blue-100 text-blue-800 hover:bg-gray-200"
+                            : "bg-blue-100 text-blue-800 hover:bg-blue-200"
                         }`}
                       >
-                        {taskType === "create"
-                          ? "Create Campaign"
-                          : "Update Campaign"}
+                        {taskTypeDisplay}
+                      </Badge>
+                    </TableCell>
+
+                    <TableCell>
+                      <Badge 
+                        className={
+                            task.status === 'pending'
+                            ? 'bg-yellow-100 text-yellow-800'
+                            : task.status === 'completed'
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-gray-100 text-gray-800'
+                        }
+                        >
+                        {task.status}
                       </Badge>
                     </TableCell>
 
@@ -114,7 +138,7 @@ const CampaignTable = ({ campaigns, onUpdate, isLoading }: CampaignTableProps) =
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => handleUpdateClick(campaign.id)}
+                        onClick={() => handleUpdateClick(task._id)}
                       >
                         <RefreshCw className="w-4 h-4 mr-2" />
                         Update
