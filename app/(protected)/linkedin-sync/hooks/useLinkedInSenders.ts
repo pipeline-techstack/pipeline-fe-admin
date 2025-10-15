@@ -17,7 +17,7 @@ const normalizeSender = (item: any): LinkedInSenderProfile => {
     headline: profile.headline || undefined,
     avatar: profile.profilePicHighQuality || profile.profilePic || undefined,
     profile_url: profile.linkedinUrl || item.linkedin_profile_url || "",
-    status: "active", // Default since API doesn’t provide it
+    status: "active",
     messages_sent: item.messages_sent || 0,
     engagement_rate: item.engagement_rate || undefined,
     last_active: item.updated_at || null,
@@ -26,11 +26,11 @@ const normalizeSender = (item: any): LinkedInSenderProfile => {
   };
 };
 
-export const useLinkedInSenders = () => {
+export const useLinkedInSenders = (campaignId?: string) => {
   const query = useQuery({
-    queryKey: ["linkedin-senders"],
+    queryKey: ["linkedin-senders", campaignId], 
     queryFn: async () => {
-      const res = await getLinkedinSenders();
+      const res = await getLinkedinSenders(campaignId); 
       const senders = Array.isArray(res?.linked_senders)
         ? res.linked_senders.map(normalizeSender)
         : [];
@@ -39,7 +39,8 @@ export const useLinkedInSenders = () => {
         total: senders.length,
       };
     },
-    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+    // enabled: !!campaignId,
+    staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,
   });
 
@@ -48,6 +49,6 @@ export const useLinkedInSenders = () => {
     total: query.data?.total ?? 0,
     isLoading: query.isLoading,
     error: query.error,
-    refreshSenders: query.refetch, // same functionality as before
+    refreshSenders: query.refetch,
   };
 };

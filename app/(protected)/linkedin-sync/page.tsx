@@ -5,49 +5,30 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { toast } from "sonner";
 import LinkedInSyncHeader from "./components/shared/ls-header";
 import TabNavigation from "./components/shared/tab-nav";
-import SendersHeader from "./components/senders/senders-header";
-import SenderGrid from "./components/senders/sender-grid";
 import CampaignsHeader from "./components/campaigns/campaigns-header";
 import CampaignTable from "./components/campaigns/campaign-table";
-import { useLinkedInSenders } from "./hooks/useLinkedInSenders";
 import { useCampaignTasks } from "./hooks/useCampaignTasks";
+import SenderTabComponent from "./components/senders/SenderTabComponent";
 
 const LinkedInSyncPage = () => {
-  const [activeTab, setActiveTab] = useState('senders');
-  
-  // Sender data
-  const { 
-    senders, 
-    total: senderTotal, 
-    isLoading: sendersLoading, 
-    error: senderError, 
-    refreshSenders 
-  } = useLinkedInSenders();
-  
+  const [activeTab, setActiveTab] = useState("senders");
+
   // Campaign data
-  const { 
-    campaigns, 
-    total: campaignTotal, 
-    isLoading: campaignsLoading, 
-    error: campaignError, 
-    refreshCampaigns 
+  const {
+    campaigns,
+    total: campaignTotal,
+    isLoading: campaignsLoading,
+    error: campaignError,
+    refreshCampaigns,
   } = useCampaignTasks();
-
-  const handleSenderAction = (senderId: string, action: 'pause' | 'engage') => {
-    console.log('Sender action:', senderId, action);
-    toast.info(`Action "${action}" for sender ${senderId} - Coming soon`);
-  };
-
-  const handleAddSender = () => {
-    console.log('Add new sender');
-    toast.info("Add sender functionality - Coming soon");
-  };
 
   const handleGlobalUpdate = async () => {
     try {
       toast.loading("Refreshing campaigns...", { id: "refresh-campaigns" });
       await refreshCampaigns();
-      toast.success("Campaigns refreshed successfully", { id: "refresh-campaigns" });
+      toast.success("Campaigns refreshed successfully", {
+        id: "refresh-campaigns",
+      });
     } catch (error) {
       toast.error("Failed to refresh campaigns", { id: "refresh-campaigns" });
     }
@@ -57,39 +38,24 @@ const LinkedInSyncPage = () => {
     <div className="bg-gray-50 min-h-screen">
       <div className="p-6">
         <LinkedInSyncHeader />
-        
+
         <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
-        
+
         {/* LinkedIn Senders Tab */}
-        {activeTab === 'senders' && (
-          <>
-            <SendersHeader onAddSender={handleAddSender} />
+        {activeTab === "senders" && <SenderTabComponent />}
 
-            <SenderGrid 
-              senders={senders} 
-              onAction={handleSenderAction}
-              isLoading={sendersLoading}
-            />
-
-            {senderError && (
-              <Alert variant="destructive" className="mt-4">
-                <AlertDescription>
-                  <strong>Error:</strong> {(senderError as Error).message}
-                </AlertDescription>
-              </Alert>
-            )}
-          </>
-        )}
-        
         {/* Campaign Task Tab */}
-        {activeTab === 'campaigns' && (
+        {activeTab === "campaigns" && (
           <>
             {!campaignsLoading && !campaignError && (
-              <CampaignsHeader onUpdate={handleGlobalUpdate} total={campaignTotal} />
+              <CampaignsHeader
+                onUpdate={handleGlobalUpdate}
+                total={campaignTotal}
+              />
             )}
 
-            <CampaignTable 
-              campaigns={campaigns} 
+            <CampaignTable
+              campaigns={campaigns}
               onRefresh={refreshCampaigns}
               isLoading={campaignsLoading}
             />

@@ -20,14 +20,9 @@ import { useQueryClient } from "@tanstack/react-query";
 interface AddSenderDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAddSender: (data: { id: number; fullName: string; email: string }) => void;
 }
 
-const AddSenderDialog = ({
-  open,
-  onOpenChange,
-  onAddSender,
-}: AddSenderDialogProps) => {
+const AddSenderDialog = ({ open, onOpenChange }: AddSenderDialogProps) => {
   const { data: senderOptions = [], isLoading } = useHeyreachSenders(open);
   const queryClient = useQueryClient();
 
@@ -55,12 +50,6 @@ const AddSenderDialog = ({
       setIsSubmitting(true);
       await addLinkedinSender(selectedSenderId, profileUrl.trim());
       toast.success(`Sender "${selected.name}" linked successfully!`);
-
-      // onAddSender({
-      //   id: selected.id,
-      //   fullName: selected.name,
-      //   email: selected.email,
-      // });
 
       queryClient.invalidateQueries({ queryKey: ["linkedin-senders"] });
 

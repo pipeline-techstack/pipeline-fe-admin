@@ -1,23 +1,35 @@
 import { getToken } from "@/lib/auth";
 import { toast } from "sonner";
 
-export async function getLinkedinSenders(): Promise<any> {
+export async function getLinkedinSenders(campaignId?: string): Promise<any> {
   const token = getToken();
 
   if (!token) {
     throw new Error("Authentication required");
   }
 
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_PERMISSIONS_URL}/linkedin-senders/admin/linkedin_senders`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }
+  const url = new URL(
+    `${process.env.NEXT_PUBLIC_PERMISSIONS_URL}/linkedin-senders/admin/linkedin_senders`
   );
+  if (campaignId) url.searchParams.append("campaign_id", campaignId);
+
+  // const response = await fetch(
+  //   `${process.env.NEXT_PUBLIC_PERMISSIONS_URL}/linkedin-senders/admin/linkedin_senders`,
+  //   {
+  //     method: "GET",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   }
+  // );
+  const response = await fetch(url.toString(), {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));

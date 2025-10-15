@@ -15,6 +15,7 @@ type Props = {
   options: { id: string; name: string }[];
   onChange: (val: string) => void;
   disabled?: boolean;
+  hideLabel?: boolean;
 };
 export const SingleSelectComponent = ({
   name = "Select Campaign",
@@ -23,11 +24,13 @@ export const SingleSelectComponent = ({
   options,
   onChange,
   disabled,
+  hideLabel = false,
 }: Props) => (
   <div className="flex flex-col">
-    <Label className="mb-1 font-medium text-gray-700 text-sm">
-     {name}
-    </Label>
+    {!hideLabel && (
+      <Label className="mb-1 font-medium text-gray-700 text-sm">{name}</Label>
+    )}
+
     <Select value={value} onValueChange={onChange} disabled={disabled}>
       <SelectTrigger>
         <SelectValue placeholder={placeholder} />
