@@ -17,6 +17,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import CreateCampaignDialog from "./create-campaign-dialog";
 import UpdateCampaignDialog from "./update-campaign-dialog";
+import CampaignPreviewDialog from "./campaign-preview-dialog";
 import { CampaignTask } from "../../types/campaign";
 import { updateCampaignTask, markCampaignAsUpdated } from "../../services/campaign-apis";
 import { 
@@ -32,6 +33,7 @@ interface CampaignTableProps {
 }
 
 const CampaignTable = ({ campaigns, onRefresh, isLoading }: CampaignTableProps) => {
+  const [isPreviewDialogOpen, setIsPreviewDialogOpen] = useState(false);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<CampaignTask | null>(null);
@@ -50,10 +52,18 @@ const CampaignTable = ({ campaigns, onRefresh, isLoading }: CampaignTableProps) 
     setSelectedTask(task);
     
     if (task.type === "campaign_creation") {
-      setIsCreateDialogOpen(true);
+      // Open preview dialog first for campaign creation
+      setIsPreviewDialogOpen(true);
     } else if (task.type === "campaign_update") {
+      // Directly open update dialog for campaign updates
       setIsUpdateDialogOpen(true);
     }
+  };
+
+  const handlePreviewProceed = () => {
+    // Close preview and open create dialog
+    setIsPreviewDialogOpen(false);
+    setIsCreateDialogOpen(true);
   };
 
   const handleLinkCampaign = async (taskId: string, heyreachCampaignId: string) => {
@@ -212,6 +222,13 @@ const CampaignTable = ({ campaigns, onRefresh, isLoading }: CampaignTableProps) 
           </Table>
         </CardContent>
       </Card>
+
+      <CampaignPreviewDialog
+        open={isPreviewDialogOpen}
+        onOpenChange={setIsPreviewDialogOpen}
+        onProceed={handlePreviewProceed}
+        selectedTask={selectedTask}
+      />
 
       <CreateCampaignDialog
         open={isCreateDialogOpen}
