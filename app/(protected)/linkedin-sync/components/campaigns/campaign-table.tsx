@@ -14,19 +14,24 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
 import CreateCampaignDialog from "./create-campaign-dialog";
 import UpdateCampaignDialog from "./update-campaign-dialog";
 import { CampaignTask } from "../../types/campaign";
-import { getLinkedInSenderNames, getTaskTypeDisplay, getTaskType } from "../../utils/campaign-utils";
+import { updateCampaignTask } from "../../services/campaign-apis";
+import { 
+  getLinkedInSenderNames, 
+  getTaskTypeDisplay, 
+  getTaskType 
+} from "../../utils/campaign-utils";
 
 interface CampaignTableProps {
   campaigns: CampaignTask[];
-  onUpdate?: (taskId: string, heyreachCampaignId: string) => void;
   onRefresh?: () => Promise<void>;
   isLoading?: boolean;
 }
 
-const CampaignTable = ({ campaigns, onUpdate, onRefresh, isLoading }: CampaignTableProps) => {
+const CampaignTable = ({ campaigns, onRefresh, isLoading }: CampaignTableProps) => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<CampaignTask | null>(null);
@@ -34,7 +39,6 @@ const CampaignTable = ({ campaigns, onUpdate, onRefresh, isLoading }: CampaignTa
   const handleUpdateClick = (task: CampaignTask) => {
     setSelectedTask(task);
     
-    // Check task type and open appropriate dialog
     if (task.type === "campaign_creation") {
       setIsCreateDialogOpen(true);
     } else if (task.type === "campaign_update") {
@@ -42,24 +46,39 @@ const CampaignTable = ({ campaigns, onUpdate, onRefresh, isLoading }: CampaignTa
     }
   };
 
-  const handleLinkCampaign = (heyreachCampaignId: string) => {
-    if (selectedTask && onUpdate) {
-      onUpdate(selectedTask._id, heyreachCampaignId);
+  const handleLinkCampaign = async (taskId: string, heyreachCampaignId: string) => {
+    try {
+      await updateCampaignTask(taskId, heyreachCampaignId);
+      
+      toast.success("Campaign linked successfully", {
+        description: `HeyReach campaign ${heyreachCampaignId} has been linked.`
+      });
+      
+      setIsCreateDialogOpen(false);
+      setSelectedTask(null);
+      
+      if (onRefresh) {
+        await onRefresh();
+      }
+    } catch (error) {
+      const err = error as Error;
+      toast.error("Failed to link campaign", {
+        description: err.message
+      });
+      throw error;
     }
   };
 
-  const handleComplete = async () => {
-    setIsCreateDialogOpen(false);
+  const handleUpdateCampaign = async (campaignId: string) => {
+    // Implement update campaign logic here
+    console.log("Update campaign:", campaignId);
+    
     setIsUpdateDialogOpen(false);
     setSelectedTask(null);
     
     if (onRefresh) {
       await onRefresh();
     }
-  };
-
-  const handleUpdateCampaign = (campaignId: string) => {
-    console.log("Update campaign:", campaignId);
   };
 
   if (isLoading) {
@@ -142,13 +161,13 @@ const CampaignTable = ({ campaigns, onUpdate, onRefresh, isLoading }: CampaignTa
                     <TableCell>
                       <Badge 
                         className={
-                            task.status === 'pending'
+                          task.status === 'pending'
                             ? 'bg-yellow-100 text-yellow-800'
                             : task.status === 'completed'
                             ? 'bg-green-100 text-green-800'
                             : 'bg-gray-100 text-gray-800'
                         }
-                        >
+                      >
                         {task.status}
                       </Badge>
                     </TableCell>
@@ -170,10 +189,12 @@ const CampaignTable = ({ campaigns, onUpdate, onRefresh, isLoading }: CampaignTa
           </Table>
         </CardContent>
       </Card>
+
       <CreateCampaignDialog
         open={isCreateDialogOpen}
         onOpenChange={setIsCreateDialogOpen}
         onLinkCampaign={handleLinkCampaign}
+        taskId={selectedTask?._id}
       />
 
       <UpdateCampaignDialog

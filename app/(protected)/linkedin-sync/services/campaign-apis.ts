@@ -12,7 +12,6 @@ export const getAdminTasks = async (status?: string): Promise<CampaignApiRespons
   const token = getToken();
   if (!token) throw new Error("Authentication required");
 
-  // Build URL with optional status query parameter
   const url = new URL(`${BASE_URL}/campaign-engagement/admin/tasks`);
   if (status) {
     url.searchParams.append('status', status);
@@ -30,40 +29,37 @@ export const getAdminTasks = async (status?: string): Promise<CampaignApiRespons
     throw new Error(`Failed to fetch campaign tasks: ${res.status} ${res.statusText}`);
   }
 
-  const data = await res.json();
-  return data;
+  return res.json();
 };
 
 /**
- * Update a campaign task
+ * Update a campaign task by linking it with a HeyReach campaign
  * @param taskId - The task ID to update
- * @param heyreachCampaignId - The Heyreach campaign ID to link
+ * @param heyreachCampaignId - The HeyReach campaign ID to link
+ * @returns Promise with response data
  */
 export const updateCampaignTask = async (
   taskId: string,
   heyreachCampaignId: string
-): Promise<any> => {
+): Promise<string> => {
   const token = getToken();
   if (!token) throw new Error("Authentication required");
 
-  const url = `${BASE_URL}/campaign-engagement/admin/update-task/${taskId}`;
-  
-  const res = await fetch(url, {
+  const url = new URL(`${BASE_URL}/campaign-engagement/admin/update-task/${taskId}`);
+  url.searchParams.append('heyreach_campaign_id', heyreachCampaignId);
+
+  const res = await fetch(url.toString(), {
     method: "PUT",
     headers: {
       Authorization: `Bearer ${token}`,
       Accept: "application/json",
-      "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      heyreach_campaign_id: heyreachCampaignId,
-    }),
   });
 
   if (!res.ok) {
-    throw new Error(`Failed to update campaign: ${res.status} ${res.statusText}`);
+    const errorText = await res.text();
+    throw new Error(errorText || `Failed to update campaign: ${res.status}`);
   }
 
-  const data = await res.json();
-  return data;
+  return res.json();
 };
