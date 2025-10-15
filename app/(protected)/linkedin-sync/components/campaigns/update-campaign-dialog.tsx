@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { ArrowRight, Calendar, Briefcase, MapPin, Mail, Link2, User, Medal } from "lucide-react";
+import { ArrowRight, Calendar, Briefcase, MapPin, Mail, Link2, User, Medal, FileText, Image, Building2 } from "lucide-react";
 
 interface LinkedInSender {
   full_name: string;
@@ -108,25 +108,18 @@ const UpdateCampaignDialog = ({
     }).join("\n\n");
   };
 
-  const formatLinks = (info: AdditionalInfo) => {
-    const links = [];
-    if (info.calendar_link) links.push(`Calendar: ${info.calendar_link}`);
-    if (info.company_brochure_link) links.push(`Brochure: ${info.company_brochure_link}`);
-    if (info.company_pitch_deck_link) links.push(`Pitch Deck: ${info.company_pitch_deck_link}`);
-    if (info.company_product_overview_link) links.push(`Product Overview: ${info.company_product_overview_link}`);
-    return links.length > 0 ? links.join("\n") : "No links available";
-  };
-
   const ComparisonField = ({
     label,
     oldValue,
     newValue,
     icon: Icon,
+    isImage = false,
   }: {
     label: string;
     oldValue: string;
     newValue: string;
     icon?: any;
+    isImage?: boolean;
   }) => {
     const hasChanged = oldValue !== newValue;
     
@@ -152,9 +145,13 @@ const UpdateCampaignDialog = ({
                 ? 'bg-rose-50/50 border-rose-200 shadow-sm' 
                 : 'bg-slate-50 border-slate-200'
             }`}>
-              <p className="text-sm text-slate-700 whitespace-pre-wrap break-words leading-relaxed">
-                {oldValue || <span className="text-slate-400 italic">Not set</span>}
-              </p>
+              {isImage && oldValue ? (
+                <img src={oldValue} alt="Previous" className="max-w-full h-auto rounded" />
+              ) : (
+                <p className="text-sm text-slate-700 whitespace-pre-wrap break-words leading-relaxed">
+                  {oldValue || <span className="text-slate-400 italic">Not set</span>}
+                </p>
+              )}
             </div>
           </div>
           
@@ -173,9 +170,13 @@ const UpdateCampaignDialog = ({
                 ? 'bg-emerald-50/50 border-emerald-200 shadow-sm' 
                 : 'bg-slate-50 border-slate-200'
             }`}>
-              <p className="text-sm text-slate-700 whitespace-pre-wrap break-words leading-relaxed">
-                {newValue || <span className="text-slate-400 italic">Not set</span>}
-              </p>
+              {isImage && newValue ? (
+                <img src={newValue} alt="Updated" className="max-w-full h-auto rounded" />
+              ) : (
+                <p className="text-sm text-slate-700 whitespace-pre-wrap break-words leading-relaxed">
+                  {newValue || <span className="text-slate-400 italic">Not set</span>}
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -223,10 +224,26 @@ const UpdateCampaignDialog = ({
             />
 
             <ComparisonField
-              label="Email Address"
-              oldValue={oldAdditionalInfo.email_address || ""}
-              newValue={newAdditionalInfo.email_address || ""}
-              icon={Mail}
+              label="Profile Image URL"
+              oldValue={oldSenders[0]?.profile_image_url || ""}
+              newValue={newSenders[0]?.profile_image_url || ""}
+              icon={Image}
+              isImage={true}
+            />
+
+            <ComparisonField
+              label="Banner Image URL"
+              oldValue={oldSenders[0]?.banner_image_url || ""}
+              newValue={newSenders[0]?.banner_image_url || ""}
+              icon={Image}
+              isImage={true}
+            />
+
+            <ComparisonField
+              label="Company Name"
+              oldValue={oldSenders[0]?.company_name || ""}
+              newValue={newSenders[0]?.company_name || ""}
+              icon={Building2}
             />
 
             <ComparisonField
@@ -237,6 +254,20 @@ const UpdateCampaignDialog = ({
             />
 
             <ComparisonField
+              label="Location"
+              oldValue={oldSenders[0]?.location || ""}
+              newValue={newSenders[0]?.location || ""}
+              icon={MapPin}
+            />
+
+            <ComparisonField
+              label="About"
+              oldValue={oldSenders[0]?.about || ""}
+              newValue={newSenders[0]?.about || ""}
+              icon={FileText}
+            />
+
+            <ComparisonField
               label="Work Experience"
               oldValue={formatWorkExperiences(oldSenders)}
               newValue={formatWorkExperiences(newSenders)}
@@ -244,17 +275,54 @@ const UpdateCampaignDialog = ({
             />
 
             <ComparisonField
-              label="Additional Resources"
-              oldValue={formatLinks(oldAdditionalInfo)}
-              newValue={formatLinks(newAdditionalInfo)}
+              label="Email Address"
+              oldValue={oldAdditionalInfo.email_address || ""}
+              newValue={newAdditionalInfo.email_address || ""}
+              icon={Mail}
+            />
+
+            <ComparisonField
+              label="Calendar Link"
+              oldValue={oldAdditionalInfo.calendar_link || ""}
+              newValue={newAdditionalInfo.calendar_link || ""}
+              icon={Calendar}
+            />
+
+            <ComparisonField
+              label="Company Brochure Link"
+              oldValue={oldAdditionalInfo.company_brochure_link || ""}
+              newValue={newAdditionalInfo.company_brochure_link || ""}
               icon={Link2}
             />
 
             <ComparisonField
-              label="Location"
-              oldValue={oldSenders[0]?.location || ""}
-              newValue={newSenders[0]?.location || ""}
-              icon={MapPin}
+              label="Company Logo Link"
+              oldValue={oldAdditionalInfo.company_logo_link || ""}
+              newValue={newAdditionalInfo.company_logo_link || ""}
+              icon={Image}
+              isImage={true}
+            />
+
+            <ComparisonField
+              label="Company LinkedIn Banner Link"
+              oldValue={oldAdditionalInfo.company_linkedin_banner_link || ""}
+              newValue={newAdditionalInfo.company_linkedin_banner_link || ""}
+              icon={Image}
+              isImage={true}
+            />
+
+            <ComparisonField
+              label="Company Pitch Deck Link"
+              oldValue={oldAdditionalInfo.company_pitch_deck_link || ""}
+              newValue={newAdditionalInfo.company_pitch_deck_link || ""}
+              icon={Link2}
+            />
+
+            <ComparisonField
+              label="Company Product Overview Link"
+              oldValue={oldAdditionalInfo.company_product_overview_link || ""}
+              newValue={newAdditionalInfo.company_product_overview_link || ""}
+              icon={Link2}
             />
           </div>
         </div>
