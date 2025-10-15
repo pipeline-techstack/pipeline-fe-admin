@@ -12,8 +12,8 @@ const CampaignsHeader = ({ onUpdate, total }: CampaignsHeaderProps) => {
     <>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-1">Campaign Tasks</h2>
-          <p className="text-md text-gray-600">Link and manage your HeyReach campaigns</p>
+          <h2 className="text-lg font-semibold text-gray-900 mb-1">Campaign Tasks</h2>
+          <p className="text-sm text-gray-600">Link and manage your HeyReach campaigns</p>
         </div>
       </div>
 

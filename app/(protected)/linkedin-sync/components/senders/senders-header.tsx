@@ -16,8 +16,8 @@ const SendersHeader = ({ onAddSender }: SendersHeaderProps) => {
     <>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-1">LinkedIn Senders</h2>
-          <p className="text-md text-gray-600">Manage your LinkedIn sender profiles and engagement</p>
+          <h2 className="text-lg font-semibold text-gray-900 mb-1">LinkedIn Senders</h2>
+          <p className="text-sm text-gray-600">Manage your LinkedIn sender profiles and engagement</p>
         </div>
         <Button onClick={() => setIsDialogOpen(true)}
             className="bg-[#4A5BAA] hover:bg-[#3d4c92] text-white"

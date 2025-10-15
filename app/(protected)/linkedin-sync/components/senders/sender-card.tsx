@@ -64,8 +64,8 @@ const SenderCard = ({ sender, onAction }: SenderCardProps) => {
           </Avatar>
 
           <div className="flex-1 min-w-0">
-            <h3 className="mb-1 font-semibold text-gray-900 text-md">{sender.name}</h3>
-            <p className="text-gray-600 text-sm">{sender.headline}</p>
+            <h3 className="mb-1 font-semibold text-gray-900 text-sm">{sender.name}</h3>
+            <p className="text-gray-600 text-xs">{sender.headline}</p>
           </div>
         </div>
 
