@@ -11,7 +11,6 @@ import CampaignsHeader from "./components/campaigns/campaigns-header";
 import CampaignTable from "./components/campaigns/campaign-table";
 import { useLinkedInSenders } from "./hooks/useLinkedInSenders";
 import { useCampaignTasks } from "./hooks/useCampaignTasks";
-import { updateCampaignTask } from "./services/campaign-apis";
 
 const LinkedInSyncPage = () => {
   const [activeTab, setActiveTab] = useState('senders');
@@ -42,22 +41,6 @@ const LinkedInSyncPage = () => {
   const handleAddSender = () => {
     console.log('Add new sender');
     toast.info("Add sender functionality - Coming soon");
-  };
-
-  const handleCampaignUpdate = async (taskId: string, heyreachCampaignId: string) => {
-    try {
-      toast.loading("Updating campaign task...", { id: "campaign-update" });
-      
-      await updateCampaignTask(taskId, heyreachCampaignId);
-      
-      toast.success("Campaign task updated successfully", { id: "campaign-update" });
-    } catch (error) {
-      console.error("Error updating campaign task:", error);
-      toast.error("Failed to update campaign task", {
-        id: "campaign-update",
-        description: error instanceof Error ? error.message : "Unknown error"
-      });
-    }
   };
 
   const handleGlobalUpdate = async () => {
@@ -107,7 +90,6 @@ const LinkedInSyncPage = () => {
 
             <CampaignTable 
               campaigns={campaigns} 
-              onUpdate={handleCampaignUpdate}
               onRefresh={refreshCampaigns}
               isLoading={campaignsLoading}
             />

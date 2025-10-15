@@ -62,7 +62,7 @@ interface CampaignTask {
 interface UpdateCampaignDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onUpdateCampaign: (campaignId: string) => void;
+  onUpdateCampaign: (taskId: string) => Promise<void>;
   selectedTask: CampaignTask | null;
 }
 
@@ -72,25 +72,31 @@ const UpdateCampaignDialog = ({
   onUpdateCampaign,
   selectedTask,
 }: UpdateCampaignDialogProps) => {
-  const handleSubmit = () => {
-    if (selectedTask) {
-      onUpdateCampaign(selectedTask.campaign_id);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async () => {
+    if (!selectedTask || isSubmitting) return;
+    
+    try {
+      setIsSubmitting(true);
+      await onUpdateCampaign(selectedTask._id);
+      onOpenChange(false);
+    } catch (error) {
+      // Error handling is done in parent component
+      setIsSubmitting(false);
     }
-    onOpenChange(false);
   };
 
   const handleDialogChange = (nextOpen: boolean) => {
-    if (!nextOpen) {
+    if (!nextOpen && !isSubmitting) {
       onOpenChange(false);
     }
   };
 
-  // Helper function to format LinkedIn senders
   const formatLinkedInSenders = (senders: LinkedInSender[]) => {
     return senders.map(sender => sender.full_name).join(", ");
   };
 
-  // Helper function to format work experiences
   const formatWorkExperiences = (senders: LinkedInSender[]) => {
     return senders.map(sender => {
       if (!sender.work_experiences || sender.work_experiences.length === 0) {
@@ -102,13 +108,12 @@ const UpdateCampaignDialog = ({
     }).join("\n\n");
   };
 
-  // Helper function to format additional info links
   const formatLinks = (info: AdditionalInfo) => {
     const links = [];
-    if (info.calendar_link) links.push(info.calendar_link);
-    if (info.company_brochure_link) links.push(info.company_brochure_link);
-    if (info.company_pitch_deck_link) links.push(info.company_pitch_deck_link);
-    if (info.company_product_overview_link) links.push(info.company_product_overview_link);
+    if (info.calendar_link) links.push(`Calendar: ${info.calendar_link}`);
+    if (info.company_brochure_link) links.push(`Brochure: ${info.company_brochure_link}`);
+    if (info.company_pitch_deck_link) links.push(`Pitch Deck: ${info.company_pitch_deck_link}`);
+    if (info.company_product_overview_link) links.push(`Product Overview: ${info.company_product_overview_link}`);
     return links.length > 0 ? links.join("\n") : "No links available";
   };
 
@@ -123,15 +128,15 @@ const UpdateCampaignDialog = ({
   }) => (
     <div className="grid grid-cols-2 gap-4">
       <div className="space-y-1.5">
-        <Label className="text-xs font-medium text-gray-700">{label}</Label>
-        <div className="p-3 bg-gray-50 border border-gray-200 rounded-md min-h-[44px] text-sm text-gray-800 whitespace-pre-wrap break-words">
-          {oldValue}
+        <Label className="text-xs font-medium text-gray-700">Old {label}</Label>
+        <div className="p-3 bg-red-50 border border-red-200 rounded-md min-h-[44px] text-sm text-gray-800 whitespace-pre-wrap break-words">
+          {oldValue || "Not set"}
         </div>
       </div>
       <div className="space-y-1.5">
-        <Label className="text-xs font-medium text-gray-700">{label}</Label>
-        <div className="p-3 bg-purple-50 border border-purple-200 rounded-md min-h-[44px] text-sm text-gray-800 whitespace-pre-wrap break-words">
-          {newValue}
+        <Label className="text-xs font-medium text-gray-700">New {label}</Label>
+        <div className="p-3 bg-green-50 border border-green-200 rounded-md min-h-[44px] text-sm text-gray-800 whitespace-pre-wrap break-words">
+          {newValue || "Not set"}
         </div>
       </div>
     </div>
@@ -156,7 +161,7 @@ const UpdateCampaignDialog = ({
             Campaign Update Comparison
           </DialogTitle>
           <DialogDescription className="text-sm text-gray-600">
-            Compare the existing and updated campaign data
+            Review the changes and mark as updated when ready
           </DialogDescription>
         </DialogHeader>
 
@@ -164,8 +169,8 @@ const UpdateCampaignDialog = ({
           <div className="space-y-4">
             <ComparisonField
               label="Campaign Name"
-              oldValue={oldCampaignName || "Not set"}
-              newValue={newCampaignName || "Not set"}
+              oldValue={oldCampaignName}
+              newValue={newCampaignName}
             />
 
             <ComparisonField
@@ -176,14 +181,14 @@ const UpdateCampaignDialog = ({
 
             <ComparisonField
               label="Email Address"
-              oldValue={oldAdditionalInfo.email_address || "Not set"}
-              newValue={newAdditionalInfo.email_address || "Not set"}
+              oldValue={oldAdditionalInfo.email_address || ""}
+              newValue={newAdditionalInfo.email_address || ""}
             />
 
             <ComparisonField
               label="Headline"
-              oldValue={oldSenders[0]?.headline || "No headline"}
-              newValue={newSenders[0]?.headline || "No headline"}
+              oldValue={oldSenders[0]?.headline || ""}
+              newValue={newSenders[0]?.headline || ""}
             />
 
             <ComparisonField
@@ -193,31 +198,34 @@ const UpdateCampaignDialog = ({
             />
 
             <ComparisonField
-              label="Links"
+              label="Additional Links"
               oldValue={formatLinks(oldAdditionalInfo)}
               newValue={formatLinks(newAdditionalInfo)}
             />
 
             <ComparisonField
-              label="Calendar Link"
-              oldValue={oldAdditionalInfo.calendar_link || "Not set"}
-              newValue={newAdditionalInfo.calendar_link || "Not set"}
-            />
-
-            <ComparisonField
               label="Location"
-              oldValue={oldSenders[0]?.location || "Not set"}
-              newValue={newSenders[0]?.location || "Not set"}
+              oldValue={oldSenders[0]?.location || ""}
+              newValue={newSenders[0]?.location || ""}
             />
           </div>
         </div>
 
-        <div className="px-6 py-4 border-t bg-gray-50 flex justify-end">
+        <div className="px-6 py-4 border-t bg-gray-50 flex justify-end gap-3">
+          <Button
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            disabled={isSubmitting}
+            className="px-6"
+          >
+            Cancel
+          </Button>
           <Button
             onClick={handleSubmit}
-            className="px-8 h-10 bg-[#4A5BAA] hover:bg-[#3d4c92] text-white"
+            disabled={isSubmitting}
+            className="px-8 h-10 bg-[#4A5BAA] hover:bg-[#3d4c92] text-white disabled:opacity-50"
           >
-            Mark as Updated
+            {isSubmitting ? "Updating..." : "Mark as Updated"}
           </Button>
         </div>
       </DialogContent>

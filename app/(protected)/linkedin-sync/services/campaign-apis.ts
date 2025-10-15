@@ -45,8 +45,19 @@ export const updateCampaignTask = async (
   const token = getToken();
   if (!token) throw new Error("Authentication required");
 
+  if (!taskId || !heyreachCampaignId) {
+    throw new Error("Task ID and HeyReach Campaign ID are required");
+  }
+
   const url = new URL(`${BASE_URL}/campaign-engagement/admin/update-task/${taskId}`);
   url.searchParams.append('heyreach_campaign_id', heyreachCampaignId);
+
+  console.log('🔍 API Request:', {
+    url: url.toString(),
+    taskId,
+    heyreachCampaignId,
+    method: 'PUT'
+  });
 
   const res = await fetch(url.toString(), {
     method: "PUT",
@@ -57,9 +68,94 @@ export const updateCampaignTask = async (
   });
 
   if (!res.ok) {
-    const errorText = await res.text();
-    throw new Error(errorText || `Failed to update campaign: ${res.status}`);
+    let errorMessage = `Failed to update campaign: ${res.status} ${res.statusText}`;
+    
+    try {
+      const errorData = await res.json();
+      console.error('❌ API Error Response:', errorData);
+      
+      if (errorData.detail) {
+        if (typeof errorData.detail === 'string') {
+          errorMessage = errorData.detail;
+        } else if (Array.isArray(errorData.detail)) {
+          errorMessage = errorData.detail.map((e: any) => e.msg).join(', ');
+        }
+      }
+    } catch (e) {
+      try {
+        const errorText = await res.text();
+        console.error('❌ API Error Text:', errorText);
+        if (errorText) errorMessage = errorText;
+      } catch (textError) {
+        console.error('❌ Could not parse error response');
+      }
+    }
+
+    throw new Error(errorMessage);
   }
 
-  return res.json();
+  const result = await res.json();
+  console.log('✅ API Success Response:', result);
+  return result;
+};
+
+/**
+ * Mark a campaign update task as completed
+ * @param taskId - The task ID to mark as updated
+ * @returns Promise with response data
+ */
+export const markCampaignAsUpdated = async (taskId: string): Promise<string> => {
+  const token = getToken();
+  if (!token) throw new Error("Authentication required");
+
+  if (!taskId) {
+    throw new Error("Task ID is required");
+  }
+
+  const url = `${BASE_URL}/campaign-engagement/admin/update-task/${taskId}`;
+  
+  console.log('🔍 Mark as Updated Request:', {
+    url,
+    taskId,
+    method: 'PUT'
+  });
+
+  const res = await fetch(url, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
+
+  if (!res.ok) {
+    let errorMessage = `Failed to mark campaign as updated: ${res.status} ${res.statusText}`;
+    
+    try {
+      const errorData = await res.json();
+      console.error('❌ API Error Response:', errorData);
+      
+      if (errorData.detail) {
+        if (typeof errorData.detail === 'string') {
+          errorMessage = errorData.detail;
+        } else if (Array.isArray(errorData.detail)) {
+          errorMessage = errorData.detail.map((e: any) => e.msg).join(', ');
+        }
+      }
+    } catch (e) {
+      try {
+        const errorText = await res.text();
+        console.error('❌ API Error Text:', errorText);
+        if (errorText) errorMessage = errorText;
+      } catch (textError) {
+        console.error('❌ Could not parse error response');
+      }
+    }
+
+    throw new Error(errorMessage);
+  }
+
+  const result = await res.json();
+  console.log('✅ Mark as Updated Success:', result);
+  return result;
 };

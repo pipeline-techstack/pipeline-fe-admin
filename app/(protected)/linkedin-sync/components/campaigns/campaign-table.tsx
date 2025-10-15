@@ -18,7 +18,7 @@ import { toast } from "sonner";
 import CreateCampaignDialog from "./create-campaign-dialog";
 import UpdateCampaignDialog from "./update-campaign-dialog";
 import { CampaignTask } from "../../types/campaign";
-import { updateCampaignTask } from "../../services/campaign-apis";
+import { updateCampaignTask, markCampaignAsUpdated } from "../../services/campaign-apis";
 import { 
   getLinkedInSenderNames, 
   getTaskTypeDisplay, 
@@ -69,15 +69,26 @@ const CampaignTable = ({ campaigns, onRefresh, isLoading }: CampaignTableProps) 
     }
   };
 
-  const handleUpdateCampaign = async (campaignId: string) => {
-    // Implement update campaign logic here
-    console.log("Update campaign:", campaignId);
-    
-    setIsUpdateDialogOpen(false);
-    setSelectedTask(null);
-    
-    if (onRefresh) {
-      await onRefresh();
+  const handleUpdateCampaign = async (taskId: string) => {
+    try {
+      await markCampaignAsUpdated(taskId);
+      
+      toast.success("Campaign marked as updated", {
+        description: "The campaign has been successfully updated."
+      });
+      
+      setIsUpdateDialogOpen(false);
+      setSelectedTask(null);
+      
+      if (onRefresh) {
+        await onRefresh();
+      }
+    } catch (error) {
+      const err = error as Error;
+      toast.error("Failed to update campaign", {
+        description: err.message
+      });
+      throw error;
     }
   };
 
