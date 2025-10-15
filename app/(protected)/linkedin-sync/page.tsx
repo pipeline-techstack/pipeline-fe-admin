@@ -51,9 +51,6 @@ const LinkedInSyncPage = () => {
       await updateCampaignTask(taskId, heyreachCampaignId);
       
       toast.success("Campaign task updated successfully", { id: "campaign-update" });
-      
-      // Refresh the campaigns list to show updated data
-      await refreshCampaigns();
     } catch (error) {
       console.error("Error updating campaign task:", error);
       toast.error("Failed to update campaign task", {
@@ -111,6 +108,7 @@ const LinkedInSyncPage = () => {
             <CampaignTable 
               campaigns={campaigns} 
               onUpdate={handleCampaignUpdate}
+              onRefresh={refreshCampaigns}
               isLoading={campaignsLoading}
             />
 

@@ -21,13 +21,13 @@ const CampaignsHeader = ({ onUpdate, total }: CampaignsHeaderProps) => {
           <h2 className="text-xl font-semibold text-gray-900 mb-1">Campaign Tasks</h2>
           <p className="text-md text-gray-600">Link and manage your Heyreach campaigns</p>
         </div>
-        <Button 
+        {/* <Button 
           onClick={() => setIsDialogOpen(true)}
           className="bg-[#4A5BAA] hover:bg-[#3d4c92] text-white"
         >
           <RefreshCw className="w-4 h-4 mr-2" />
           Campaign Updation
-        </Button>
+        </Button> */}
       </div>
 
       <Card className="mb-6">
@@ -45,6 +45,7 @@ const CampaignsHeader = ({ onUpdate, total }: CampaignsHeaderProps) => {
         open={isDialogOpen}
         onOpenChange={setIsDialogOpen}
         onUpdateCampaign={onUpdate}
+        selectedTask={null}
       />
     </>
   );
