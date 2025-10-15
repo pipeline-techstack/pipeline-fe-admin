@@ -11,7 +11,7 @@ import { WorkbookSelect } from "../_components/workbook-select";
 import { ResearchTypeSelector } from "../_components/workbook-type-selector";
 import { ConfigurationForm } from "../_components/configurations-form";
 import { ActionButtons } from "../_components/action-buttons";
-import { CampaignSelect } from "../_components/campaign-select";
+import { SingleSelectComponent } from "../_components/campaign-select";
 import { Button } from "@/components/ui/button";
 import { Plus, Loader2 } from "lucide-react";
 
@@ -98,7 +98,7 @@ const EditConfigurations = () => {
   return (
     <div className="space-y-6 bg-white mx-auto p-6 max-w-2xl">
       {mode === "new" && (
-        <CampaignSelect
+        <SingleSelectComponent
           value={selectedCampaign}
           options={campaignOptions}
           onChange={setSelectedCampaign}

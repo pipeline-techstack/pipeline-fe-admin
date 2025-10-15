@@ -54,24 +54,24 @@ const SenderCard = ({ sender, onAction }: SenderCardProps) => {
 
   return (
     <Card className="hover:shadow-md transition-shadow">
-      <CardContent className="p-6">
+      <CardContent className="p-3">
         <div className="flex items-start gap-4 mb-4">
           <Avatar className="w-16 h-16">
             <AvatarImage src={sender.avatar} alt={sender.name} />
-            <AvatarFallback className="bg-gradient-to-br from-indigo-100 to-indigo-200 text-indigo-700 font-semibold">
+            <AvatarFallback className="bg-gradient-to-br from-indigo-100 to-indigo-200 font-semibold text-indigo-700">
               {getInitials(sender.name)}
             </AvatarFallback>
           </Avatar>
 
           <div className="flex-1 min-w-0">
-            <h3 className="text-md font-semibold text-gray-900 mb-1">{sender.name}</h3>
-            <p className="text-sm text-gray-600">{sender.email}</p>
+            <h3 className="mb-1 font-semibold text-gray-900 text-md">{sender.name}</h3>
+            <p className="text-gray-600 text-sm">{sender.headline}</p>
           </div>
         </div>
 
-        {/* <div className="flex items-center justify-between mb-4">
+        {/* <div className="flex justify-between items-center mb-4">
           {getStatusBadge()}
-          <span className="text-sm text-gray-600">
+          <span className="text-gray-600 text-sm">
             <span className="font-semibold text-gray-900">{sender.messages_sent}</span> sent
           </span>
         </div> */}
@@ -88,12 +88,12 @@ const SenderCard = ({ sender, onAction }: SenderCardProps) => {
         >
           {currentStatus === 'active' ? (
             <>
-              <Pause className="w-4 h-4 mr-2" />
+              <Pause className="mr-2 w-4 h-4" />
               Pause
             </>
           ) : (
             <>
-              <Zap className="w-4 h-4 mr-2" />
+              <Zap className="mr-2 w-4 h-4" />
               Engage
             </>
           )}

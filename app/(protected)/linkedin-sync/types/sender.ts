@@ -1,7 +1,8 @@
 export interface LinkedInSenderProfile {
   id: string;
   name: string;
-  email: string;
+  headline?: string;
+  email?: string;
   avatar?: string;
   profile_url?: string;
   status: 'active' | 'inactive' | 'paused';

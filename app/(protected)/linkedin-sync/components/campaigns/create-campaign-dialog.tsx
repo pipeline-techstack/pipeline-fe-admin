@@ -64,11 +64,11 @@ const CreateCampaignDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[540px] p-0">
+      <DialogContent className="p-0 sm:max-w-[540px]">
         <DialogHeader className="px-6 pt-6 pb-4">
-          <div className="flex items-start justify-between">
+          <div className="flex justify-between items-start">
             <div>
-              <DialogTitle className="text-xl font-semibold text-gray-700 mb-2">
+              <DialogTitle className="mb-2 font-semibold text-gray-700 text-xl">
                 Link Campaign
               </DialogTitle>
               <DialogDescription className="text-gray-600">
@@ -78,21 +78,21 @@ const CreateCampaignDialog = ({
           </div>
         </DialogHeader>
 
-        <div className="px-6 pb-6 space-y-5">
-          <div className="space-y-2">
-            <Label htmlFor="taskId" className="text-sm font-medium text-gray-900">
+        <div className="space-y-5 px-6 pb-6">
+          {/* <div className="space-y-2">
+            <Label htmlFor="taskId" className="font-medium text-gray-900 text-sm">
               Task ID
             </Label>
             <Input
               id="taskId"
               value={taskId}
               disabled
-              className="h-12 border-gray-300 bg-gray-50 text-gray-600"
+              className="bg-gray-50 border-gray-300 h-12 text-gray-600"
             />
-          </div>
+          </div> */}
 
           <div className="space-y-2">
-            <Label htmlFor="heyreachCampaignId" className="text-sm font-medium text-gray-900">
+            <Label htmlFor="heyreachCampaignId" className="font-medium text-gray-900 text-sm">
               HeyReach Campaign ID
             </Label>
             <Input
@@ -101,17 +101,17 @@ const CreateCampaignDialog = ({
               value={heyreachCampaignId}
               onChange={(e) => setHeyreachCampaignId(e.target.value)}
               onKeyPress={handleKeyPress}
-              className="h-12 border-gray-300 focus-visible:ring-blue-500"
+              className="border-gray-300 focus-visible:ring-blue-500 h-12"
               autoFocus
               disabled={isSubmitting}
             />
           </div>
 
-          <div className="flex items-center justify-center gap-3 pt-4">
+          <div className="flex justify-center items-center gap-3 pt-4">
             <Button
               variant="outline"
               onClick={handleCancel}
-              className="px-6 h-10 w-36"
+              className="px-6 w-36 h-10"
               disabled={isSubmitting}
             >
               Cancel
@@ -119,7 +119,7 @@ const CreateCampaignDialog = ({
             <Button
               onClick={handleSubmit}
               disabled={!isValid || isSubmitting}
-              className="px-6 h-10 w-36 bg-[#4A5BAA] hover:bg-[#3d4c92] text-white disabled:opacity-50"
+              className="bg-[#4A5BAA] hover:bg-[#3d4c92] disabled:opacity-50 px-6 w-36 h-10 text-white"
             >
               {isSubmitting ? "Linking..." : "Link Campaign"}
             </Button>
