@@ -1,82 +1,53 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { LinkedInSenderProfile } from '../types/sender';
+import { useQuery } from "@tanstack/react-query";
+import { LinkedInSenderProfile } from "../types/sender";
+import { getLinkedinSenders } from "@/services/linkedin-senders";
 
-const mockSenders: LinkedInSenderProfile[] = [
-  {
-    id: 's1',
-    name: 'Sarah Johnson',
-    email: 'sarah.j@company.com',
-    status: 'active',
-    messages_sent: 142,
-    engagement_rate: 24.5,
-    created_at: '2024-01-01T10:00:00Z',
-    updated_at: '2024-01-15T10:00:00Z'
-  },
-  {
-    id: 's2',
-    name: 'Michael Chen',
-    email: 'michael.c@company.com',
-    status: 'active',
-    messages_sent: 98,
-    engagement_rate: 19.8,
-    created_at: '2024-01-01T10:00:00Z',
-    updated_at: '2024-01-15T10:00:00Z'
-  },
-  {
-    id: 's3',
-    name: 'Emma Davis',
-    email: 'emma.d@company.com',
-    status: 'inactive',
-    messages_sent: 67,
-    engagement_rate: 15.2,
-    created_at: '2024-01-01T10:00:00Z',
-    updated_at: '2024-01-10T10:00:00Z'
-  }
-];
-
-export const useLinkedInSenders = () => {
-  const [senders, setSenders] = useState<LinkedInSenderProfile[]>([]);
-  const [total, setTotal] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setIsLoading(true);
-        await new Promise(resolve => setTimeout(resolve, 500));
-        setSenders(mockSenders);
-        setTotal(mockSenders.length);
-      } catch (err) {
-        setError(err as Error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const refreshSenders = async () => {
-    setIsLoading(true);
-    try {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      setSenders(mockSenders);
-      setTotal(mockSenders.length);
-    } catch (err) {
-      setError(err as Error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+const normalizeSender = (item: any): LinkedInSenderProfile => {
+  const profile = item.profile_info || {};
 
   return {
-    senders,
-    total,
-    isLoading,
-    error,
-    refreshSenders
+    id: item.sender_id || "",
+    name:
+      profile.fullName ||
+      `${profile.firstName || ""} ${profile.lastName || ""}`.trim() ||
+      "Unknown",
+    email: profile.email || "N/A",
+    headline: profile.headline || undefined,
+    avatar: profile.profilePicHighQuality || profile.profilePic || undefined,
+    profile_url: profile.linkedinUrl || item.linkedin_profile_url || "",
+    status: "active", // Default since API doesn’t provide it
+    messages_sent: item.messages_sent || 0,
+    engagement_rate: item.engagement_rate || undefined,
+    last_active: item.updated_at || null,
+    created_at: item.created_at || new Date().toISOString(),
+    updated_at: item.updated_at || new Date().toISOString(),
+  };
+};
+
+export const useLinkedInSenders = () => {
+  const query = useQuery({
+    queryKey: ["linkedin-senders"],
+    queryFn: async () => {
+      const res = await getLinkedinSenders();
+      const senders = Array.isArray(res?.linked_senders)
+        ? res.linked_senders.map(normalizeSender)
+        : [];
+      return {
+        senders,
+        total: senders.length,
+      };
+    },
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+    refetchOnWindowFocus: false,
+  });
+
+  return {
+    senders: query.data?.senders ?? [],
+    total: query.data?.total ?? 0,
+    isLoading: query.isLoading,
+    error: query.error,
+    refreshSenders: query.refetch, // same functionality as before
   };
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { RefreshCw } from "lucide-react";
 import {
   Table,
@@ -35,6 +35,16 @@ const CampaignTable = ({ campaigns, onRefresh, isLoading }: CampaignTableProps) 
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<CampaignTask | null>(null);
+
+  const sortedCampaigns = useMemo(() => {
+    if (!campaigns) return [];
+    
+    return [...campaigns].sort((a, b) => {
+      if (a.status === 'pending' && b.status !== 'pending') return -1;
+      if (a.status !== 'pending' && b.status === 'pending') return 1;
+      return 0;
+    });
+  }, [campaigns]);
 
   const handleUpdateClick = (task: CampaignTask) => {
     setSelectedTask(task);
@@ -132,7 +142,7 @@ const CampaignTable = ({ campaigns, onRefresh, isLoading }: CampaignTableProps) 
             </TableHeader>
 
             <TableBody>
-              {campaigns.map((task) => {
+              {sortedCampaigns.map((task) => {
                 const senderNames = getLinkedInSenderNames(task);
                 const taskType = getTaskType(task.type);
                 const taskTypeDisplay = getTaskTypeDisplay(task.type);
@@ -184,14 +194,16 @@ const CampaignTable = ({ campaigns, onRefresh, isLoading }: CampaignTableProps) 
                     </TableCell>
 
                     <TableCell>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleUpdateClick(task)}
-                      >
-                        <RefreshCw className="w-4 h-4 mr-2" />
-                        Update
-                      </Button>
+                      {task.status !== 'completed' && (
+                        <Button
+                          size="sm"
+                          className="bg-[#5569c0] text-white hover:bg-[#3d4c92]"
+                          onClick={() => handleUpdateClick(task)}
+                        >
+                          <RefreshCw className="w-4 h-4" />
+                          Update
+                        </Button>
+                      )}
                     </TableCell>
                   </TableRow>
                 );

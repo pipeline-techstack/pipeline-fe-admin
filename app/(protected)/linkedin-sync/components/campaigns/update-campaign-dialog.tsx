@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { ArrowRight, Calendar, Briefcase, MapPin, Mail, Link2, User, Medal } from "lucide-react";
 
 interface LinkedInSender {
   full_name: string;
@@ -82,7 +83,6 @@ const UpdateCampaignDialog = ({
       await onUpdateCampaign(selectedTask._id);
       onOpenChange(false);
     } catch (error) {
-      // Error handling is done in parent component
       setIsSubmitting(false);
     }
   };
@@ -121,26 +121,67 @@ const UpdateCampaignDialog = ({
     label,
     oldValue,
     newValue,
+    icon: Icon,
   }: {
     label: string;
     oldValue: string;
     newValue: string;
-  }) => (
-    <div className="grid grid-cols-2 gap-4">
-      <div className="space-y-1.5">
-        <Label className="text-xs font-medium text-gray-700">Old {label}</Label>
-        <div className="p-3 bg-red-50 border border-red-200 rounded-md min-h-[44px] text-sm text-gray-800 whitespace-pre-wrap break-words">
-          {oldValue || "Not set"}
+    icon?: any;
+  }) => {
+    const hasChanged = oldValue !== newValue;
+    
+    return (
+      <div className="group relative">
+        <div className="flex items-center gap-2 mb-3">
+          {Icon && <Icon className="w-4 h-4 text-slate-500" />}
+          <Label className="text-sm font-semibold text-slate-700">{label}</Label>
+          {hasChanged && (
+            <span className="ml-auto text-xs font-medium text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">
+              Modified
+            </span>
+          )}
+        </div>
+        
+        <div className="grid grid-cols-[1fr_auto_1fr] gap-3 items-start">
+          <div className="space-y-1.5">
+            <div className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-2">
+              Previous
+            </div>
+            <div className={`p-4 rounded-lg border-2 transition-all ${
+              hasChanged 
+                ? 'bg-rose-50/50 border-rose-200 shadow-sm' 
+                : 'bg-slate-50 border-slate-200'
+            }`}>
+              <p className="text-sm text-slate-700 whitespace-pre-wrap break-words leading-relaxed">
+                {oldValue || <span className="text-slate-400 italic">Not set</span>}
+              </p>
+            </div>
+          </div>
+          
+          <div className="flex items-center justify-center pt-8">
+            <ArrowRight className={`w-5 h-5 ${
+              hasChanged ? 'text-emerald-500' : 'text-slate-300'
+            }`} />
+          </div>
+          
+          <div className="space-y-1.5">
+            <div className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-2">
+              Updated
+            </div>
+            <div className={`p-4 rounded-lg border-2 transition-all ${
+              hasChanged 
+                ? 'bg-emerald-50/50 border-emerald-200 shadow-sm' 
+                : 'bg-slate-50 border-slate-200'
+            }`}>
+              <p className="text-sm text-slate-700 whitespace-pre-wrap break-words leading-relaxed">
+                {newValue || <span className="text-slate-400 italic">Not set</span>}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
-      <div className="space-y-1.5">
-        <Label className="text-xs font-medium text-gray-700">New {label}</Label>
-        <div className="p-3 bg-green-50 border border-green-200 rounded-md min-h-[44px] text-sm text-gray-800 whitespace-pre-wrap break-words">
-          {newValue || "Not set"}
-        </div>
-      </div>
-    </div>
-  );
+    );
+  };
 
   if (!selectedTask || !selectedTask.changes) {
     return null;
@@ -155,75 +196,82 @@ const UpdateCampaignDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={handleDialogChange}>
-      <DialogContent className="max-w-[900px] p-0 max-h-[90vh] overflow-hidden flex flex-col">
-        <DialogHeader className="px-6 pt-6 pb-4 border-b">
-          <DialogTitle className="text-lg font-semibold text-gray-900">
-            Campaign Update Comparison
+      <DialogContent className="max-w-[1000px] p-0 max-h-[90vh] overflow-hidden flex flex-col bg-white">
+        <DialogHeader className="px-8 pt-8 pb-6 bg-gradient-to-br from-slate-50 to-white border-b border-slate-200">
+          <DialogTitle className="text-xl font-semibold text-slate-900 tracking-tight">
+            Campaign Update Review
           </DialogTitle>
-          <DialogDescription className="text-sm text-gray-600">
-            Review the changes and mark as updated when ready
+          <DialogDescription className="text-md text-slate-600 mt-2">
+            Compare changes and approve updates to your campaign
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex-1 overflow-y-auto px-6 py-4">
-          <div className="space-y-4">
+        <div className="flex-1 overflow-y-auto px-8 py-6">
+          <div className="space-y-8">
             <ComparisonField
               label="Campaign Name"
               oldValue={oldCampaignName}
               newValue={newCampaignName}
+              icon={Briefcase}
             />
 
             <ComparisonField
               label="LinkedIn Senders"
               oldValue={formatLinkedInSenders(oldSenders)}
               newValue={formatLinkedInSenders(newSenders)}
+              icon={User}
             />
 
             <ComparisonField
               label="Email Address"
               oldValue={oldAdditionalInfo.email_address || ""}
               newValue={newAdditionalInfo.email_address || ""}
+              icon={Mail}
             />
 
             <ComparisonField
               label="Headline"
               oldValue={oldSenders[0]?.headline || ""}
               newValue={newSenders[0]?.headline || ""}
+              icon={Medal}
             />
 
             <ComparisonField
-              label="Work Experiences"
+              label="Work Experience"
               oldValue={formatWorkExperiences(oldSenders)}
               newValue={formatWorkExperiences(newSenders)}
+              icon={Briefcase}
             />
 
             <ComparisonField
-              label="Additional Links"
+              label="Additional Resources"
               oldValue={formatLinks(oldAdditionalInfo)}
               newValue={formatLinks(newAdditionalInfo)}
+              icon={Link2}
             />
 
             <ComparisonField
               label="Location"
               oldValue={oldSenders[0]?.location || ""}
               newValue={newSenders[0]?.location || ""}
+              icon={MapPin}
             />
           </div>
         </div>
 
-        <div className="px-6 py-4 border-t bg-gray-50 flex justify-end gap-3">
+        <div className="px-6 py-4 border-t bg-gray-50 flex justify-center gap-3">
           <Button
             variant="outline"
             onClick={() => onOpenChange(false)}
             disabled={isSubmitting}
-            className="px-6"
+            className="px-6 w-44 h-10"
           >
             Cancel
           </Button>
           <Button
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className="px-8 h-10 bg-[#4A5BAA] hover:bg-[#3d4c92] text-white disabled:opacity-50"
+            className="px-8 h-10 w-44 bg-[#4A5BAA] hover:bg-[#3d4c92] text-white disabled:opacity-50"
           >
             {isSubmitting ? "Updating..." : "Mark as Updated"}
           </Button>
