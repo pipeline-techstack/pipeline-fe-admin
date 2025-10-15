@@ -160,7 +160,7 @@ const CampaignTable = ({ campaigns, onRefresh, isLoading }: CampaignTableProps) 
                 return (
                   <TableRow key={task._id}>
                     <TableCell className="font-medium" title={task.campaign_id}>
-                      {task.campaign_name?.trim() || "Unknown"}
+                      {task.fields?.campaign_name?.trim() || task.campaign_name?.trim() || "Unknown"}
                     </TableCell>
 
                     <TableCell>

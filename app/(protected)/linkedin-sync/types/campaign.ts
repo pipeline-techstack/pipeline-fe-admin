@@ -2,7 +2,7 @@ export interface CampaignTask {
   _id: string;
   type: string;
   campaign_id: string;
-  campaign_name: string | null;
+  campaign_name?: string | null;
   user_id: string;
   changes: {
     linkedin_senders?: {
@@ -25,6 +25,23 @@ export interface CampaignTask {
   status: string;
   description: string;
   changed_field_count: number;
+   fields?: { 
+    _id: string;
+    campaign_name: string;
+    lead_filters?: any;
+    organization_filters?: any;
+    linkedin_senders?: any[];
+    campaign_sequence?: any[];
+    additional_info?: any;
+    campaign_id?: string | null;
+    user_id?: string;
+    status?: string;
+    created_at?: string;
+    updated_at?: string;
+    heyreach_campaign_id?: number;
+    heyreach_linkedin_senders?: number[];
+    changes?: any[];
+  };
 }
 
 export interface LinkedInSender {
