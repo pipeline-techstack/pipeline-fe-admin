@@ -153,6 +153,7 @@ const CustomersPage = () => {
                     <td className="px-6 py-4">
                       {isEditing ? (
                         <input
+                          aria-label="Input"
                           type="text"
                           value={formData.name || ""}
                           onChange={(e) =>
@@ -180,6 +181,7 @@ const CustomersPage = () => {
                     <td className="px-6 py-4">
                       {isEditing ? (
                         <input
+                          aria-label="Input"
                           type="tel"
                           value={formData.phone_e164 || ""}
                           onChange={(e) =>
@@ -203,12 +205,14 @@ const CustomersPage = () => {
                       {isEditing ? (
                         <div className="flex justify-end gap-2">
                           <button
+                            aria-label="Check"
                             onClick={() => saveEdit(customer.userId)}
                             className="bg-green-600 hover:bg-green-700 px-3 py-2 rounded-md text-white"
                           >
                             <Check className="w-4 h-4" />
                           </button>
                           <button
+                            aria-label="Cancel"
                             onClick={cancelEdit}
                             className="bg-gray-100 px-3 py-2 rounded-md"
                           >
