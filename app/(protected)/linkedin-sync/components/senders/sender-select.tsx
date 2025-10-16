@@ -32,13 +32,13 @@ const getBadgeContent = (
   activeCampaigns: number
 ): string | null => {
   if (!authIsValid) return null;
-  if (!isActive) return "available/new";
+  if (!isActive) return "available";
   return `in ${activeCampaigns} campaign${activeCampaigns !== 1 ? "s" : ""}`;
 };
 
 const getBadgeStyles = (content: string | null): string => {
   if (!content) return "";
-  if (content === "available/new") {
+  if (content === "available") {
     return "bg-green-100 text-green-800";
   }
   return "bg-blue-100 text-blue-800";

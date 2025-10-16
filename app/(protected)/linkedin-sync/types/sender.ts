@@ -11,6 +11,10 @@ export interface LinkedInSenderProfile {
   last_active?: string;
   created_at: string;
   updated_at: string;
+  linked_senders: {
+    id: string;
+    linkedin_profile_url: string;
+  }[];
 }
 
 export interface SenderFilters {
