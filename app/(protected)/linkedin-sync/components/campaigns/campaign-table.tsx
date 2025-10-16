@@ -23,7 +23,8 @@ import { updateCampaignTask, markCampaignAsUpdated } from "../../services/campai
 import { 
   getLinkedInSenderNames, 
   getTaskTypeDisplay, 
-  getTaskType 
+  getTaskType,
+  getRelativeTime,
 } from "../../utils/campaign-utils";
 
 interface CampaignTableProps {
@@ -40,28 +41,28 @@ const CampaignTable = ({ campaigns, onRefresh, isLoading }: CampaignTableProps) 
 
   const sortedCampaigns = useMemo(() => {
     if (!campaigns) return [];
-    
+    // Sort by status first, then by updated_at (most recent first)
     return [...campaigns].sort((a, b) => {
-      if (a.status === 'pending' && b.status !== 'pending') return -1;
-      if (a.status !== 'pending' && b.status === 'pending') return 1;
-      return 0;
+      if (a.status === "pending" && b.status !== "pending") return -1;
+      if (a.status !== "pending" && b.status === "pending") return 1;
+
+      const dateA = new Date(a.updated_at || a.fields?.updated_at || 0).getTime();
+      const dateB = new Date(b.updated_at || b.fields?.updated_at || 0).getTime();
+      return dateB - dateA; 
     });
   }, [campaigns]);
 
   const handleUpdateClick = (task: CampaignTask) => {
     setSelectedTask(task);
-    
+
     if (task.type === "campaign_creation") {
-      // Open preview dialog first for campaign creation
       setIsPreviewDialogOpen(true);
     } else if (task.type === "campaign_update") {
-      // Directly open update dialog for campaign updates
       setIsUpdateDialogOpen(true);
     }
   };
 
   const handlePreviewProceed = () => {
-    // Close preview and open create dialog
     setIsPreviewDialogOpen(false);
     setIsCreateDialogOpen(true);
   };
@@ -69,22 +70,18 @@ const CampaignTable = ({ campaigns, onRefresh, isLoading }: CampaignTableProps) 
   const handleLinkCampaign = async (taskId: string, heyreachCampaignId: string) => {
     try {
       await updateCampaignTask(taskId, heyreachCampaignId);
-      
+
       toast.success("Campaign linked successfully", {
-        description: `HeyReach campaign ${heyreachCampaignId} has been linked.`
+        description: `HeyReach campaign ${heyreachCampaignId} has been linked.`,
       });
-      
+
       setIsCreateDialogOpen(false);
       setSelectedTask(null);
-      
-      if (onRefresh) {
-        await onRefresh();
-      }
+
+      if (onRefresh) await onRefresh();
     } catch (error) {
       const err = error as Error;
-      toast.error("Failed to link campaign", {
-        description: err.message
-      });
+      toast.error("Failed to link campaign", { description: err.message });
       throw error;
     }
   };
@@ -92,22 +89,18 @@ const CampaignTable = ({ campaigns, onRefresh, isLoading }: CampaignTableProps) 
   const handleUpdateCampaign = async (taskId: string) => {
     try {
       await markCampaignAsUpdated(taskId);
-      
+
       toast.success("Campaign marked as updated", {
-        description: "The campaign has been successfully updated."
+        description: "The campaign has been successfully updated.",
       });
-      
+
       setIsUpdateDialogOpen(false);
       setSelectedTask(null);
-      
-      if (onRefresh) {
-        await onRefresh();
-      }
+
+      if (onRefresh) await onRefresh();
     } catch (error) {
       const err = error as Error;
-      toast.error("Failed to update campaign", {
-        description: err.message
-      });
+      toast.error("Failed to update campaign", { description: err.message });
       throw error;
     }
   };
@@ -145,6 +138,7 @@ const CampaignTable = ({ campaigns, onRefresh, isLoading }: CampaignTableProps) 
               <TableRow>
                 <TableHead>Campaign Name</TableHead>
                 <TableHead>LinkedIn Senders</TableHead>
+                <TableHead>Last Updated</TableHead>
                 <TableHead>Task Type</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Actions</TableHead>
@@ -156,6 +150,10 @@ const CampaignTable = ({ campaigns, onRefresh, isLoading }: CampaignTableProps) 
                 const senderNames = getLinkedInSenderNames(task);
                 const taskType = getTaskType(task.type);
                 const taskTypeDisplay = getTaskTypeDisplay(task.type);
+                const updatedAt =
+                  task.updated_at ||
+                  task.fields?.updated_at ||
+                  task.fields?.changes?.[0]?.modified_fields?.updated_at?.updated_at;
 
                 return (
                   <TableRow key={task._id}>
@@ -166,16 +164,50 @@ const CampaignTable = ({ campaigns, onRefresh, isLoading }: CampaignTableProps) 
                     <TableCell>
                       <div className="flex flex-wrap gap-2">
                         {senderNames.length > 0 ? (
-                          senderNames.map((name, index) => (
-                            <Badge key={index} variant="outline">
-                              {name}
-                            </Badge>
-                          ))
+                          <>
+                            {senderNames.slice(0, 2).map((name, index) => (
+                              <Badge key={index} variant="outline">
+                                {name}
+                              </Badge>
+                            ))}
+                            {senderNames.length > 2 && (
+                              <Badge
+                                variant="outline"
+                                title={senderNames.join(", ")}
+                              >
+                                +{senderNames.length - 2}
+                              </Badge>
+                            )}
+                          </>
                         ) : (
                           <span className="text-sm text-gray-500">No senders</span>
                         )}
                       </div>
                     </TableCell>
+
+
+
+                    <TableCell title={updatedAt}>
+                      <div className="flex items-center gap-2">
+                        {updatedAt && (() => {
+                          const diffMs = Date.now() - new Date(updatedAt).getTime();
+                          const diffHours = diffMs / (1000 * 60 * 60);
+                          let dotColor = "bg-red-500";
+
+                          if (diffHours < 24) dotColor = "bg-green-500";
+                          else if (diffHours < 48) dotColor = "bg-yellow-500";
+
+                          return (
+                            <>
+                              <span className={`inline-block w-3 h-3 rounded-full ${dotColor}`} />
+                              <span>{getRelativeTime(updatedAt)}</span>
+                            </>
+                          );
+                        })()}
+                        {!updatedAt && "—"}
+                      </div>
+                    </TableCell>
+
 
                     <TableCell>
                       <Badge
@@ -190,13 +222,13 @@ const CampaignTable = ({ campaigns, onRefresh, isLoading }: CampaignTableProps) 
                     </TableCell>
 
                     <TableCell>
-                      <Badge 
+                      <Badge
                         className={
-                          task.status === 'pending'
-                            ? 'bg-yellow-100 text-yellow-800'
-                            : task.status === 'completed'
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-gray-100 text-gray-800'
+                          task.status === "pending"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : task.status === "completed"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-gray-100 text-gray-800"
                         }
                       >
                         {task.status}
@@ -204,7 +236,7 @@ const CampaignTable = ({ campaigns, onRefresh, isLoading }: CampaignTableProps) 
                     </TableCell>
 
                     <TableCell>
-                      {task.status !== 'completed' && (
+                      {task.status !== "completed" && (
                         <Button
                           size="sm"
                           className="bg-[#5569c0] text-white hover:bg-[#3d4c92]"

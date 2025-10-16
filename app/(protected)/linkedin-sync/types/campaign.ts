@@ -6,8 +6,8 @@ export interface CampaignTask {
   user_id: string;
   changes: {
     linkedin_senders?: {
-      old: any[];
-      new: any[];
+      old: LinkedInSender[];
+      new: LinkedInSender[];
       updated_at: string;
     };
     additional_info?: {
@@ -22,15 +22,16 @@ export interface CampaignTask {
     };
   };
   created_at: string;
+  updated_at?: string; 
   status: string;
   description: string;
   changed_field_count: number;
-   fields?: { 
+  fields?: {
     _id: string;
     campaign_name: string;
     lead_filters?: any;
     organization_filters?: any;
-    linkedin_senders?: any[];
+    linkedin_senders?: LinkedInSender[];
     campaign_sequence?: any[];
     additional_info?: any;
     campaign_id?: string | null;
@@ -53,6 +54,7 @@ export interface LinkedInSender {
   location: string;
   about: string;
   work_experiences: WorkExperience[];
+  linkedin_sender_id?: number;
 }
 
 export interface WorkExperience {
@@ -65,7 +67,7 @@ export interface WorkExperience {
 
 export interface CampaignFilters {
   searchQuery?: string;
-  taskType?: 'all' | 'create' | 'update';
+  taskType?: "all" | "create" | "update";
   status?: string;
   dateRange?: {
     start: string;
@@ -87,5 +89,5 @@ export interface UpdateCampaignPayload {
 export interface CreateCampaignPayload {
   campaign_name: string;
   linkedin_sender_ids: string[];
-  task_type: 'create' | 'update';
+  task_type: "create" | "update";
 }
