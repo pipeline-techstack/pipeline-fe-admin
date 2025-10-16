@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Zap, Pause } from "lucide-react";
+import { SquareArrowOutUpRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LinkedInSenderProfile } from "../../types/sender";
+import Link from "next/link";
+
 
 interface SenderCardProps {
   sender: LinkedInSenderProfile;
@@ -52,6 +53,15 @@ const SenderCard = ({ sender, onAction }: SenderCardProps) => {
     }
   };
 
+  const handleLinkedInClick = () => {
+    if (sender.linked_senders && sender.linked_senders.length > 0) {
+      const linkedinUrl = sender.linked_senders[0].linkedin_profile_url;
+      if (linkedinUrl) {
+        window.open(linkedinUrl, '_blank');
+      }
+    }
+  };
+
   return (
     <Card className="hover:shadow-md transition-shadow">
       <CardContent className="p-3">
@@ -64,7 +74,17 @@ const SenderCard = ({ sender, onAction }: SenderCardProps) => {
           </Avatar>
 
           <div className="flex-1 min-w-0">
-            <h3 className="mb-1 font-semibold text-gray-900 text-sm">{sender.name}</h3>
+            <div className="flex items-center gap-2 mb-1">
+              <h3 className="font-semibold text-gray-900 text-sm">{sender.name}</h3>
+              
+              {sender.profile_url && (
+                <Link href={sender.profile_url} target="_blank">
+                  <SquareArrowOutUpRight
+                    className="w-4 h-4 text-[#4A5BAA]"
+                    strokeWidth={2.5} />
+                </Link>
+              )}
+            </div>
             <p className="text-gray-600 text-xs">{sender.headline}</p>
           </div>
         </div>
