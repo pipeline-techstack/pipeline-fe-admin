@@ -25,6 +25,7 @@ import {
   MessageSquare,
   Clock
 } from "lucide-react";
+import { displayValue } from "../../utils/campaign-utils";
 
 interface LinkedInSender {
   full_name: string;
@@ -66,6 +67,7 @@ interface CampaignTask {
   campaign_id: string;
   campaign_name?: string | null;
   fields?: {
+    campaign_name?: string;
     linkedin_senders?: LinkedInSender[];
     campaign_sequence?: CampaignSequenceStep[];
     additional_info?: AdditionalInfo;
@@ -156,7 +158,7 @@ const CampaignPreviewDialog = ({
             {/* Campaign Name */}
             <InfoSection
               label="Campaign Name"
-              value={selectedTask.campaign_name || "Unnamed Campaign"}
+              value={displayValue(selectedTask.fields?.campaign_name || selectedTask.campaign_name || "Unnamed Campaign")}
               icon={Briefcase}
             />
 
@@ -165,7 +167,7 @@ const CampaignPreviewDialog = ({
               <div className="flex items-center gap-2">
                 <User className="w-4 h-4 text-slate-500" />
                 <Label className="text-sm font-semibold text-slate-700">
-                  LinkedIn Senders ({senders.length})
+                  LinkedIn Senders ({displayValue(senders.length)})
                 </Label>
               </div>
 
@@ -181,9 +183,9 @@ const CampaignPreviewDialog = ({
                       />
                     )}
                     <div> */}
-                    <h4 className="font-semibold text-slate-900">{sender.full_name}</h4>
+                    <h4 className="font-semibold text-slate-900">{displayValue(sender.full_name)}</h4>
                     {sender.headline && (
-                      <p className="text-sm text-slate-600 mt-1">{sender.headline}</p>
+                      <p className="text-sm text-slate-600 mt-1">{displayValue(sender.headline)}</p>
                     )}
                   </div>
 
@@ -194,7 +196,7 @@ const CampaignPreviewDialog = ({
                           <Building2 className="w-3 h-3 text-slate-500" />
                           <span className="text-xs font-medium text-slate-500">Company</span>
                         </div>
-                        <p className="text-sm text-slate-700">{sender.company_name}</p>
+                        <p className="text-sm text-slate-700">{displayValue(sender.company_name)}</p>
                       </div>
                     )}
 
@@ -204,7 +206,7 @@ const CampaignPreviewDialog = ({
                           <MapPin className="w-3 h-3 text-slate-500" />
                           <span className="text-xs font-medium text-slate-500">Location</span>
                         </div>
-                        <p className="text-sm text-slate-700">{sender.location}</p>
+                        <p className="text-sm text-slate-700">{displayValue(sender.location)}</p>
                       </div>
                     )}
                   </div>
@@ -215,7 +217,7 @@ const CampaignPreviewDialog = ({
                         <FileText className="w-3 h-3 text-slate-500" />
                         <span className="text-xs font-medium text-slate-500">About</span>
                       </div>
-                      <p className="text-sm text-slate-700">{sender.about}</p>
+                      <p className="text-sm text-slate-700">{displayValue(sender.about)}</p>
                     </div>
                   )}
 
@@ -228,10 +230,10 @@ const CampaignPreviewDialog = ({
                       <div className="space-y-2">
                         {sender.work_experiences.map((exp, expIndex) => (
                           <div key={expIndex} className="pl-4 border-l-2 border-slate-300">
-                            <p className="text-sm font-medium text-slate-900">{exp.title}</p>
-                            <p className="text-sm text-slate-600">{exp.company_name}</p>
+                            <p className="text-sm font-medium text-slate-900">{displayValue(exp.title)}</p>
+                            <p className="text-sm text-slate-600">{displayValue(exp.company_name)}</p>
                             <p className="text-xs text-slate-500">
-                              {exp.date_range} • {exp.location}
+                              {displayValue(exp.date_range)} • {displayValue(exp.location)}
                             </p>
                           </div>
                         ))}
@@ -248,7 +250,7 @@ const CampaignPreviewDialog = ({
                 <div className="flex items-center gap-2">
                   <MessageSquare className="w-4 h-4 text-slate-500" />
                   <Label className="text-sm font-semibold text-slate-700">
-                    Campaign Sequence ({sequence.length} steps)
+                    Campaign Sequence ({displayValue(sequence.length)} steps)
                   </Label>
                 </div>
 
@@ -258,19 +260,19 @@ const CampaignPreviewDialog = ({
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-3">
                           <Badge className="bg-blue-100 text-blue-800">
-                            Step {step.step_number}
+                            Step {displayValue(step.step_number)}
                           </Badge>
                           <Badge variant="outline" className="capitalize">
-                            {step.step_type.replace('_', ' ')}
+                            {displayValue(step.step_type.replace('_', ' '))}
                           </Badge>
                         </div>
                         <div className="flex items-center gap-1 text-sm text-slate-600">
                           <Clock className="w-3 h-3" />
-                          <span>{step.delay_days} days</span>
+                          <span>{displayValue(step.delay_days)} days</span>
                         </div>
                       </div>
                       <p className="text-sm text-slate-700 leading-relaxed">
-                        {step.message_template}
+                        {displayValue(step.message_template)}
                       </p>
                     </div>
                   ))}
@@ -279,70 +281,76 @@ const CampaignPreviewDialog = ({
             )}
 
             {/* Additional Information */}
-            <div className="space-y-4">
-              <Label className="text-sm font-semibold text-slate-700">
-                Additional Information
-              </Label>
+            {Object.values(additionalInfo || {}).some(
+              (val) => val && String(val).trim() !== ""
+            ) && (
+              <div className="space-y-4">
+                <Label className="text-sm font-semibold text-slate-700">
+                  Additional Information
+                </Label>
 
-              <div className="grid grid-cols-1 gap-4">
-                {additionalInfo.email_address && (
-                  <InfoSection
-                    label="Email Address"
-                    value={additionalInfo.email_address}
-                    icon={Mail}
-                  />
-                )}
+                <div className="grid grid-cols-1 gap-4">
+                  {additionalInfo.email_address && (
+                    <InfoSection
+                      label="Email Address"
+                      value={displayValue(additionalInfo.email_address)}
+                      icon={Mail}
+                    />
+                  )}
 
-                {additionalInfo.calendar_link && (
-                  <InfoSection
-                    label="Calendar Link"
-                    value={additionalInfo.calendar_link}
-                    icon={Calendar}
-                  />
-                )}
+                  {additionalInfo.calendar_link && (
+                    <InfoSection
+                      label="Calendar Link"
+                      value={displayValue(additionalInfo.calendar_link)}
+                      icon={Calendar}
+                    />
+                  )}
 
-                {additionalInfo.company_brochure_link && (
-                  <InfoSection
-                    label="Company Brochure"
-                    value={additionalInfo.company_brochure_link}
-                    icon={Link2}
-                  />
-                )}
+                  {additionalInfo.company_brochure_link && (
+                    <InfoSection
+                      label="Company Brochure"
+                      value={displayValue(additionalInfo.company_brochure_link)}
+                      icon={Link2}
+                    />
+                  )}
 
-                {additionalInfo.company_pitch_deck_link && (
-                  <InfoSection
-                    label="Pitch Deck"
-                    value={additionalInfo.company_pitch_deck_link}
-                    icon={Link2}
-                  />
-                )}
+                  {additionalInfo.company_pitch_deck_link && (
+                    <InfoSection
+                      label="Pitch Deck"
+                      value={displayValue(additionalInfo.company_pitch_deck_link)}
+                      icon={Link2}
+                    />
+                  )}
 
-                {additionalInfo.company_product_overview_link && (
-                  <InfoSection
-                    label="Product Overview"
-                    value={additionalInfo.company_product_overview_link}
-                    icon={Link2}
-                  />
-                )}
+                  {additionalInfo.company_product_overview_link && (
+                    <InfoSection
+                      label="Product Overview"
+                      value={displayValue(additionalInfo.company_product_overview_link)}
+                      icon={Link2}
+                    />
+                  )}
 
-                {additionalInfo.company_logo_link && (
-                  <ImagePreview
-                    label="Company Logo"
-                    url={additionalInfo.company_logo_link}
-                    icon={Image}
-                  />
-                )}
+                  {additionalInfo.company_logo_link && (
+                    <ImagePreview
+                      label="Company Logo"
+                      url={displayValue(additionalInfo.company_logo_link)}
+                      icon={Image}
+                    />
+                  )}
 
-                {additionalInfo.company_linkedin_banner_link && (
-                  <ImagePreview
-                    label="LinkedIn Banner"
-                    url={additionalInfo.company_linkedin_banner_link}
-                    icon={Image}
-                  />
-                )}
+                  {additionalInfo.company_linkedin_banner_link && (
+                    <ImagePreview
+                      label="LinkedIn Banner"
+                      url={displayValue(additionalInfo.company_linkedin_banner_link)}
+                      icon={Image}
+                    />
+                  )}
+                </div>
               </div>
-            </div>
+            )}
+
           </div>
+          
         </div>
 
         <div className="px-6 py-4 border-t bg-gray-50 flex justify-center gap-3">

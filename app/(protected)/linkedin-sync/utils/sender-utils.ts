@@ -14,12 +14,13 @@ export const filterSenders = (
   searchQuery: string
 ): LinkedInSenderProfile[] => {
   if (!searchQuery) return senders;
-  
+
   const query = searchQuery.toLowerCase();
-  return senders.filter(sender => 
-    sender.name.toLowerCase().includes(query) ||
-    sender.email.toLowerCase().includes(query)
-  );
+  return senders.filter(sender => {
+    const name = sender.name?.toLowerCase() || "";
+    const email = sender.email?.toLowerCase() || "";
+    return name.includes(query) || email.includes(query);
+  });
 };
 
 export const filterByStatus = (
@@ -34,9 +35,10 @@ export const sortSendersByMessages = (
   senders: LinkedInSenderProfile[],
   order: 'asc' | 'desc' = 'desc'
 ): LinkedInSenderProfile[] => {
-  return [...senders].sort((a, b) => {
-    return order === 'desc' 
-      ? b.messages_sent - a.messages_sent 
-      : a.messages_sent - b.messages_sent;
-  });
+  return [...senders].sort((a, b) =>
+    order === 'desc'
+      ? b.messages_sent - a.messages_sent
+      : a.messages_sent - b.messages_sent
+  );
 };
+
