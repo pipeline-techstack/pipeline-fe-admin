@@ -13,6 +13,7 @@ import {
   ChevronsRight,
   BookOpen,
   Stars,
+  Network,
 } from "lucide-react";
 import {
   Tooltip,
@@ -25,6 +26,7 @@ const navigation = [
   { name: "Customers", href: "/customers", icon: Users },
   { name: "Organizations", href: "/", icon: Building2 },
   { name: "WB Configs", href: "/wb-config", icon: BookOpen },
+  { name: "LinkedIn Sync", href: "/linkedin-sync", icon: Network },
   { name: "Permissions", href: "/permissions", icon: KeyRound },
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Feedback", href: "/feedback", icon: Stars },
