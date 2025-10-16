@@ -8,6 +8,8 @@ export interface HeyreachSender {
   name: string;
   email: string;
   isActive: boolean;
+  authIsValid: boolean;
+  activeCampaigns: number;
 }
 
 const normalizeHeyreachSender = (item: any): HeyreachSender => ({
@@ -15,6 +17,8 @@ const normalizeHeyreachSender = (item: any): HeyreachSender => ({
   name: `${item.firstName || ""} ${item.lastName || ""}`.trim(),
   email: item.emailAddress || "N/A",
   isActive: !!item.isActive,
+  authIsValid: !!item.authIsValid,
+  activeCampaigns: item.activeCampaigns || 0,
 });
 
 export const useHeyreachSenders = (enabled: boolean) => {
@@ -25,11 +29,11 @@ export const useHeyreachSenders = (enabled: boolean) => {
       const senders = Array.isArray(res?.data?.heyreach_linkedin_senders)
         ? res.data.heyreach_linkedin_senders
             .map(normalizeHeyreachSender)
-            .filter((sender) => sender.isActive) 
+            // .filter((sender) => sender.isActive) 
         : [];
       return senders;
     },
-    enabled, // Fetch only when dialog opens
+    enabled, 
     staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,
   });

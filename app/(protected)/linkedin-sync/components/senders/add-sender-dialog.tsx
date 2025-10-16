@@ -11,11 +11,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { SingleSelectComponent } from "@/app/(protected)/wb-config/_components/campaign-select";
+
 import { useHeyreachSenders } from "../../hooks/useHeyrechSenders";
 import { addLinkedinSender } from "@/services/linkedin-senders";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
+import { SenderSelectComponent } from "./sender-select";
 
 interface AddSenderDialogProps {
   open: boolean;
@@ -59,6 +60,7 @@ const AddSenderDialog = ({ open, onOpenChange }: AddSenderDialogProps) => {
       onOpenChange(false);
     } catch (err: any) {
       console.error(err);
+      toast.error("Failed to link sender");
     } finally {
       setIsSubmitting(false);
     }
@@ -69,10 +71,13 @@ const AddSenderDialog = ({ open, onOpenChange }: AddSenderDialogProps) => {
     setProfileUrl("");
     onOpenChange(false);
   };
-
+  
   const selectOptions = senderOptions.map((s: any) => ({
-    name: s.name,
     id: String(s.id),
+    name: s.name,
+    authIsValid: s.authIsValid,
+    isActive: s.isActive,
+    activeCampaigns: s.activeCampaigns,
   }));
 
   return (
@@ -94,14 +99,23 @@ const AddSenderDialog = ({ open, onOpenChange }: AddSenderDialogProps) => {
             <Label className="font-medium text-gray-900 text-sm">
               Select Sender
             </Label>
-            <SingleSelectComponent
-              value={selectedSenderId}
-              options={selectOptions}
-              onChange={(val) => setSelectedSenderId(val)}
-              name="Senders"
-              placeholder={isLoading ? "Loading senders..." : "Choose a sender"}
-              disabled={isLoading || isSubmitting}
-            />
+            {isLoading ? (
+              <div className="text-sm text-gray-500">Loading senders...</div>
+            ) : selectOptions.length === 0 ? (
+              <div className="text-sm text-red-600">
+                No senders available. Please authenticate your LinkedIn senders first.
+              </div>
+            ) : (
+              <SenderSelectComponent
+                value={selectedSenderId}
+                options={selectOptions}
+                onChange={(val) => setSelectedSenderId(val)}
+                name="Senders"
+                placeholder="Choose a sender"
+                disabled={isSubmitting}
+                hideLabel={true}
+              />
+            )}
           </div>
 
           {/* LinkedIn URL Input */}

@@ -45,7 +45,7 @@ const SendersHeader = ({
           <SingleSelectComponent
             value={selectedCampaignId}
             options={campaignOptions}
-            onChange={onCampaignChange} // 👈 call parent handler
+            onChange={onCampaignChange}
             name="Campaigns"
             placeholder={
               campaignsLoading ? "Loading campaigns..." : "Select Campaign"
@@ -56,12 +56,7 @@ const SendersHeader = ({
 
           <Button
             onClick={() => setIsDialogOpen(true)}
-            // disabled={!selectedCampaignId}
-            className={`${
-              // selectedCampaignId
-                 "bg-[#4A5BAA] hover:bg-[#3d4c92]"
-                // : "bg-gray-300 cursor-not-allowed"
-            } text-white`}
+            className="bg-[#4A5BAA] hover:bg-[#3d4c92] text-white"
           >
             <Plus className="mr-2 w-4 h-4" />
             Add New Sender
