@@ -24,9 +24,9 @@ import {
   getLinkedInSenderNames, 
   getTaskTypeDisplay, 
   getTaskType,
+  capitalizeStatus,
   formatTimeAgo,
 } from "../../utils/campaign-utils";
-import { format } from "path";
 
 interface CampaignTableProps {
   campaigns: CampaignTask[];
@@ -42,7 +42,6 @@ const CampaignTable = ({ campaigns, onRefresh, isLoading }: CampaignTableProps) 
 
   const sortedCampaigns = useMemo(() => {
     if (!campaigns) return [];
-    // Sort by status first, then by updated_at (most recent first)
     return [...campaigns].sort((a, b) => {
       if (a.status === "pending" && b.status !== "pending") return -1;
       if (a.status !== "pending" && b.status === "pending") return 1;
@@ -156,6 +155,8 @@ const CampaignTable = ({ campaigns, onRefresh, isLoading }: CampaignTableProps) 
                   task.fields?.updated_at ||
                   task.fields?.changes?.[0]?.modified_fields?.updated_at?.updated_at;
 
+                const { display: timeDisplay, dotColor } = formatTimeAgo(updatedAt || "");
+
                 return (
                   <TableRow key={task._id}>
                     <TableCell className="font-medium" title={task.campaign_id}>
@@ -186,54 +187,25 @@ const CampaignTable = ({ campaigns, onRefresh, isLoading }: CampaignTableProps) 
                       </div>
                     </TableCell>
 
-
-
                     <TableCell title={updatedAt}>
                       <div className="flex items-center gap-2">
                         {updatedAt ? (
-                          (() => {
-                            const updatedDate = new Date(updatedAt);
-                            const diffMs = Date.now() - updatedDate.getTime();
-                            const diffSec = Math.floor(diffMs / 1000);
-                            const diffMin = Math.floor(diffSec / 60);
-                            const diffHour = Math.floor(diffMin / 60);
-                            const diffDay = Math.floor(diffHour / 24);
-                            const diffMonth = Math.floor(diffDay / 30);
-
-                            let dotColor = "bg-red-500";
-
-                            if (diffHour < 24) {
-                              dotColor = "bg-green-500"; // < 1 day
-                            } else if (diffDay < 8) {
-                              dotColor = "bg-yellow-500"; // 1–7 days
-                            } else if (diffMonth < 1) {
-                              dotColor = "bg-orange-500"; // 1 week–1 month
-                            } else {
-                              dotColor = "bg-red-500"; // older than a month
-                            }
-
-                            return (
-                              <>
-                                <span className={`inline-block w-3 h-3 rounded-full ${dotColor}`} />
-                                <span>{formatTimeAgo(updatedAt)}</span>
-                              </>
-                            );
-                          })()
+                          <>
+                            <span className={`inline-block w-3 h-3 rounded-full ${dotColor}`} />
+                            <span>{timeDisplay}</span>
+                          </>
                         ) : (
                           "—"
                         )}
                       </div>
                     </TableCell>
 
-
-
-
                     <TableCell>
                       <Badge
-                        className={`px-3 py-1 font-medium transition-colors ${
+                        className={`px-3 py-1 font-semibold transition-colors ${
                           taskType === "create"
-                            ? "bg-green-100 text-green-800 hover:bg-green-200"
-                            : "bg-blue-100 text-blue-800 hover:bg-blue-200"
+                            ? "bg-fuchsia-100 text-fuchsia-800 hover:bg-fuchsia-200"
+                            : "bg-sky-100 text-sky-800 hover:bg-sky-200"
                         }`}
                       >
                         {taskTypeDisplay}
@@ -250,7 +222,7 @@ const CampaignTable = ({ campaigns, onRefresh, isLoading }: CampaignTableProps) 
                             : "bg-gray-100 text-gray-800"
                         }
                       >
-                        {task.status}
+                        {capitalizeStatus(task.status)}
                       </Badge>
                     </TableCell>
 

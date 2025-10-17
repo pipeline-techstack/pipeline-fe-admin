@@ -1,26 +1,25 @@
 import { CampaignTask, LinkedInSender } from '../types/campaign';
 
-{/* Extract LinkedIn sender names from task */}
- 
+/* Extract LinkedIn sender names from task */
 export const getLinkedInSenderNames = (task: CampaignTask): string[] => {
   const newSenders = task.fields?.linkedin_senders || task.changes?.linkedin_senders?.new || [];
   return newSenders.map((sender: LinkedInSender) => sender.full_name);
 };
 
-{/* Get task type display text */}
+/* Get task type display text */
 export const getTaskTypeDisplay = (type: string): string => {
   if (type === 'campaign_update') return 'Update Campaign';
-  if (type === 'campaign_create') return 'Create Campaign';
+  if (type === 'campaign_create' || type === 'campaign_creation') return 'Create Campaign';
   return type;
 };
 
-{/* Get task type for badge variant */}
+/* Get task type for badge variant */
 export const getTaskType = (type: string): 'create' | 'update' => {
-  if (type === 'campaign_create') return 'create';
+  if (type === 'campaign_create' || type === 'campaign_creation') return 'create';
   return 'update';
 };
 
-{/* Format date string */}
+/* Format date string */
 export const formatDate = (dateString: string): string => {
   const date = new Date(dateString);
   return date.toLocaleDateString('en-US', {
@@ -32,61 +31,71 @@ export const formatDate = (dateString: string): string => {
   });
 };
 
-{/* Safely display a value, returning "N/A" for null, undefined, or empty strings. */}
+/* Safely display a value, returning "N/A" for null, undefined, or empty strings. */
 export const displayValue = (value: any): string => {
   if (value === null || value === undefined) return "N/A";
   if (typeof value === "string" && value.trim() === "") return "N/A";
   return String(value);
 };
 
-{ /* Get relative time from date string */}
-export function formatTimeAgo(dateInput: string | number | Date | null): string {
-  if (!dateInput) return "";
+/* Capitalize first letter of status */
+export const capitalizeStatus = (status: string | undefined): string => {
+  if (!status) return "";
+  return status.charAt(0).toUpperCase() + status.slice(1);
+};
 
-  let date: Date;
+/* Format time ago with color indicator */
+export const formatTimeAgo = (dateInput: string): { display: string; dotColor: string } => {
+  if (!dateInput) return { display: "—", dotColor: "bg-gray-500" };
 
-  if (typeof dateInput === "string") {
-    let normalized = dateInput.trim();
+  let normalized = dateInput.trim();
 
-    // Handle ISO with microseconds (e.g. 2025-09-01T00:38:24.544000)
-    if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{6}/.test(normalized)) {
-      normalized = normalized.replace(/(\.\d{3})\d+/, "$1");
-    }
-
-    // Ensure UTC suffix if ISO-like but missing 'Z'
-    if (/^\d{4}-\d{2}-\d{2}T/.test(normalized) && !/[zZ]$/.test(normalized)) {
-      normalized += "Z";
-    }
-
-    date = new Date(normalized);
-  } else {
-    date = new Date(dateInput);
+  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{6}/.test(normalized)) {
+    normalized = normalized.replace(/(\.\d{3})\d+/, "$1");
   }
 
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffSec = Math.floor(diffMs / 1000);
-  const diffMin = Math.floor(diffSec / 60);
-  const diffHour = Math.floor(diffMin / 60);
-  const diffDay = Math.floor(diffHour / 24);
-  const diffMonth = Math.floor(diffDay / 30); 
+  if (/^\d{4}-\d{2}-\d{2}T/.test(normalized) && !/[zZ]$/.test(normalized)) {
+    normalized += "Z";
+  }
 
-  if (diffSec < 60) return diffSec <= 5 ? "Just now" : `${diffSec}s`;
-  if (diffMin < 60) return diffMin === 1 ? "1 min" : `${diffMin} mins`;
-  if (diffHour < 24) return diffHour === 1 ? "1 hr" : `${diffHour} hrs`;
-  if (diffDay < 8) return diffDay === 1 ? "1 day" : `${diffDay} days`;
-  if (diffMonth < 4) return diffMonth === 1 ? "1 month" : `${diffMonth} months`;
+  const date = new Date(normalized);
+  const diffMs = Date.now() - date.getTime();
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffHours / 24);
 
+  let dotColor = "bg-red-500";
+  if (diffHours < 24) {
+    dotColor = "bg-green-500";
+  } else if (diffHours < 48) {
+    dotColor = "bg-yellow-500";
+  }
 
-  // Fallback → show local date for anything older than 3 months
-  return date.toLocaleDateString(undefined, {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-}
+  let display = "";
+  if (diffHours < 1) {
+    const diffMin = Math.floor(diffMs / (1000 * 60));
+    if (diffMin < 1) {
+      display = "Just now";
+    } else if (diffMin === 1) {
+      display = "1 min";
+    } else {
+      display = `${diffMin} mins`;
+    }
+  } else if (diffHours < 24) {
+    display = diffHours === 1 ? "1 hr" : `${diffHours} hrs`;
+  } else if (diffDays < 8) {
+    display = diffDays === 1 ? "1 day" : `${diffDays} days`;
+  } else {
+    const diffMonths = Math.floor(diffDays / 30);
+    if (diffMonths < 4) {
+      display = diffMonths === 1 ? "1 month" : `${diffMonths} months`;
+    } else {
+      display = date.toLocaleDateString(undefined, {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+    }
+  }
 
-
-
-
-
+  return { display, dotColor };
+};
