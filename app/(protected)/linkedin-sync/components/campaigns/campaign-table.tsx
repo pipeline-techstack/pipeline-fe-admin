@@ -139,7 +139,7 @@ const CampaignTable = ({ campaigns, onRefresh, isLoading }: CampaignTableProps) 
               <TableRow>
                 <TableHead>Campaign Name</TableHead>
                 <TableHead>LinkedIn Senders</TableHead>
-                <TableHead>Last Updated</TableHead>
+                <TableHead>Pending Since</TableHead>
                 <TableHead>Task Type</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Actions</TableHead>

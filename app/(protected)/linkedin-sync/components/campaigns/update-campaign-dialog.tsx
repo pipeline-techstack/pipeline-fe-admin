@@ -10,62 +10,9 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { ArrowRight, Calendar, Briefcase, MapPin, Mail, Link2, User, Medal, FileText, Image, Building2 } from "lucide-react";
+import { ArrowRight, Calendar, Briefcase, MapPin, Mail, Link2, User, Medal, FileText, Image, Building2, Download, ExternalLink } from "lucide-react";
+import { LinkedInSender, UpdateCampaignDialogProps } from "../../types/campaign";
 
-interface LinkedInSender {
-  full_name: string;
-  profile_image_url?: string;
-  banner_image_url?: string;
-  company_name?: string;
-  headline?: string;
-  location?: string;
-  about?: string;
-  work_experiences?: Array<{
-    title: string;
-    company_name: string;
-    date_range: string;
-    location: string;
-    description?: string | null;
-  }>;
-  linkedin_sender_id?: number;
-}
-
-interface AdditionalInfo {
-  email_address?: string;
-  calendar_link?: string;
-  company_brochure_link?: string | null;
-  company_logo_link?: string | null;
-  company_linkedin_banner_link?: string | null;
-  company_pitch_deck_link?: string | null;
-  company_product_overview_link?: string | null;
-}
-
-interface CampaignTask {
-  _id: string;
-  type: string;
-  campaign_id: string;
-  changes?: {
-    linkedin_senders?: {
-      old: LinkedInSender[];
-      new: LinkedInSender[];
-    };
-    additional_info?: {
-      old: AdditionalInfo;
-      new: AdditionalInfo;
-    };
-    campaign_name?: {
-      old: string | null;
-      new: string;
-    };
-  };
-}
-
-interface UpdateCampaignDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onUpdateCampaign: (taskId: string) => Promise<void>;
-  selectedTask: CampaignTask | null;
-}
 
 const UpdateCampaignDialog = ({
   open,
@@ -108,20 +55,116 @@ const UpdateCampaignDialog = ({
     }).join("\n\n");
   };
 
+  const handleDownload = async (url: string, fileName: string) => {
+    const apiUrl = `/api/download?url=${encodeURIComponent(url)}`;
+    const link = document.createElement("a");
+    link.href = apiUrl;
+    link.download = fileName; 
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleRedirect = (url: string) => {
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
+
+  const isValidUrl = (value: string) => {
+    if (!value) return false;
+    try {
+      new URL(value);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
   const ComparisonField = ({
     label,
     oldValue,
     newValue,
     icon: Icon,
     isImage = false,
+    isLink = false,
   }: {
     label: string;
     oldValue: string;
     newValue: string;
     icon?: any;
     isImage?: boolean;
+    isLink?: boolean;
   }) => {
     const hasChanged = oldValue !== newValue;
+    
+    const renderContent = (value: string, type: "old" | "new") => {
+      if (isImage && value) {
+        return (
+          <div className="space-y-3">
+            <img src={value} alt={type === "old" ? "Previous" : "Updated"} className="max-w-full h-auto rounded" />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleDownload(value, `${type}-${label.toLowerCase().replace(/\s+/g, '-')}.jpg`)}
+              className="w-full text-xs"
+            >
+              <Download className="w-3 h-3 mr-1" />
+              Download
+            </Button>
+          </div>
+        );
+      }
+
+      if (isLink && isValidUrl(value)) {
+        const showDownload = !label.includes("Calendar");
+        return (
+          <div className="space-y-3">
+            <span className="text-sm text-slate-700 break-all block">
+              {value}
+            </span>
+            <div className={`flex gap-2 ${showDownload ? '' : 'justify-start'}`}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleRedirect(value)}
+                className={showDownload ? "flex-1 text-xs" : "w-full text-xs"}
+              >
+                <ExternalLink className="w-3 h-3 mr-1" />
+                Redirect
+              </Button>
+              {showDownload && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleDownload(value, `${type}-${label.toLowerCase().replace(/\s+/g, '-')}`)}
+                  className="flex-1 text-xs"
+                >
+                  <Download className="w-3 h-3 mr-1" />
+                  Download
+                </Button>
+              )}
+            </div>
+          </div>
+        );
+      }
+
+      if (label.includes("Email") && value) {
+        return (
+          <a
+            href={`mailto:${value}`}
+            className="text-sm font-semibold text-[#4A5BAA] hover:text-[#3B4D7A] break-all block underline"
+          >
+            {value}
+          </a>
+        );
+      }
+
+      return (
+        <p className="text-sm text-slate-700 whitespace-pre-wrap break-words leading-relaxed">
+          {value || <span className="text-slate-400 italic">Not set</span>}
+        </p>
+      );
+    };
     
     return (
       <div className="group relative">
@@ -145,13 +188,7 @@ const UpdateCampaignDialog = ({
                 ? 'bg-rose-50/50 border-rose-200 shadow-sm' 
                 : 'bg-slate-50 border-slate-200'
             }`}>
-              {isImage && oldValue ? (
-                <img src={oldValue} alt="Previous" className="max-w-full h-auto rounded" />
-              ) : (
-                <p className="text-sm text-slate-700 whitespace-pre-wrap break-words leading-relaxed">
-                  {oldValue || <span className="text-slate-400 italic">Not set</span>}
-                </p>
-              )}
+              {renderContent(oldValue, "old")}
             </div>
           </div>
           
@@ -170,13 +207,7 @@ const UpdateCampaignDialog = ({
                 ? 'bg-emerald-50/50 border-emerald-200 shadow-sm' 
                 : 'bg-slate-50 border-slate-200'
             }`}>
-              {isImage && newValue ? (
-                <img src={newValue} alt="Updated" className="max-w-full h-auto rounded" />
-              ) : (
-                <p className="text-sm text-slate-700 whitespace-pre-wrap break-words leading-relaxed">
-                  {newValue || <span className="text-slate-400 italic">Not set</span>}
-                </p>
-              )}
+              {renderContent(newValue, "new")}
             </div>
           </div>
         </div>
@@ -286,6 +317,7 @@ const UpdateCampaignDialog = ({
               oldValue={oldAdditionalInfo.calendar_link || ""}
               newValue={newAdditionalInfo.calendar_link || ""}
               icon={Calendar}
+              isLink={true}
             />
 
             <ComparisonField
@@ -293,6 +325,7 @@ const UpdateCampaignDialog = ({
               oldValue={oldAdditionalInfo.company_brochure_link || ""}
               newValue={newAdditionalInfo.company_brochure_link || ""}
               icon={Link2}
+              isLink={true}
             />
 
             <ComparisonField
@@ -316,6 +349,7 @@ const UpdateCampaignDialog = ({
               oldValue={oldAdditionalInfo.company_pitch_deck_link || ""}
               newValue={newAdditionalInfo.company_pitch_deck_link || ""}
               icon={Link2}
+              isLink={true}
             />
 
             <ComparisonField
@@ -323,6 +357,7 @@ const UpdateCampaignDialog = ({
               oldValue={oldAdditionalInfo.company_product_overview_link || ""}
               newValue={newAdditionalInfo.company_product_overview_link || ""}
               icon={Link2}
+              isLink={true}
             />
           </div>
         </div>

@@ -71,11 +71,12 @@ export function formatTimeAgo(dateInput: string | number | Date | null): string 
   const diffDay = Math.floor(diffHour / 24);
   const diffMonth = Math.floor(diffDay / 30); 
 
-  if (diffSec < 60) return diffSec <= 5 ? "Just now" : `${diffSec}s ago`;
-  if (diffMin < 60) return `${diffMin}m ago`;
-  if (diffHour < 24) return `${diffHour}h ago`;
-  if (diffDay < 8) return diffDay === 1 ? "1 day ago" : `${diffDay} days ago`;
-  if (diffMonth < 4) return diffMonth <= 1 ? "1 month ago" : `${diffMonth} months ago`;
+  if (diffSec < 60) return diffSec <= 5 ? "Just now" : `${diffSec}s`;
+  if (diffMin < 60) return diffMin === 1 ? "1 min" : `${diffMin} mins`;
+  if (diffHour < 24) return diffHour === 1 ? "1 hr" : `${diffHour} hrs`;
+  if (diffDay < 8) return diffDay === 1 ? "1 day" : `${diffDay} days`;
+  if (diffMonth < 4) return diffMonth === 1 ? "1 month" : `${diffMonth} months`;
+
 
   // Fallback → show local date for anything older than 3 months
   return date.toLocaleDateString(undefined, {
