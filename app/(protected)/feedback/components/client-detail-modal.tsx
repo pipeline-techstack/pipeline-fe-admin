@@ -81,7 +81,7 @@ const ClientDetailModal = ({ item, onClose }: ClientDetailModalProps) => {
           {item.client_email && (
             <div className="flex items-start space-x-3">
               <div className="flex flex-shrink-0 justify-center items-center bg-blue-100 rounded-full w-8 h-8">
-                <Mail size={16} className="text-blue-600" />
+                <Mail size={16} className="text-[#4A5BAA]" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="mb-1 font-medium text-gray-600 text-sm">Client's email</p>
@@ -93,7 +93,7 @@ const ClientDetailModal = ({ item, onClose }: ClientDetailModalProps) => {
           {/* Meeting Status */}
           <div className="flex items-start space-x-3">
             <div className="flex flex-shrink-0 justify-center items-center bg-blue-100 rounded-full w-8 h-8">
-              <Calendar size={16} className="text-blue-600" />
+              <Calendar size={16} className="text-[#4A5BAA]" />
             </div>
             <div>
               <p className="mb-1 font-medium text-gray-600 text-sm">Meeting Status</p>

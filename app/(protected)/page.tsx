@@ -23,7 +23,7 @@ export default function Home() {
           </div>
 
           <Button
-            className="bg-blue-600 hover:bg-blue-700"
+            className="bg-[#4A5BAA] hover:bg-[#3d4c92] text-white"
             onClick={() => setIsModalOpen(true)}
           >
             <Plus className="mr-2 w-4 h-4" />

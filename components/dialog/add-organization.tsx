@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { AlertCircle, Edit } from "lucide-react";
+import { AlertCircle, Edit, Plus } from "lucide-react";
 import { Users, X } from "lucide-react";
 import { OrganizationFormData } from "@/lib/types/org-types";
 import { useQueryClient } from "@tanstack/react-query";
@@ -204,7 +204,7 @@ export function AddOrganizationDialog({
                   onChange={(e) =>
                     handleInputChange("organizationName", e.target.value)
                   }
-                  className="px-3 py-3 border border-gray-300 focus:border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-base"
+                  className="px-3 py-3 border border-gray-300 focus:border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-[#4A5BAA] w-full text-base"
                 />
               </div>
 
@@ -224,7 +224,7 @@ export function AddOrganizationDialog({
                   onChange={(e) =>
                     handleInputChange("enterpriseId", e.target.value)
                   }
-                  className="bg-gray-50 px-3 py-3 border border-gray-300 focus:border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-base"
+                  className="bg-gray-50 px-3 py-3 border border-gray-300 focus:border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-[#4A5BAA] w-full text-base"
                 />
               </div>
 
@@ -250,7 +250,7 @@ export function AddOrganizationDialog({
                       className={`w-full px-3 py-3 text-base border rounded-md focus:outline-none focus:ring-2 focus:border-transparent ${
                         emailTouched && !isEmailValid
                           ? "border-red-300 ring-red-500 focus:ring-red-500"
-                          : "border-gray-300 focus:ring-blue-500"
+                          : "border-gray-300 focus:ring-[#4A5BAA]"
                       }`}
                     />
 
@@ -277,7 +277,7 @@ export function AddOrganizationDialog({
                       onChange={(e) =>
                         handleInputChange("quota", e.target.value)
                       }
-                      className="px-3 py-3 border border-gray-300 focus:border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-base"
+                      className="px-3 py-3 border border-gray-300 focus:border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-[#4A5BAA] w-full text-base"
                     />
                   </div>
                   <div className="space-y-2">
@@ -296,7 +296,7 @@ export function AddOrganizationDialog({
                       onChange={(e) =>
                         handleInputChange("seats", e.target.value)
                       }
-                      className="px-3 py-3 border border-gray-300 focus:border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-base"
+                      className="px-3 py-3 border border-gray-300 focus:border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-[#4A5BAA] w-full text-base"
                     />
                   </div>
                 </>
@@ -416,9 +416,10 @@ export function AddOrganizationDialog({
                 isLoading={isSubmitting}
                 disabled={!isFormValid}
                 loadingText={isEditMode ? "Updating..." : "Adding..."}
-                className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 px-4 py-3 rounded-md w-full font-medium text-white text-base transition-colors disabled:cursor-not-allowed"
+                className="bg-[#4A5BAA] hover:bg-[#3d4c92] disabled:bg-gray-600 px-4 py-3 rounded-md w-full font-medium text-white text-base transition-colors disabled:cursor-not-allowed"
               >
-                {isEditMode ? "Update organization" : "Add organization"}
+                {!isEditMode && <Plus className="w-4 h-4" />}
+                {isEditMode ? "Update Organization" : "Add Organization"}
               </LoadingButton>
             </form>
           </div>

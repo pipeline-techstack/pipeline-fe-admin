@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Plus } from 'lucide-react';
 
 interface LoadingButtonProps {
   isLoading: boolean;
@@ -62,8 +62,9 @@ export function ExampleUsage() {
         isLoading={isSubmitting}
         loadingText="Adding organization..."
         onClick={handleSubmit}
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+        className="w-full bg-[#4A5BAA] hover:bg-[#3d4c92] text-white"
       >
+        <Plus className="mr-2 w-4 h-4" />
         Add Organization
       </LoadingButton>
 
@@ -73,7 +74,7 @@ export function ExampleUsage() {
         isLoading={isSubmitting}
         loadingText="Updating organization..."
         onClick={handleSubmit}
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+        className="w-full bg-[#4A5BAA] hover:bg-[#3d4c92] text-white"
       >
         Update Organization
       </LoadingButton>
@@ -83,7 +84,7 @@ export function ExampleUsage() {
         isLoading={isSubmitting}
         loadingText="Adding member..."
         onClick={handleSubmit}
-        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+        className="flex-1 bg-[#4A5BAA] hover:bg-[#3d4c92] text-white"
       >
         Add Member
       </LoadingButton>

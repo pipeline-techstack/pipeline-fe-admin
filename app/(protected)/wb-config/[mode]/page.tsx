@@ -167,6 +167,7 @@ const EditConfigurations = () => {
       <Button
         type="button"
         variant="outline"
+         className="bg-[#4A5BAA] text-white hover:bg-[#3d4c92] hover:text-white"
         onClick={() =>
           setConfigs((prev) => [
             ...prev,

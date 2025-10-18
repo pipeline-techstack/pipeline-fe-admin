@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/tooltip";
 import { fetchWorkbookConfigurations } from "./services/config-apis";
 import { WorkbookConfiguration } from "./types/api";
+import { Pencil, Plus } from "lucide-react";
 
 const WorkbookConfigurationPage = () => {
   const router = useRouter();
@@ -46,9 +47,15 @@ const WorkbookConfigurationPage = () => {
                 What is user and campaign Permission
               </p>
             </div>
-            <Button className="bg-zinc-800 hover:bg-zinc-700" onClick={() => router.push("/wb-config/new")}>
+
+            <Button
+              className="flex items-center gap-2 bg-[#4A5BAA] hover:bg-[#3d4c92]"
+              onClick={() => router.push("/wb-config/new")}
+            >
+              <Plus className="w-4 h-4" />
               New Configuration
             </Button>
+
           </div>
 
           {isLoading ? (
@@ -81,7 +88,7 @@ const WorkbookConfigurationPage = () => {
                         {config.workbooks.slice(0, 2).map((workbook) => (
                           <span
                             key={workbook.id}
-                            className="bg-blue-100 px-2 py-1 rounded-md text-blue-700 text-xs"
+                            className="bg-blue-100 px-2 py-1 rounded-md text-[#4A5BAA] text-xs"
                           >
                             {workbook.name}
                           </span>
@@ -100,7 +107,7 @@ const WorkbookConfigurationPage = () => {
                                 {config.workbooks.slice(2).map((workbook) => (
                                   <span
                                     key={workbook.id}
-                                    className="bg-blue-50 px-2 py-0.5 rounded text-blue-700 text-xs"
+                                    className="bg-blue-50 px-2 py-0.5 rounded text-[#4A5BAA] text-xs"
                                   >
                                     {workbook.name}
                                   </span>
@@ -147,6 +154,7 @@ const WorkbookConfigurationPage = () => {
                           router.push(`/wb-config/edit?campaign=${config.campaign_id}`)
                         }
                       >
+                        <Pencil className="mr-2 w-4 h-4" />
                         Edit
                       </Button>
                     </td>

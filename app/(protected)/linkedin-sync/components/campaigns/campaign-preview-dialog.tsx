@@ -259,7 +259,7 @@ const CampaignPreviewDialog = ({
                     <div key={index} className="p-4 rounded-lg bg-slate-50 border border-slate-200">
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-3">
-                          <Badge className="bg-blue-100 text-blue-800">
+                          <Badge className="bg-blue-100 text-[#4A5BAA] font-semibold">
                             Step {displayValue(step.step_number)}
                           </Badge>
                           <Badge variant="outline" className="capitalize">

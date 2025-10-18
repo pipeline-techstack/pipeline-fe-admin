@@ -9,6 +9,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useHeyreach } from "@/hooks/use-heyreach";
+import { Pencil, Plus } from "lucide-react";
 
 const PermissionsPage = () => {
   const router = useRouter();
@@ -23,7 +24,8 @@ const PermissionsPage = () => {
             <h2 className="font-bold text-gray-900 text-2xl">
               Users & Campaign Permissions
             </h2>
-            <Button className="bg-zinc-800 hover:bg-zinc-700" onClick={() => router.push("/permissions/new")}>
+            <Button className="bg-[#4A5BAA] hover:bg-[#3d4c92]" onClick={() => router.push("/permissions/new")}>
+              <Plus className="mr-2 w-4 h-4" />
               New Form
             </Button>
           </div>
@@ -51,7 +53,7 @@ const PermissionsPage = () => {
                           {user.campaigns.slice(0, 2).map((c) => (
                             <span
                               key={c.id}
-                              className="bg-blue-100 px-2 py-1 rounded-md text-blue-700 text-xs"
+                              className="bg-blue-100 px-2 py-1 rounded-md text-[#4A5BAA] text-xs"
                             >
                               {c.name}
                             </span>
@@ -69,7 +71,7 @@ const PermissionsPage = () => {
                                   {user.campaigns.slice(2).map((c) => (
                                     <span
                                       key={c.id}
-                                      className="bg-blue-50 px-2 py-0.5 rounded text-blue-700 text-xs"
+                                      className="bg-blue-50 px-2 py-0.5 rounded text-[#4A5BAA] text-xs"
                                     >
                                       {c.name}
                                     </span>
@@ -98,6 +100,7 @@ const PermissionsPage = () => {
                           )
                         }
                       >
+                        <Pencil className="mr-2 w-4 h-4" />
                         Edit
                       </Button>
                     </td>

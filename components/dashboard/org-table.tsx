@@ -7,7 +7,6 @@ import {
   Edit,
   Trash2,
   FolderKanban,
-  X,
   Loader2,
 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -93,8 +92,9 @@ export function OrganizationTable() {
     if (input) input.indeterminate = someSelected;
   }, [someSelected]);
 
-  // const toggleCheckbox = (id: string, checked: boolean) =>
-  //   setData((prev) => prev.map((i) => (i._id === id ? { ...i, checked } : i)));
+  const toggleCheckbox = (id: string, checked: boolean) => {
+    setData((prev) => prev.map((i) => (i._id === id ? { ...i, checked } : i)));
+  };
 
   const toggleAll = (checked: boolean) =>
     setData((prev) => prev.map((i) => ({ ...i, checked })));
@@ -137,6 +137,7 @@ export function OrganizationTable() {
       setLoading(false);
     }
   };
+
   const handleBulkDelete = () => {
     const count = data.filter((i) => i.checked).length;
     showConfirm(
@@ -160,144 +161,157 @@ export function OrganizationTable() {
 
   return (
     <>
-      <div className="bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden">
-        {selectedCount > 0 && (
-          <div className="flex justify-between items-center bg-gray-50 slide-in-from-top-2 px-6 py-3 border-b animate-in duration-300 ease-out">
-            <div className="flex items-center space-x-3">
-              <span className="font-medium text-sm animate-in duration-200 fade-in-0">
-                {selectedCount} selected
-              </span>
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={() => toggleAll(false)}
-                className="hover:scale-105 transition-all duration-150"
-              >
-                <X className="w-4 h-4" />
-              </Button>
-            </div>
-          </div>
-        )}
-
-        <div className="max-h-[calc(100vh-250px)] overflow-auto">
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-gray-50">
-                {/* <TableHead className="pl-6 w-12">
-                  <Checkbox
-                    ref={selectAllRef}
-                    checked={allSelected}
-                    onCheckedChange={(c) => toggleAll(c as boolean)}
-                  />
-                </TableHead> */}
-                <TableHead className="font-semibold">Company</TableHead>
-                <TableHead className="font-semibold">Quota</TableHead>
-                <TableHead className="font-semibold">Seats</TableHead>
-                <TableHead className="font-semibold">Updated</TableHead>
-                <TableHead className="font-semibold">Status</TableHead>
-                <TableHead className="w-12 font-semibold">
-                  <div className="transition-all duration-200 ease-in-out">
-                    {selectedCount > 0 ? (
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        onClick={handleBulkDelete}
-                        className="slide-in-from-top-1 p-0 w-8 h-8 animate-in duration-200 fade-in-0"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    ) : (
-                      <span className="slide-in-from-top-1 animate-in duration-200 fade-in-0">
-                        Actions
-                      </span>
-                    )}
-                  </div>
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {data.map((item) => (
-                <TableRow
-                  key={item._id}
-                  className={`hover:bg-gray-50 group cursor-pointer transition-colors duration-150 ${
-                    item.checked ? "bg-blue-20" : ""
-                  }`}
-                  onClick={(e) => handleRowClick(item._id, e)}
-                >
-                  {/* <TableCell
-                    className="pl-6"
-                    onClick={(e) => e.stopPropagation()}
+      <div className="relative h-[calc(100vh-310px)]">
+        {/* Fixed Header */}
+        <Table className="bg-white">
+          <TableHeader>
+            <TableRow className="hover:bg-transparent">
+              <TableHead className="px-4 w-12">
+                <Checkbox
+                  ref={selectAllRef}
+                  checked={allSelected}
+                  onCheckedChange={(c) => toggleAll(c as boolean)}
+                  aria-label="Select all organizations"
+                  className="data-[state=checked]:bg-black data-[state=checked]:border-black"
+                />
+              </TableHead>
+              <TableHead className="w-1/4">Company</TableHead>
+              <TableHead className="w-1/5">Quota</TableHead>
+              <TableHead className="w-1/5">Seats</TableHead>
+              <TableHead className="w-1/5">Updated</TableHead>
+              <TableHead className="w-1/5">Status</TableHead>
+              <TableHead className="w-28">
+                {selectedCount > 0 ? (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="hover:bg-red-100 text-red-600"
+                    onClick={handleBulkDelete}
+                    aria-label={`Delete ${selectedCount} selected organizations`}
                   >
-                    <Checkbox
+                    <Trash2 className="size-5" />
+                  </Button>
+                ) : (
+                  <span className="mr-2 text-black">Actions</span>
+                )}
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+        </Table>
+
+        {/* Scrollable Body */}
+        <div className="overflow-auto" style={{ height: "calc(100% - 60px)" }}>
+          <Table className="bg-white">
+            <TableBody className="bg-white">
+              {data.map((item, index) => {
+                const isSelected = item.checked;
+                const isEven = index % 2 === 0;
+                return (
+                  <TableRow
+                    key={item._id}
+                    className={`cursor-pointer ${
+                      isEven
+                        ? "bg-[#F7F6FE] hover:bg-[#F7F6FE]"
+                        : "bg-white hover:bg-white"
+                    }`}
+                    onClick={(e) => handleRowClick(item._id, e)}
+                  >
+                    <TableCell 
+                      className="px-4 w-12"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div className="flex items-center justify-center">
+                        <Checkbox
                       checked={item.checked}
-                      onCheckedChange={(c) =>
-                        toggleCheckbox(item._id, c as boolean)
-                      }
-                      className="transition-all duration-150"
+                      onCheckedChange={(c) => toggleCheckbox(item._id, c as boolean)}
+                      aria-label={`Select organization ${item.name}`}
+                      className="data-[state=checked]:bg-black data-[state=checked]:border-black"
                     />
-                  </TableCell> */}
-                  <TableCell className="font-medium">{item.name}</TableCell>
-                  <TableCell>
-                    {item.monthlyQuota?.toLocaleString() || "—"}
-                  </TableCell>
-                  <TableCell>{item.seats || "—"}</TableCell>
-                  <TableCell className="text-gray-600">
-                    {formatDate(item.updatedAt)}
-                  </TableCell>
-                  <TableCell className="text-gray-600">
-                    {item.status === "canceled" ? (
-                      <span className="bg-red-500 px-2 py-1 rounded-full text-white">
-                        Disabled
+                      </div>
+                    </TableCell>
+                    <TableCell className="w-1/4">
+                      <Button
+                        variant="link"
+                        className="justify-start p-0 max-w-60 text-black"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          router.push(`/organization/${item._id}`);
+                        }}
+                      >
+                        <span className="truncate">{item.name}</span>
+                      </Button>
+                    </TableCell>
+                    <TableCell className="w-1/5">
+                      <span className="text-black">
+                        {item.monthlyQuota?.toLocaleString() || "—"}
                       </span>
-                    ) : (
-                      "-"
-                    )}
-                  </TableCell>
-                  <TableCell onClick={(e) => e.stopPropagation()}>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild data-dropdown-trigger>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="p-0 w-8 h-8"
-                        >
-                          <MoreHorizontal className="w-4 h-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem
-                          onClick={() =>
-                            router.push(`/organization/${item._id}`)
-                          }
-                        >
-                          <FolderKanban className="mr-2 w-4 h-4" /> View
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleEdit(item)}>
-                          <Edit className="mr-2 w-4 h-4" /> Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => {
-                            setOrgId(item._id);
-                            showConfirm(
-                              "Disable Organization",
-                              `Are you sure you want to disable "${item.name}"? This cannot be undone.`
-                            );
-                          }}
-                          className="text-red-600"
-                        >
-                          <Trash2 className="mr-2 w-4 h-4" /> Disable
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
+                    </TableCell>
+                    <TableCell className="w-1/5">
+                      <span className="text-black">{item.seats || "—"}</span>
+                    </TableCell>
+                    <TableCell className="w-1/5">
+                      <span className="text-black">
+                        {formatDate(item.updatedAt)}
+                      </span>
+                    </TableCell>
+                    <TableCell className="w-1/5">
+                      {item.status === "canceled" ? (
+                        <div className="flex items-center gap-1">
+                          <div className="size-2 rounded-full bg-red-500" />
+                          <span className="text-black">Disabled</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-1">
+                          <div className="size-2 rounded-full bg-green-500" />
+                          <span className="text-black">Active</span>
+                        </div>
+                      )}
+                    </TableCell>
+                    <TableCell
+                      className="w-28"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild data-dropdown-trigger>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="hover:bg-gray-100"
+                          >
+                            <MoreHorizontal className="size-4 text-gray-600" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem
+                            onClick={() =>
+                              router.push(`/organization/${item._id}`)
+                            }
+                          >
+                            <FolderKanban className="mr-2 w-4 h-4" /> View
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleEdit(item)}>
+                            <Edit className="mr-2 w-4 h-4" /> Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => {
+                              setOrgId(item._id);
+                              showConfirm(
+                                "Disable Organization",
+                                `Are you sure you want to disable "${item.name}"? This cannot be undone.`
+                              );
+                            }}
+                            className="text-red-600"
+                          >
+                            <Trash2 className="mr-2 w-4 h-4" /> Disable
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
-        </div>
-
-        <div className="bg-gray-50 px-6 py-3 border-t">
-          <p className="text-gray-600 text-sm">{data.length} organizations</p>
         </div>
       </div>
 
@@ -313,16 +327,22 @@ export function OrganizationTable() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <Button
-              className="bg-red-600 hover:bg-red-700"
-              onClick={handleDisable}
-              disabled={loading}
-            >
-              {loading && <Loader2 className="mr-2 w-4 h-4 animate-spin" />}
-              Disable
-            </Button>
+            <div className="flex justify-center gap-4 w-full">
+              <AlertDialogCancel className="flex-1">
+                Cancel
+              </AlertDialogCancel>
+              <Button
+                className="flex-1 bg-red-600 hover:bg-red-700"
+                onClick={handleDisable}
+                disabled={loading}
+              >
+                {loading && <Loader2 className="mr-2 w-4 h-4 animate-spin" />}
+                Disable
+              </Button>
+            </div>
+
           </AlertDialogFooter>
+
         </AlertDialogContent>
       </AlertDialog>
 

@@ -131,7 +131,7 @@ const AddSenderDialog = ({ open, onOpenChange }: AddSenderDialogProps) => {
               placeholder="https://www.linkedin.com/in/username/"
               value={profileUrl}
               onChange={(e) => setProfileUrl(e.target.value)}
-              className={`border-gray-300 focus-visible:ring-blue-500 h-12 ${
+              className={`border-gray-300 focus-visible:ring-[#4A5BAA] h-12 ${
                 profileUrl && !isValidLinkedInUrl(profileUrl)
                   ? "border-red-500 focus-visible:ring-red-500"
                   : ""

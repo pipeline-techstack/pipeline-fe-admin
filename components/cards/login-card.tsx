@@ -48,7 +48,7 @@ export default function LoginCard() {
             <Label htmlFor="password">Password</Label>
             <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required />
           </div>
-          <Button type="submit" className="bg-blue-500 hover:bg-blue-600 w-full" disabled={loading}>
+          <Button type="submit" className="bg-[#4A5BAA] hover:bg-[#3d4c92] w-full" disabled={loading}>
             {loading ? "Logging in..." : "Login"}
           </Button>
         </form>

@@ -92,7 +92,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   return (
     <div className="relative" ref={dropdownRef}>
       <div
-        className="bg-white px-3 py-2 border border-gray-300 focus-within:border-blue-500 rounded-lg cursor-pointer"
+        className="bg-white px-3 py-2 border border-gray-300 focus-within:border-[#4A5BAA] rounded-lg cursor-pointer"
         onClick={handleDropdownToggle}
       >
         <div className="flex flex-wrap items-center gap-1">
@@ -104,7 +104,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
               return (
                 <span
                   key={id}
-                  className="inline-flex items-center gap-1 bg-blue-100 px-2 py-1 rounded-md font-medium text-blue-800 text-sm"
+                  className="inline-flex items-center gap-1 bg-blue-100 px-2 py-1 rounded-md font-medium text-[#4A5BAA] text-sm"
                 >
                   {campaign?.name || id}
                   <button
@@ -144,7 +144,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
             <button
               type="button"
               onClick={handleSelectAllToggle}
-              className="font-medium text-blue-600 text-xs hover:underline whitespace-nowrap"
+              className="font-medium text-[#4A5BAA] text-xs hover:underline whitespace-nowrap"
             >
               {allFilteredSelected ? "Deselect All" : "Select All"}
             </button>
@@ -162,7 +162,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
                 onClick={() => handleToggle(option)}
               >
                 <span>{option.name}</span>
-                {value.includes(option.id) && <Check size={16} className="text-blue-600" />}
+                {value.includes(option.id) && <Check size={16} className="text-[#4A5BAA]" />}
               </div>
             ))
           )}

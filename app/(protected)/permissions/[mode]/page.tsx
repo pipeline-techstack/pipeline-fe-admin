@@ -207,14 +207,7 @@ const CampaignFormPage = () => {
             </div>
 
             {/* Actions */}
-            <div className="flex gap-3 mt-8">
-              <Button
-                type="submit"
-                disabled={!email || selectedCampaigns.length === 0 || saving}
-                className="flex-1 bg-zinc-800 hover:bg-zinc-700"
-              >
-                {saving ? "Saving..." : "Save Permissions"}
-              </Button>
+            <div className="flex justify-center gap-3 mt-8">
               <Button
                 type="button"
                 variant="outline"
@@ -222,6 +215,13 @@ const CampaignFormPage = () => {
                 className="flex-1"
               >
                 Cancel
+              </Button>
+              <Button
+                type="submit"
+                disabled={!email || selectedCampaigns.length === 0 || saving}
+                className="flex-1 bg-[#4A5BAA] hover:bg-[#3d4c92]"
+              >
+                {saving ? "Saving..." : "Save Permissions"}
               </Button>
             </div>
           </form>

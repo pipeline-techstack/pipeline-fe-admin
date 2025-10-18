@@ -1,10 +1,11 @@
 "use client";
 import { getCustomers } from "@/services/customers-apis";
-import { updateCustomer } from "@/services/customers-apis"; // 👈 import your update API
+import { updateCustomer } from "@/services/customers-apis";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Pencil, Check, X, Search } from "lucide-react";
 import { useState, useMemo } from "react";
 import Fuse from "fuse.js";
+import SpinLoader from "@/components/ui/spin-loader";
 
 const CustomersPage = () => {
   const queryClient = useQueryClient();
@@ -21,7 +22,7 @@ const CustomersPage = () => {
   const mutation = useMutation({
     mutationFn: updateCustomer,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["customers"] }); // refresh customer list
+      queryClient.invalidateQueries({ queryKey: ["customers"] });
     },
   });
 
@@ -49,7 +50,6 @@ const CustomersPage = () => {
     const formData = editForm[id];
     if (!formData) return;
 
-    // --- Handle name only if provided ---
     let firstName: string | undefined;
     let lastName: string | undefined;
 
@@ -61,7 +61,6 @@ const CustomersPage = () => {
 
     const customer = customers.find((c: any) => c.userId === id);
 
-    // --- Build payload dynamically ---
     const payload: any = {
       email: customer?.email || "",
       phone_e164: formData.phone_e164 || "",
@@ -83,7 +82,6 @@ const CustomersPage = () => {
     }));
   };
 
-  // --- Fuzzy Search Setup ---
   const fuse = useMemo(() => {
     return new Fuse(customers, {
       keys: ["firstName", "lastName", "email", "phone_e164"],
@@ -96,7 +94,13 @@ const CustomersPage = () => {
     return fuse.search(search).map((result) => result.item);
   }, [search, fuse, customers]);
 
-  if (isLoading) return <div className="p-6">Loading customers...</div>;
+  if (isLoading)
+    return (
+      <div className="flex flex-col items-center justify-center h-64">
+        <SpinLoader />
+        <span className="mt-2 text-gray-600">Loading customers...</span>
+      </div>
+    );
   if (error)
     return <div className="p-6 text-red-600">Failed to load customers</div>;
 
@@ -141,13 +145,19 @@ const CustomersPage = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 text-sm">
-              {filteredCustomers.map((customer: any) => {
+              {filteredCustomers.map((customer: any, index: number) => {
                 const isEditing = editingId === customer.userId;
                 const formData = editForm[customer.userId] || {};
+                const isEven = index % 2 === 0;
+
                 return (
                   <tr
                     key={customer.userId}
-                    className="hover:bg-gray-50 transition-colors"
+                    className={`${
+                      isEven
+                        ? "bg-[#F7F6FE] hover:bg-[#F7F6FE]"
+                        : "bg-white hover:bg-white"
+                    } transition-colors`}
                   >
                     {/* Name */}
                     <td className="px-6 py-4">
@@ -207,10 +217,18 @@ const CustomersPage = () => {
                           <button
                             aria-label="Check"
                             onClick={() => saveEdit(customer.userId)}
-                            className="bg-green-600 hover:bg-green-700 px-3 py-2 rounded-md text-white"
+                            disabled={mutation.isPending}
+                            className={`flex items-center justify-center bg-green-600 hover:bg-green-700 px-3 py-2 rounded-md text-white ${
+                              mutation.isPending ? "opacity-70 cursor-not-allowed" : ""
+                            }`}
                           >
-                            <Check className="w-4 h-4" />
+                            {mutation.isPending ? (
+                              <SpinLoader />
+                            ) : (
+                              <Check className="w-4 h-4" />
+                            )}
                           </button>
+
                           <button
                             aria-label="Cancel"
                             onClick={cancelEdit}
@@ -222,7 +240,7 @@ const CustomersPage = () => {
                       ) : (
                         <button
                           onClick={() => startEdit(customer)}
-                          className="flex items-center gap-1 bg-gray-100 px-3 py-2 rounded-md"
+                          className="flex items-center gap-1 bg-[#4A5BAA] text-white px-3 py-2 rounded-md"
                         >
                           <Pencil className="mr-2 w-4 h-4" />
                           Edit

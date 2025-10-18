@@ -256,7 +256,7 @@ export function AddTeamMemberDialog({
             disabled={!isFormValid}
             loadingText="Adding member..."
             onClick={handleSubmit}
-            className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white disabled:text-gray-500 disabled:cursor-not-allowed"
+            className="flex-1 bg-[#4A5BAA] hover:bg-[#3d4c92] disabled:bg-gray-300 text-white disabled:text-gray-500 disabled:cursor-not-allowed"
           >
             Add Member
           </LoadingButton>
