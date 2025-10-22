@@ -101,14 +101,14 @@ const UpdateCampaignDialog = ({
       if (isImage && value) {
         return (
           <div className="space-y-3">
-            <img src={value} alt={type === "old" ? "Previous" : "Updated"} className="max-w-full h-auto rounded" />
+            <img src={value} alt={type === "old" ? "Previous" : "Updated"} className="rounded max-w-full h-auto" />
             <Button
               variant="outline"
               size="sm"
               onClick={() => handleDownload(value, `${type}-${label.toLowerCase().replace(/\s+/g, '-')}.jpg`)}
               className="w-full text-xs"
             >
-              <Download className="w-3 h-3 mr-1" />
+              <Download className="mr-1 w-3 h-3" />
               Download
             </Button>
           </div>
@@ -119,7 +119,7 @@ const UpdateCampaignDialog = ({
         const showDownload = !label.includes("Calendar");
         return (
           <div className="space-y-3">
-            <span className="text-sm text-slate-700 break-all block">
+            <span className="block text-slate-700 text-sm break-all">
               {value}
             </span>
             <div className={`flex gap-2 ${showDownload ? '' : 'justify-start'}`}>
@@ -129,7 +129,7 @@ const UpdateCampaignDialog = ({
                 onClick={() => handleRedirect(value)}
                 className={showDownload ? "flex-1 text-xs" : "w-full text-xs"}
               >
-                <ExternalLink className="w-3 h-3 mr-1" />
+                <ExternalLink className="mr-1 w-3 h-3" />
                 Redirect
               </Button>
               {showDownload && (
@@ -139,7 +139,7 @@ const UpdateCampaignDialog = ({
                   onClick={() => handleDownload(value, `${type}-${label.toLowerCase().replace(/\s+/g, '-')}`)}
                   className="flex-1 text-xs"
                 >
-                  <Download className="w-3 h-3 mr-1" />
+                  <Download className="mr-1 w-3 h-3" />
                   Download
                 </Button>
               )}
@@ -152,7 +152,7 @@ const UpdateCampaignDialog = ({
         return (
           <a
             href={`mailto:${value}`}
-            className="text-sm font-semibold text-[#4A5BAA] hover:text-[#3B4D7A] break-all block underline"
+            className="block font-semibold text-[#4A5BAA] hover:text-[#3B4D7A] text-sm underline break-all"
           >
             {value}
           </a>
@@ -160,7 +160,7 @@ const UpdateCampaignDialog = ({
       }
 
       return (
-        <p className="text-sm text-slate-700 whitespace-pre-wrap break-words leading-relaxed">
+        <p className="text-slate-700 text-sm break-words leading-relaxed whitespace-pre-wrap">
           {value || <span className="text-slate-400 italic">Not set</span>}
         </p>
       );
@@ -170,17 +170,17 @@ const UpdateCampaignDialog = ({
       <div className="group relative">
         <div className="flex items-center gap-2 mb-3">
           {Icon && <Icon className="w-4 h-4 text-slate-500" />}
-          <Label className="text-sm font-semibold text-slate-700">{label}</Label>
+          <Label className="font-semibold text-slate-700 text-sm">{label}</Label>
           {hasChanged && (
-            <span className="ml-auto text-xs font-medium text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">
+            <span className="bg-amber-50 ml-auto px-2 py-0.5 rounded-full font-medium text-amber-600 text-xs">
               Modified
             </span>
           )}
         </div>
         
-        <div className="grid grid-cols-[1fr_auto_1fr] gap-3 items-start">
+        <div className="items-start gap-3 grid grid-cols-[1fr_auto_1fr]">
           <div className="space-y-1.5">
-            <div className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-2">
+            <div className="mb-2 font-medium text-slate-500 text-xs uppercase tracking-wide">
               Previous
             </div>
             <div className={`p-4 rounded-lg border-2 transition-all ${
@@ -192,14 +192,14 @@ const UpdateCampaignDialog = ({
             </div>
           </div>
           
-          <div className="flex items-center justify-center pt-8">
+          <div className="flex justify-center items-center pt-8">
             <ArrowRight className={`w-5 h-5 ${
               hasChanged ? 'text-emerald-500' : 'text-slate-300'
             }`} />
           </div>
           
           <div className="space-y-1.5">
-            <div className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-2">
+            <div className="mb-2 font-medium text-slate-500 text-xs uppercase tracking-wide">
               Updated
             </div>
             <div className={`p-4 rounded-lg border-2 transition-all ${
@@ -228,17 +228,17 @@ const UpdateCampaignDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={handleDialogChange}>
-      <DialogContent className="max-w-[1000px] p-0 max-h-[90vh] overflow-hidden flex flex-col bg-white">
-        <DialogHeader className="px-8 pt-8 pb-6 bg-gradient-to-br from-slate-50 to-white border-b border-slate-200">
-          <DialogTitle className="text-xl font-semibold text-slate-900 tracking-tight">
+      <DialogContent className="flex flex-col bg-white p-0 max-w-[1000px] max-h-[90vh] overflow-hidden">
+        <DialogHeader className="bg-gradient-to-br from-slate-50 to-white px-8 pt-8 pb-6 border-slate-200 border-b">
+          <DialogTitle className="font-semibold text-slate-900 text-xl tracking-tight">
             Campaign Update Review
           </DialogTitle>
-          <DialogDescription className="text-md text-slate-600 mt-2">
+          <DialogDescription className="mt-2 text-md text-slate-600">
             Compare changes and approve updates to your campaign
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex-1 overflow-y-auto px-8 py-6">
+        <div className="flex-1 px-8 py-6 overflow-y-auto">
           <div className="space-y-8">
             <ComparisonField
               label="Campaign Name"
@@ -362,7 +362,7 @@ const UpdateCampaignDialog = ({
           </div>
         </div>
 
-        <div className="px-6 py-4 border-t bg-gray-50 flex justify-center gap-3">
+        <div className="flex justify-center gap-3 bg-gray-50 px-6 py-4 border-t">
           <Button
             variant="outline"
             onClick={() => onOpenChange(false)}
@@ -374,7 +374,6 @@ const UpdateCampaignDialog = ({
           <Button
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className="px-8 h-10 w-44 bg-[#4A5BAA] hover:bg-[#3d4c92] text-white disabled:opacity-50"
           >
             {isSubmitting ? "Updating..." : "Mark as Updated"}
           </Button>

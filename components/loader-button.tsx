@@ -34,7 +34,7 @@ export function LoadingButton({
       onClick={onClick}
       className={`${className} ${isLoading ? 'cursor-not-allowed' : ''}`}
     >
-      {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+      {isLoading && <Loader2 className="mr-2 w-4 h-4 animate-spin" />}
       {isLoading ? loadingText : children}
     </Button>
   );
@@ -54,7 +54,7 @@ export function ExampleUsage() {
 
   return (
     <div className="space-y-4 p-6">
-      <h3 className="text-lg font-semibold">Loading Button Examples</h3>
+      <h3 className="font-semibold text-lg">Loading Button Examples</h3>
       
       {/* Add Organization Button */}
       <LoadingButton
@@ -62,7 +62,7 @@ export function ExampleUsage() {
         isLoading={isSubmitting}
         loadingText="Adding organization..."
         onClick={handleSubmit}
-        className="w-full bg-[#4A5BAA] hover:bg-[#3d4c92] text-white"
+        className="bg-primary hover:bg-primary/80 w-full text-white"
       >
         <Plus className="mr-2 w-4 h-4" />
         Add Organization
@@ -74,7 +74,7 @@ export function ExampleUsage() {
         isLoading={isSubmitting}
         loadingText="Updating organization..."
         onClick={handleSubmit}
-        className="w-full bg-[#4A5BAA] hover:bg-[#3d4c92] text-white"
+        className="bg-primary hover:bg-primary/80 w-full text-white"
       >
         Update Organization
       </LoadingButton>
@@ -84,7 +84,7 @@ export function ExampleUsage() {
         isLoading={isSubmitting}
         loadingText="Adding member..."
         onClick={handleSubmit}
-        className="flex-1 bg-[#4A5BAA] hover:bg-[#3d4c92] text-white"
+        className="flex-1 bg-primary hover:bg-primary/80 text-white"
       >
         Add Member
       </LoadingButton>

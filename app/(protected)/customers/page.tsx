@@ -6,6 +6,7 @@ import { Pencil, Check, X, Search } from "lucide-react";
 import { useState, useMemo } from "react";
 import Fuse from "fuse.js";
 import SpinLoader from "@/components/ui/spin-loader";
+import { Button } from "@/components/ui/button";
 
 const CustomersPage = () => {
   const queryClient = useQueryClient();
@@ -96,7 +97,7 @@ const CustomersPage = () => {
 
   if (isLoading)
     return (
-      <div className="flex flex-col items-center justify-center h-64">
+      <div className="flex flex-col justify-center items-center h-64">
         <SpinLoader />
         <span className="mt-2 text-gray-600">Loading customers...</span>
       </div>
@@ -214,12 +215,14 @@ const CustomersPage = () => {
                     <td className="flex justify-end px-6 py-4">
                       {isEditing ? (
                         <div className="flex justify-end gap-2">
-                          <button
+                          <Button
                             aria-label="Check"
                             onClick={() => saveEdit(customer.userId)}
                             disabled={mutation.isPending}
                             className={`flex items-center justify-center bg-green-600 hover:bg-green-700 px-3 py-2 rounded-md text-white ${
-                              mutation.isPending ? "opacity-70 cursor-not-allowed" : ""
+                              mutation.isPending
+                                ? "opacity-70 cursor-not-allowed"
+                                : ""
                             }`}
                           >
                             {mutation.isPending ? (
@@ -227,24 +230,27 @@ const CustomersPage = () => {
                             ) : (
                               <Check className="w-4 h-4" />
                             )}
-                          </button>
+                          </Button>
 
-                          <button
+                          <Button
                             aria-label="Cancel"
                             onClick={cancelEdit}
-                            className="bg-gray-100 px-3 py-2 rounded-md"
+                            variant={"outline"}
+                            size={"icon"}
                           >
                             <X className="w-4 h-4" />
-                          </button>
+                          </Button>
                         </div>
                       ) : (
-                        <button
+                        <Button
                           onClick={() => startEdit(customer)}
-                          className="flex items-center gap-1 bg-[#4A5BAA] text-white px-3 py-2 rounded-md"
+                          className="flex items-center gap-1"
+                          size={"sm"}
+                          variant="outline"
                         >
                           <Pencil className="mr-2 w-4 h-4" />
                           Edit
-                        </button>
+                        </Button>
                       )}
                     </td>
                   </tr>

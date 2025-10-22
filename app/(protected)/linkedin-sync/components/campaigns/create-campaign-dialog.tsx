@@ -119,7 +119,6 @@ const CreateCampaignDialog = ({
             <Button
               onClick={handleSubmit}
               disabled={!isValid || isSubmitting}
-              className="bg-[#4A5BAA] hover:bg-[#3d4c92] disabled:opacity-50 px-6 w-36 h-10 text-white"
             >
               {isSubmitting ? "Linking..." : "Link Campaign"}
             </Button>

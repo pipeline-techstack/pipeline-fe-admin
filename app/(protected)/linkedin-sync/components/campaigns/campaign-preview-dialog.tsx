@@ -99,10 +99,10 @@ const CampaignPreviewDialog = ({
     <div className="space-y-2">
       <div className="flex items-center gap-2">
         {Icon && <Icon className="w-4 h-4 text-slate-500" />}
-        <Label className="text-sm font-semibold text-slate-700">{label}</Label>
+        <Label className="font-semibold text-slate-700 text-sm">{label}</Label>
       </div>
-      <div className="p-4 rounded-lg bg-slate-50 border border-slate-200">
-        <div className="text-sm text-slate-700 whitespace-pre-wrap break-words leading-relaxed">
+      <div className="bg-slate-50 p-4 border border-slate-200 rounded-lg">
+        <div className="text-slate-700 text-sm break-words leading-relaxed whitespace-pre-wrap">
           {value || <span className="text-slate-400 italic">Not set</span>}
         </div>
       </div>
@@ -121,13 +121,13 @@ const CampaignPreviewDialog = ({
     <div className="space-y-2">
       <div className="flex items-center gap-2">
         {Icon && <Icon className="w-4 h-4 text-slate-500" />}
-        <Label className="text-sm font-semibold text-slate-700">{label}</Label>
+        <Label className="font-semibold text-slate-700 text-sm">{label}</Label>
       </div>
-      <div className="p-4 rounded-lg bg-slate-50 border border-slate-200">
+      <div className="bg-slate-50 p-4 border border-slate-200 rounded-lg">
         {url ? (
-          <img src={url} alt={label} className="max-w-full h-auto rounded" />
+          <img src={url} alt={label} className="rounded max-w-full h-auto" />
         ) : (
-          <span className="text-slate-400 italic text-sm">No image</span>
+          <span className="text-slate-400 text-sm italic">No image</span>
         )}
       </div>
     </div>
@@ -143,17 +143,17 @@ const CampaignPreviewDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[1000px] p-0 max-h-[90vh] overflow-hidden flex flex-col bg-white">
-        <DialogHeader className="px-8 pt-8 pb-6 bg-gradient-to-br from-slate-50 to-white border-b border-slate-200">
-          <DialogTitle className="text-xl font-semibold text-slate-900 tracking-tight">
+      <DialogContent className="flex flex-col bg-white p-0 max-w-[1000px] max-h-[90vh] overflow-hidden">
+        <DialogHeader className="bg-gradient-to-br from-slate-50 to-white px-8 pt-8 pb-6 border-slate-200 border-b">
+          <DialogTitle className="font-semibold text-slate-900 text-xl tracking-tight">
             Campaign Preview
           </DialogTitle>
-          <DialogDescription className="text-md text-slate-600 mt-2">
+          <DialogDescription className="mt-2 text-md text-slate-600">
             Review the campaign information before proceeding
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex-1 overflow-y-auto px-8 py-6">
+        <div className="flex-1 px-8 py-6 overflow-y-auto">
           <div className="space-y-8">
             {/* Campaign Name */}
             <InfoSection
@@ -166,37 +166,37 @@ const CampaignPreviewDialog = ({
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <User className="w-4 h-4 text-slate-500" />
-                <Label className="text-sm font-semibold text-slate-700">
+                <Label className="font-semibold text-slate-700 text-sm">
                   LinkedIn Senders ({displayValue(senders.length)})
                 </Label>
               </div>
 
               {senders.map((sender, index) => (
-                <div key={index} className="p-6 rounded-lg bg-slate-50 border border-slate-200 space-y-4">
-                {/* <div className="flex items-center gap-3 pb-4 border-b border-slate-200"> */}
-                  <div className="pb-4 border-b border-slate-200">
+                <div key={index} className="space-y-4 bg-slate-50 p-6 border border-slate-200 rounded-lg">
+                {/* <div className="flex items-center gap-3 pb-4 border-slate-200 border-b"> */}
+                  <div className="pb-4 border-slate-200 border-b">
                     {/* {sender.profile_image_url && (
                       <img 
                         src={sender.profile_image_url} 
                         alt={sender.full_name}
-                        className="w-16 h-16 rounded-full object-cover"
+                        className="rounded-full w-16 h-16 object-cover"
                       />
                     )}
                     <div> */}
                     <h4 className="font-semibold text-slate-900">{displayValue(sender.full_name)}</h4>
                     {sender.headline && (
-                      <p className="text-sm text-slate-600 mt-1">{displayValue(sender.headline)}</p>
+                      <p className="mt-1 text-slate-600 text-sm">{displayValue(sender.headline)}</p>
                     )}
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="gap-4 grid grid-cols-2">
                     {sender.company_name && (
                       <div>
                         <div className="flex items-center gap-1 mb-1">
                           <Building2 className="w-3 h-3 text-slate-500" />
-                          <span className="text-xs font-medium text-slate-500">Company</span>
+                          <span className="font-medium text-slate-500 text-xs">Company</span>
                         </div>
-                        <p className="text-sm text-slate-700">{displayValue(sender.company_name)}</p>
+                        <p className="text-slate-700 text-sm">{displayValue(sender.company_name)}</p>
                       </div>
                     )}
 
@@ -204,9 +204,9 @@ const CampaignPreviewDialog = ({
                       <div>
                         <div className="flex items-center gap-1 mb-1">
                           <MapPin className="w-3 h-3 text-slate-500" />
-                          <span className="text-xs font-medium text-slate-500">Location</span>
+                          <span className="font-medium text-slate-500 text-xs">Location</span>
                         </div>
-                        <p className="text-sm text-slate-700">{displayValue(sender.location)}</p>
+                        <p className="text-slate-700 text-sm">{displayValue(sender.location)}</p>
                       </div>
                     )}
                   </div>
@@ -215,9 +215,9 @@ const CampaignPreviewDialog = ({
                     <div>
                       <div className="flex items-center gap-1 mb-1">
                         <FileText className="w-3 h-3 text-slate-500" />
-                        <span className="text-xs font-medium text-slate-500">About</span>
+                        <span className="font-medium text-slate-500 text-xs">About</span>
                       </div>
-                      <p className="text-sm text-slate-700">{displayValue(sender.about)}</p>
+                      <p className="text-slate-700 text-sm">{displayValue(sender.about)}</p>
                     </div>
                   )}
 
@@ -225,14 +225,14 @@ const CampaignPreviewDialog = ({
                     <div>
                       <div className="flex items-center gap-1 mb-2">
                         <Briefcase className="w-3 h-3 text-slate-500" />
-                        <span className="text-xs font-medium text-slate-500">Work Experience</span>
+                        <span className="font-medium text-slate-500 text-xs">Work Experience</span>
                       </div>
                       <div className="space-y-2">
                         {sender.work_experiences.map((exp, expIndex) => (
-                          <div key={expIndex} className="pl-4 border-l-2 border-slate-300">
-                            <p className="text-sm font-medium text-slate-900">{displayValue(exp.title)}</p>
-                            <p className="text-sm text-slate-600">{displayValue(exp.company_name)}</p>
-                            <p className="text-xs text-slate-500">
+                          <div key={expIndex} className="pl-4 border-slate-300 border-l-2">
+                            <p className="font-medium text-slate-900 text-sm">{displayValue(exp.title)}</p>
+                            <p className="text-slate-600 text-sm">{displayValue(exp.company_name)}</p>
+                            <p className="text-slate-500 text-xs">
                               {displayValue(exp.date_range)} • {displayValue(exp.location)}
                             </p>
                           </div>
@@ -249,29 +249,29 @@ const CampaignPreviewDialog = ({
               <div className="space-y-4">
                 <div className="flex items-center gap-2">
                   <MessageSquare className="w-4 h-4 text-slate-500" />
-                  <Label className="text-sm font-semibold text-slate-700">
+                  <Label className="font-semibold text-slate-700 text-sm">
                     Campaign Sequence ({displayValue(sequence.length)} steps)
                   </Label>
                 </div>
 
                 <div className="space-y-3">
                   {sequence.map((step, index) => (
-                    <div key={index} className="p-4 rounded-lg bg-slate-50 border border-slate-200">
-                      <div className="flex items-center justify-between mb-3">
+                    <div key={index} className="bg-slate-50 p-4 border border-slate-200 rounded-lg">
+                      <div className="flex justify-between items-center mb-3">
                         <div className="flex items-center gap-3">
-                          <Badge className="bg-blue-100 text-[#4A5BAA] font-semibold">
+                          <Badge className="bg-blue-100 font-semibold text-[#4A5BAA]">
                             Step {displayValue(step.step_number)}
                           </Badge>
                           <Badge variant="outline" className="capitalize">
                             {displayValue(step.step_type.replace('_', ' '))}
                           </Badge>
                         </div>
-                        <div className="flex items-center gap-1 text-sm text-slate-600">
+                        <div className="flex items-center gap-1 text-slate-600 text-sm">
                           <Clock className="w-3 h-3" />
                           <span>{displayValue(step.delay_days)} days</span>
                         </div>
                       </div>
-                      <p className="text-sm text-slate-700 leading-relaxed">
+                      <p className="text-slate-700 text-sm leading-relaxed">
                         {displayValue(step.message_template)}
                       </p>
                     </div>
@@ -285,11 +285,11 @@ const CampaignPreviewDialog = ({
               (val) => val && String(val).trim() !== ""
             ) && (
               <div className="space-y-4">
-                <Label className="text-sm font-semibold text-slate-700">
+                <Label className="font-semibold text-slate-700 text-sm">
                   Additional Information
                 </Label>
 
-                <div className="grid grid-cols-1 gap-4">
+                <div className="gap-4 grid grid-cols-1">
                   {additionalInfo.email_address && (
                     <InfoSection
                       label="Email Address"
@@ -353,7 +353,7 @@ const CampaignPreviewDialog = ({
           
         </div>
 
-        <div className="px-6 py-4 border-t bg-gray-50 flex justify-center gap-3">
+        <div className="flex justify-center gap-3 bg-gray-50 px-6 py-4 border-t">
           <Button
             variant="outline"
             onClick={() => onOpenChange(false)}
@@ -363,7 +363,7 @@ const CampaignPreviewDialog = ({
           </Button>
           <Button
             onClick={onProceed}
-            className="px-8 h-10 w-44 bg-[#4A5BAA] hover:bg-[#3d4c92] text-white"
+            className="px-8 w-44 h-10"
           >
             Proceed to Link
           </Button>

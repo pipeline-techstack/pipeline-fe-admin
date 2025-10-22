@@ -22,7 +22,7 @@ export default function LoginCard() {
 
     try {
       await loginApi(email, password);
-      alert("Login Successful");
+      // alert("Login Successful");
       router.push("/");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error occurred");
@@ -35,7 +35,7 @@ export default function LoginCard() {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>Login</CardTitle>
+        <CardTitle className="text-center">Login</CardTitle>
       </CardHeader>
       <CardContent>
         {error && <div className="bg-red-100 mb-4 p-3 rounded-md text-red-800">{error}</div>}
@@ -48,7 +48,7 @@ export default function LoginCard() {
             <Label htmlFor="password">Password</Label>
             <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required />
           </div>
-          <Button type="submit" className="bg-[#4A5BAA] hover:bg-[#3d4c92] w-full" disabled={loading}>
+          <Button type="submit"  className="w-full" disabled={loading}>
             {loading ? "Logging in..." : "Login"}
           </Button>
         </form>

@@ -24,8 +24,8 @@ const PermissionsPage = () => {
             <h2 className="font-bold text-gray-900 text-2xl">
               Users & Campaign Permissions
             </h2>
-            <Button className="bg-[#4A5BAA] hover:bg-[#3d4c92]" onClick={() => router.push("/permissions/new")}>
-              <Plus className="mr-2 w-4 h-4" />
+            <Button onClick={() => router.push("/permissions/new")}>
+              <Plus className="mr-1 w-4 h-4" />
               New Form
             </Button>
           </div>

@@ -219,7 +219,6 @@ const CampaignFormPage = () => {
               <Button
                 type="submit"
                 disabled={!email || selectedCampaigns.length === 0 || saving}
-                className="flex-1 bg-[#4A5BAA] hover:bg-[#3d4c92]"
               >
                 {saving ? "Saving..." : "Save Permissions"}
               </Button>

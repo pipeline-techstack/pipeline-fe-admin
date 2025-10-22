@@ -49,7 +49,7 @@ const WorkbookConfigurationPage = () => {
             </div>
 
             <Button
-              className="flex items-center gap-2 bg-[#4A5BAA] hover:bg-[#3d4c92]"
+              className="flex items-center gap-2"
               onClick={() => router.push("/wb-config/new")}
             >
               <Plus className="w-4 h-4" />

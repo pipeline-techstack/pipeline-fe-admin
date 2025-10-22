@@ -204,7 +204,7 @@ export function AddOrganizationDialog({
                   onChange={(e) =>
                     handleInputChange("organizationName", e.target.value)
                   }
-                  className="px-3 py-3 border border-gray-300 focus:border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-[#4A5BAA] w-full text-base"
+                  className="px-3 py-3 border border-gray-300 focus:border-transparent rounded-md focus:outline-none focus:ring-[#4A5BAA] focus:ring-2 w-full text-base"
                 />
               </div>
 
@@ -224,7 +224,7 @@ export function AddOrganizationDialog({
                   onChange={(e) =>
                     handleInputChange("enterpriseId", e.target.value)
                   }
-                  className="bg-gray-50 px-3 py-3 border border-gray-300 focus:border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-[#4A5BAA] w-full text-base"
+                  className="bg-gray-50 px-3 py-3 border border-gray-300 focus:border-transparent rounded-md focus:outline-none focus:ring-[#4A5BAA] focus:ring-2 w-full text-base"
                 />
               </div>
 
@@ -277,7 +277,7 @@ export function AddOrganizationDialog({
                       onChange={(e) =>
                         handleInputChange("quota", e.target.value)
                       }
-                      className="px-3 py-3 border border-gray-300 focus:border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-[#4A5BAA] w-full text-base"
+                      className="px-3 py-3 border border-gray-300 focus:border-transparent rounded-md focus:outline-none focus:ring-[#4A5BAA] focus:ring-2 w-full text-base"
                     />
                   </div>
                   <div className="space-y-2">
@@ -296,7 +296,7 @@ export function AddOrganizationDialog({
                       onChange={(e) =>
                         handleInputChange("seats", e.target.value)
                       }
-                      className="px-3 py-3 border border-gray-300 focus:border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-[#4A5BAA] w-full text-base"
+                      className="px-3 py-3 border border-gray-300 focus:border-transparent rounded-md focus:outline-none focus:ring-[#4A5BAA] focus:ring-2 w-full text-base"
                     />
                   </div>
                 </>
@@ -416,7 +416,6 @@ export function AddOrganizationDialog({
                 isLoading={isSubmitting}
                 disabled={!isFormValid}
                 loadingText={isEditMode ? "Updating..." : "Adding..."}
-                className="bg-[#4A5BAA] hover:bg-[#3d4c92] disabled:bg-gray-600 px-4 py-3 rounded-md w-full font-medium text-white text-base transition-colors disabled:cursor-not-allowed"
               >
                 {!isEditMode && <Plus className="w-4 h-4" />}
                 {isEditMode ? "Update Organization" : "Add Organization"}

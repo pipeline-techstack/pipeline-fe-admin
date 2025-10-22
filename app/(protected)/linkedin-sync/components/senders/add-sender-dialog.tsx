@@ -100,9 +100,9 @@ const AddSenderDialog = ({ open, onOpenChange }: AddSenderDialogProps) => {
               Select Sender
             </Label>
             {isLoading ? (
-              <div className="text-sm text-gray-500">Loading senders...</div>
+              <div className="text-gray-500 text-sm">Loading senders...</div>
             ) : selectOptions.length === 0 ? (
-              <div className="text-sm text-red-600">
+              <div className="text-red-600 text-sm">
                 No senders available. Please authenticate your LinkedIn senders first.
               </div>
             ) : (
@@ -163,7 +163,6 @@ const AddSenderDialog = ({ open, onOpenChange }: AddSenderDialogProps) => {
                 !isValidLinkedInUrl(profileUrl) ||
                 isSubmitting
               }
-              className="bg-[#4A5BAA] hover:bg-[#3d4c92] px-6 w-32 h-10 text-white"
             >
               {isSubmitting ? "Adding..." : "Add Sender"}
             </Button>

@@ -56,7 +56,6 @@ const SendersHeader = ({
 
           <Button
             onClick={() => setIsDialogOpen(true)}
-            className="bg-[#4A5BAA] hover:bg-[#3d4c92] text-white"
           >
             <Plus className="mr-2 w-4 h-4" />
             Add New Sender

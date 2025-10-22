@@ -40,7 +40,7 @@ const SenderCard = ({ sender, onAction }: SenderCardProps) => {
   const getStatusBadge = () => {
     if (currentStatus === 'active') {
       return (
-        <Badge className="bg-[#4A5BAA] hover:bg-[#3d4c92] text-white">
+        <Badge className="bg-primary hover:bg-primary/80 text-white">
           Active
         </Badge>
       );
