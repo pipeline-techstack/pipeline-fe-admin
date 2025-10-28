@@ -13,16 +13,6 @@ export async function getLinkedinSenders(campaignId?: string): Promise<any> {
   );
   if (campaignId) url.searchParams.append("campaign_id", campaignId);
 
-  // const response = await fetch(
-  //   `${process.env.NEXT_PUBLIC_PERMISSIONS_URL}/linkedin-senders/admin/linkedin_senders`,
-  //   {
-  //     method: "GET",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       Authorization: `Bearer ${token}`,
-  //     },
-  //   }
-  // );
   const response = await fetch(url.toString(), {
     method: "GET",
     headers: {
@@ -94,3 +84,31 @@ export async function addLinkedinSender(
   }
   return await response.json();
 }
+
+export const refetchLinkedinSenderApi = async (
+  senderId: string,
+) => {
+  const token = getToken();
+  if (!token) {
+    throw new Error("Authentication required");
+  }
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_PERMISSIONS_URL}/linkedin-senders/refresh/${senderId}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        // sender_id: senderId,
+      }),
+    }
+  );
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    toast.error(errorData.detail || "Failed to refetch sender");
+    throw new Error(errorData.detail || "Failed to refetch sender");
+  }
+  return await response.json();
+};

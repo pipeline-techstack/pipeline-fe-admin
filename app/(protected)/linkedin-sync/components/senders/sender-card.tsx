@@ -1,65 +1,39 @@
 "use client";
 
-import { useState } from "react";
-import { SquareArrowOutUpRight } from "lucide-react";
+import { Loader2, SquareArrowOutUpRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LinkedInSenderProfile } from "../../types/sender";
 import Link from "next/link";
-
+import { Button } from "@/components/ui/button";
+import { useLinkedInSenders } from "../../hooks/useLinkedInSenders";
+import { useEffect, useState } from "react";
 
 interface SenderCardProps {
   sender: LinkedInSenderProfile;
-  onAction?: (senderId: string, action: 'pause' | 'engage', newStatus: 'active' | 'inactive') => void;
+  onAction?: (
+    senderId: string,
+    action: "pause" | "engage",
+    newStatus: "active" | "inactive"
+  ) => void;
+  refetchLinkedinSender: (senderId: string) => Promise<LinkedInSenderProfile | null>;
 }
 
-const SenderCard = ({ sender, onAction }: SenderCardProps) => {
-  const [currentStatus, setCurrentStatus] = useState(sender.status);
+const SenderCard = ({ sender, refetchLinkedinSender }: SenderCardProps) => {
+  const [loader, setLoader] = useState(false);
 
-  const handleAction = () => {
-    const action = currentStatus === 'active' ? 'pause' : 'engage';
-    const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
-    
-    setCurrentStatus(newStatus);
-    
-    if (onAction) {
-      onAction(sender.id, action, newStatus);
-    }
+  const handleRefresh = async (id: string) => {
+    setLoader(true);
+    await refetchLinkedinSender(id);
+    setLoader(false);
   };
-
   const getInitials = (name: string) => {
     return name
-      .split(' ')
-      .map(n => n[0])
-      .join('')
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
       .toUpperCase()
       .slice(0, 2);
-  };
-
-  const getStatusBadge = () => {
-    if (currentStatus === 'active') {
-      return (
-        <Badge className="bg-[#4A5BAA] hover:bg-[#3d4c92] text-white">
-          Active
-        </Badge>
-      );
-    } else {
-      return (
-        <Badge variant="secondary" className="bg-gray-100 text-gray-700">
-          Inactive
-        </Badge>
-      );
-    }
-  };
-
-  const handleLinkedInClick = () => {
-    if (sender.linked_senders && sender.linked_senders.length > 0) {
-      const linkedinUrl = sender.linked_senders[0].linkedin_profile_url;
-      if (linkedinUrl) {
-        window.open(linkedinUrl, '_blank');
-      }
-    }
   };
 
   return (
@@ -75,49 +49,31 @@ const SenderCard = ({ sender, onAction }: SenderCardProps) => {
 
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
-              <h3 className="font-semibold text-gray-900 text-sm">{sender.name}</h3>
-              
+              <h3 className="font-semibold text-gray-900 text-sm">
+                {sender.name}
+              </h3>
+
               {sender.profile_url && (
                 <Link href={sender.profile_url} target="_blank">
                   <SquareArrowOutUpRight
                     className="w-4 h-4 text-[#4A5BAA]"
-                    strokeWidth={2.5} />
+                    strokeWidth={2.5}
+                  />
                 </Link>
               )}
             </div>
             <p className="text-gray-600 text-xs">{sender.headline}</p>
           </div>
         </div>
-
-        {/* <div className="flex justify-between items-center mb-4">
-          {getStatusBadge()}
-          <span className="text-gray-600 text-sm">
-            <span className="font-semibold text-gray-900">{sender.messages_sent}</span> sent
-          </span>
-        </div> */}
-
-        {/* <Button
-          onClick={handleAction}
-          variant={currentStatus === 'active' ? 'outline' : 'default'}
-          className={
-            currentStatus === 'active' 
-                ? "w-full" 
-                : "w-full bg-[#4A5BAA] hover:bg-[#3d4c92] text-white"
-            }
-
+        <Button
+          onClick={() => handleRefresh(sender.id)}
+          variant="secondary"
+          className="w-full"
+          disabled={loader}
         >
-          {currentStatus === 'active' ? (
-            <>
-              <Pause className="mr-2 w-4 h-4" />
-              Pause
-            </>
-          ) : (
-            <>
-              <Zap className="mr-2 w-4 h-4" />
-              Engage
-            </>
-          )}
-        </Button> */}
+          {loader && <Loader2 className="w-6 h-6 animate-spin" />}
+          Refetch linkedin profile
+        </Button>
       </CardContent>
     </Card>
   );

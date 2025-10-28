@@ -15,7 +15,7 @@ const SenderTabComponent = () => {
     total: senderTotal,
     isLoading: sendersLoading,
     error: senderError,
-    refreshSenders,
+    refetchLinkedinSender,
   } = useLinkedInSenders(selectedCampaignId);
 
   const handleSenderAction = (senderId: string, action: "pause" | "engage") => {
@@ -33,6 +33,7 @@ const SenderTabComponent = () => {
         senders={senders}
         onAction={handleSenderAction}
         isLoading={sendersLoading}
+        refetchLinkedinSender={refetchLinkedinSender}
       />
 
       {senderError && (
