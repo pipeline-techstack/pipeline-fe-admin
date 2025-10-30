@@ -9,23 +9,24 @@ interface SenderGridProps {
   senders: LinkedInSenderProfile[];
   onAction?: (senderId: string, action: 'pause' | 'engage') => void;
   isLoading?: boolean;
+  refetchLinkedinSender: (senderId: string) => Promise<LinkedInSenderProfile | null>
 }
 
-const SenderGrid = ({ senders, onAction, isLoading }: SenderGridProps) => {
+const SenderGrid = ({ senders, onAction, isLoading , refetchLinkedinSender}: SenderGridProps) => {
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {[1, 2, 3].map((i) => (
           <Card key={i}>
             <CardContent className="p-6">
               <div className="flex items-start gap-4 mb-4">
-                <Skeleton className="w-16 h-16 rounded-full" />
+                <Skeleton className="rounded-full w-16 h-16" />
                 <div className="flex-1 space-y-2">
-                  <Skeleton className="h-5 w-32" />
-                  <Skeleton className="h-4 w-48" />
+                  <Skeleton className="w-32 h-5" />
+                  <Skeleton className="w-48 h-4" />
                 </div>
               </div>
-              <Skeleton className="h-10 w-full" />
+              <Skeleton className="w-full h-10" />
             </CardContent>
           </Card>
         ))}
@@ -44,9 +45,9 @@ const SenderGrid = ({ senders, onAction, isLoading }: SenderGridProps) => {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
       {senders.map((sender) => (
-        <SenderCard key={sender.id} sender={sender} onAction={onAction} />
+        <SenderCard key={sender.id} sender={sender} onAction={onAction} refetchLinkedinSender={refetchLinkedinSender}/>
       ))}
     </div>
   );
