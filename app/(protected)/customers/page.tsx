@@ -1,10 +1,11 @@
 "use client";
 import { getCustomers } from "@/services/customers-apis";
-import { updateCustomer } from "@/services/customers-apis"; // 👈 import your update API
+import { updateCustomer } from "@/services/customers-apis";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Pencil, Check, X, Search } from "lucide-react";
 import { useState, useMemo } from "react";
 import Fuse from "fuse.js";
+import PageHeader from "@/components/ui/page-header";
 
 const CustomersPage = () => {
   const queryClient = useQueryClient();
@@ -21,7 +22,7 @@ const CustomersPage = () => {
   const mutation = useMutation({
     mutationFn: updateCustomer,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["customers"] }); // refresh customer list
+      queryClient.invalidateQueries({ queryKey: ["customers"] });
     },
   });
 
@@ -49,7 +50,6 @@ const CustomersPage = () => {
     const formData = editForm[id];
     if (!formData) return;
 
-    // --- Handle name only if provided ---
     let firstName: string | undefined;
     let lastName: string | undefined;
 
@@ -61,7 +61,6 @@ const CustomersPage = () => {
 
     const customer = customers.find((c: any) => c.userId === id);
 
-    // --- Build payload dynamically ---
     const payload: any = {
       email: customer?.email || "",
       phone_e164: formData.phone_e164 || "",
@@ -83,7 +82,6 @@ const CustomersPage = () => {
     }));
   };
 
-  // --- Fuzzy Search Setup ---
   const fuse = useMemo(() => {
     return new Fuse(customers, {
       keys: ["firstName", "lastName", "email", "phone_e164"],
@@ -101,12 +99,12 @@ const CustomersPage = () => {
     return <div className="p-6 text-red-600">Failed to load customers</div>;
 
   return (
-    <div className="mx-auto p-6 max-w-6xl container">
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="mb-2 font-bold text-gray-900 text-3xl">Customers</h1>
-          <p className="text-gray-600">Manage your customer information</p>
-        </div>
+    <div className="p-6 mx-auto max-w-7xl">
+      <div className="flex justify-between items-start mb-6">
+        <PageHeader
+          title="Customers"
+          subtitle="Manage your customer information"
+        />
 
         {/* 🔍 Search Bar */}
         <div className="relative w-64">
@@ -116,31 +114,31 @@ const CustomersPage = () => {
             placeholder="Search customers..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="py-2 pr-4 pl-10 border border-gray-300 rounded-md w-full"
+            className="py-2 pr-4 pl-10 border border-gray-300 rounded-md w-full text-sm"
           />
         </div>
       </div>
 
-      <div className="bg-white shadow-sm border border-gray-200 rounded-lg max-h-[500px] overflow-hidden">
-        <div className="max-h-[500px] overflow-y-auto">
+      <div className="bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden">
+        <div className="max-h-[600px] overflow-y-auto">
           <table className="w-full border-collapse">
-            <thead className="top-0 z-10 sticky bg-gray-50 border-gray-200 border-b">
+            <thead className="top-0 z-10 sticky bg-gray-50 border-b border-gray-200">
               <tr>
-                <th className="px-6 py-4 font-semibold text-gray-900 text-sm text-left">
+                <th className="px-6 py-3 font-semibold text-gray-900 text-left text-sm">
                   Name
                 </th>
-                <th className="px-6 py-4 font-semibold text-gray-900 text-sm text-left">
+                <th className="px-6 py-3 font-semibold text-gray-900 text-left text-sm">
                   Email
                 </th>
-                <th className="px-6 py-4 font-semibold text-gray-900 text-sm text-left">
+                <th className="px-6 py-3 font-semibold text-gray-900 text-left text-sm">
                   Phone Number
                 </th>
-                <th className="px-6 py-4 font-semibold text-gray-900 text-sm text-right">
+                <th className="px-6 py-3 font-semibold text-gray-900 text-right text-sm">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 text-sm">
+            <tbody className="divide-y divide-gray-200">
               {filteredCustomers.map((customer: any) => {
                 const isEditing = editingId === customer.userId;
                 const formData = editForm[customer.userId] || {};
@@ -149,7 +147,6 @@ const CustomersPage = () => {
                     key={customer.userId}
                     className="hover:bg-gray-50 transition-colors"
                   >
-                    {/* Name */}
                     <td className="px-6 py-4">
                       {isEditing ? (
                         <input
@@ -163,21 +160,19 @@ const CustomersPage = () => {
                               e.target.value
                             )
                           }
-                          className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                          className="px-3 py-2 border border-gray-300 rounded-md w-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       ) : (
-                        <div className="font-medium text-gray-900">
+                        <div className="font-medium text-gray-900 text-sm">
                           {customer.firstName ?? ""} {customer.lastName ?? ""}
                         </div>
                       )}
                     </td>
 
-                    {/* Email (read-only) */}
                     <td className="px-6 py-4">
-                      <div className="text-gray-600">{customer.email}</div>
+                      <div className="text-gray-600 text-sm">{customer.email}</div>
                     </td>
 
-                    {/* Phone */}
                     <td className="px-6 py-4">
                       {isEditing ? (
                         <input
@@ -191,16 +186,15 @@ const CustomersPage = () => {
                               e.target.value
                             )
                           }
-                          className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                          className="px-3 py-2 border border-gray-300 rounded-md w-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       ) : (
-                        <div className="text-gray-600">
+                        <div className="text-gray-600 text-sm">
                           {customer.phone_e164 || "-"}
                         </div>
                       )}
                     </td>
 
-                    {/* Actions */}
                     <td className="flex justify-end px-6 py-4">
                       {isEditing ? (
                         <div className="flex justify-end gap-2">
@@ -214,7 +208,7 @@ const CustomersPage = () => {
                           <button
                             aria-label="Cancel"
                             onClick={cancelEdit}
-                            className="bg-gray-100 px-3 py-2 rounded-md"
+                            className="bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-md"
                           >
                             <X className="w-4 h-4" />
                           </button>
@@ -222,9 +216,9 @@ const CustomersPage = () => {
                       ) : (
                         <button
                           onClick={() => startEdit(customer)}
-                          className="flex items-center gap-1 bg-gray-100 px-3 py-2 rounded-md"
+                          className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-md text-sm transition-colors"
                         >
-                          <Pencil className="mr-2 w-4 h-4" />
+                          <Pencil className="w-4 h-4" />
                           Edit
                         </button>
                       )}
@@ -236,7 +230,7 @@ const CustomersPage = () => {
                 <tr>
                   <td
                     colSpan={4}
-                    className="px-6 py-4 text-gray-500 text-center"
+                    className="px-6 py-8 text-gray-500 text-center text-sm"
                   >
                     No matching customers found.
                   </td>
