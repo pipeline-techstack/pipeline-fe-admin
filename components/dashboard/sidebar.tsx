@@ -14,6 +14,8 @@ import {
   BookOpen,
   Stars,
   Network,
+  Link2,
+  Settings2,
 } from "lucide-react";
 import {
   Tooltip,
@@ -24,9 +26,11 @@ import {
 
 const navigation = [
   { name: "Customers", href: "/customers", icon: Users },
+  { name: "Workbooks", href: "/workbooks", icon: BookOpen },
+  { name: "Campaigns", href: "/campaigns", icon: Network },
   { name: "Organizations", href: "/", icon: Building2 },
-  { name: "WB Configs", href: "/wb-config", icon: BookOpen },
-  { name: "LinkedIn Sync", href: "/linkedin-sync", icon: Network },
+  { name: "WB Configs", href: "/wb-config", icon: Settings2 },
+  { name: "LinkedIn Sync", href: "/linkedin-sync", icon: Link2 },
   { name: "Permissions", href: "/permissions", icon: KeyRound },
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Feedback", href: "/feedback", icon: Stars },
