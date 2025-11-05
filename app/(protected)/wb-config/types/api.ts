@@ -1,8 +1,7 @@
-// types/api.ts
 export interface WorkbookConfiguration {
   campaign_id: string;
   campaign: string;
-  workbooks: string[];
+  workbooks: Workbook[];
   additionalCount: number;
 }
 
