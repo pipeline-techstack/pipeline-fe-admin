@@ -1,6 +1,6 @@
 "use client";
 
-import { Copy, Search, Loader2, AlertCircle } from "lucide-react";
+import { Copy, Search, Loader2, AlertCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import {
   Tooltip,
@@ -32,7 +32,8 @@ const WorkbooksPage = () => {
   const [userEmail, setUserEmail] = useState("");
   const [isDuplicating, setIsDuplicating] = useState(false);
 
-  const { data, isLoading, error, refetch } = useWorkbooks(search, page);
+  const pageSize = 10;
+  const { data, isLoading, error, refetch } = useWorkbooks(search, page, pageSize);
 
   const handleDuplicateClick = (workbook: Workbook) => {
     setSelectedWorkbook(workbook);
@@ -71,6 +72,15 @@ const WorkbooksPage = () => {
     }
   };
 
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    setPage(1);
+  };
+
+  const totalPages = Math.ceil((data?.total || 0) / pageSize);
+  const showingFrom = data?.workbooks?.length ? (page - 1) * pageSize + 1 : 0;
+  const showingTo = Math.min(page * pageSize, data?.total || 0);
+
   return (
     <TooltipProvider>
       <div className="p-6 mx-auto max-w-7xl">
@@ -84,7 +94,7 @@ const WorkbooksPage = () => {
               type="text"
               placeholder="Search workbooks..."
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => handleSearchChange(e.target.value)}
               className="py-2 pr-4 pl-10 border border-gray-300 rounded-md w-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
@@ -198,9 +208,92 @@ const WorkbooksPage = () => {
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="mt-4 text-gray-500 text-sm">
-          Total workbooks: {data?.total || 0}
+        {/* Footer with Pagination */}
+        <div className="mt-4 flex items-center justify-between">
+          <div className="text-gray-500 text-sm">
+            {data?.total ? (
+              <>
+                Showing {showingFrom}-{showingTo} of {data.total} workbooks
+              </>
+            ) : (
+              "No workbooks"
+            )}
+          </div>
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setPage(page - 1)}
+                disabled={page === 1}
+                className="w-28 flex items-center gap-1 px-3 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white transition-colors"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                Previous
+              </button>
+
+              <div className="flex items-center gap-1">
+                {/* First page */}
+                {page > 3 && (
+                  <>
+                    <button
+                      onClick={() => setPage(1)}
+                      className="px-3 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-50 transition-colors"
+                    >
+                      1
+                    </button>
+                    {page > 4 && <span className="px-2 text-gray-400">...</span>}
+                  </>
+                )}
+
+                {/* Page numbers around current page */}
+                {Array.from({ length: totalPages }, (_, i) => i + 1)
+                  .filter(
+                    (pageNum) =>
+                      pageNum === page ||
+                      pageNum === page - 1 ||
+                      pageNum === page + 1 ||
+                      pageNum === page - 2 ||
+                      pageNum === page + 2
+                  )
+                  .map((pageNum) => (
+                    <button
+                      key={pageNum}
+                      onClick={() => setPage(pageNum)}
+                      className={`px-3 py-2 border rounded-md text-sm transition-colors ${
+                        pageNum === page
+                          ? "bg-[#4A5BAA] text-white border-[#4A5BAA]"
+                          : "border-gray-300 hover:bg-gray-50"
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  ))}
+
+                {/* Last page */}
+                {page < totalPages - 2 && (
+                  <>
+                    {page < totalPages - 3 && <span className="px-2 text-gray-400">...</span>}
+                    <button
+                      onClick={() => setPage(totalPages)}
+                      className="px-3 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-50 transition-colors"
+                    >
+                      {totalPages}
+                    </button>
+                  </>
+                )}
+              </div>
+
+              <button
+                onClick={() => setPage(page + 1)}
+                disabled={page === totalPages}
+                className="w-28 flex items-center justify-end gap-1 px-3 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white transition-colors"
+              >
+                Next
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Duplicate Dialog */}
