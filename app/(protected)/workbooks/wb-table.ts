@@ -18,3 +18,9 @@ export interface WorkbookParams {
   search?: string;
 }
 
+export interface DuplicateWorkbookPayload {
+  workbook_id: string;
+  user_email: string;
+  new_name: string;
+}
+

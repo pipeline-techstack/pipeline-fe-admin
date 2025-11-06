@@ -20,6 +20,7 @@ import PageHeader from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
 import { useWorkbooks } from "@/hooks/use-wb-table";
 import { Workbook } from "./wb-table";
+import { duplicateWorkbook } from "@/services/wb-table-apis";
 
 const WorkbooksPage = () => {
   const [search, setSearch] = useState("");
@@ -38,22 +39,33 @@ const WorkbooksPage = () => {
     setIsDialogOpen(true);
   };
 
-  const handleDuplicate = () => {
-    if (!newName.trim() || !userEmail.trim()) {
-      alert("Please fill in all fields");
-      return;
-    }
-    
-    // TODO: Call duplicateWorkbook API
-    alert(
-      `Duplicating workbook:\nOriginal: ${selectedWorkbook?.name}\nNew Name: ${newName}\nUser Email: ${userEmail}`
-    );
+  const handleDuplicate = async () => {
+  if (!selectedWorkbook || !newName.trim() || !userEmail.trim()) {
+    alert("Please fill in all fields");
+    return;
+  }
+
+  try {
+    const response = await duplicateWorkbook({
+      workbook_id: selectedWorkbook.id,
+      user_email: userEmail.trim(),
+      new_name: newName.trim(),
+    });
+
+    console.log("Duplicate success:", response);
+    alert("Workbook duplicated successfully!");
+
     setIsDialogOpen(false);
     setNewName("");
     setUserEmail("");
     setSelectedWorkbook(null);
     refetch();
-  };
+  } catch (err) {
+    console.error("Error duplicating workbook:", err);
+    alert(err instanceof Error ? err.message : "Failed to duplicate workbook");
+  }
+};
+
 
   return (
     <TooltipProvider>

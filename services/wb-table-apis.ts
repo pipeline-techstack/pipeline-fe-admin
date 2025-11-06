@@ -1,5 +1,6 @@
 import { getToken } from "@/lib/auth";
 import {
+  DuplicateWorkbookPayload,
   Workbook,
   WorkbookParams,
   WorkbooksResponse,
@@ -16,7 +17,6 @@ function normalizeWorkbooksResponse(result: any): WorkbooksResponse {
     workbooks: (result.items || []).map((item: any): Workbook => ({
       id: item.id,
       name: item.name,
-      // ensure it's always an array
       owners: item.user_email ? [item.user_email] : [],
       createdAt: item.createdAt || "",
     })),
@@ -58,4 +58,30 @@ export const getWorkbooks = async (
 
   const result = await response.json();
   return normalizeWorkbooksResponse(result);
+};
+
+export const duplicateWorkbook = async (
+  payload: DuplicateWorkbookPayload
+): Promise<string> => {
+  const token = getToken();
+  if (!token) {
+    throw new Error("Authentication required");
+  }
+
+  const response = await fetch(`${BASE_URL}/admin/workbook/duplicate`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || "Failed to duplicate workbook");
+  }
+
+  const result = await response.json();
+  return result;
 };
