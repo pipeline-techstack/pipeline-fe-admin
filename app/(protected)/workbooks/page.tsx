@@ -7,10 +7,23 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import PageHeader from "@/components/ui/page-header";
+import { Button } from "@/components/ui/button";
 
 const WorkbooksPage = () => {
   const [search, setSearch] = useState("");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedWorkbook, setSelectedWorkbook] = useState(null);
+  const [newName, setNewName] = useState("");
+  const [userEmail, setUserEmail] = useState("");
 
   const workbooks = [
     {
@@ -39,6 +52,26 @@ const WorkbooksPage = () => {
       owner.toLowerCase().includes(search.toLowerCase())
     )
   );
+
+  const handleDuplicateClick = (workbook) => {
+    setSelectedWorkbook(workbook);
+    setNewName(`${workbook.name} (Copy)`);
+    setUserEmail("");
+    setIsDialogOpen(true);
+  };
+
+  const handleDuplicate = () => {
+    if (!newName.trim() || !userEmail.trim()) {
+      alert("Please fill in all fields");
+      return;
+    }
+    
+    alert(`Duplicating workbook:\nOriginal: ${selectedWorkbook.name}\nNew Name: ${newName}\nUser Email: ${userEmail}`);
+    setIsDialogOpen(false);
+    setNewName("");
+    setUserEmail("");
+    setSelectedWorkbook(null);
+  };
 
   return (
     <TooltipProvider>
@@ -126,7 +159,7 @@ const WorkbooksPage = () => {
 
                     <td className="flex justify-end px-6 py-4">
                       <button
-                        onClick={() => alert(`Duplicate ${workbook.name}`)}
+                        onClick={() => handleDuplicateClick(workbook)}
                         className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-md text-sm transition-colors"
                       >
                         <Copy className="w-4 h-4" />
@@ -153,6 +186,66 @@ const WorkbooksPage = () => {
         <div className="mt-4 text-gray-500 text-sm">
           Total workbooks: {filteredWorkbooks.length}
         </div>
+
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Duplicate Workbook</DialogTitle>
+              <DialogDescription>
+                Create a copy of "{selectedWorkbook?.name}".
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <label htmlFor="workbook-name" className="text-sm font-medium">
+                  New Workbook Name
+                </label>
+                <input
+                  id="workbook-name"
+                  type="text"
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                  placeholder="Enter workbook name"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <label htmlFor="user-email" className="text-sm font-medium">
+                  User Email
+                </label>
+                <input
+                  id="user-email"
+                  type="email"
+                  value={userEmail}
+                  onChange={(e) => setUserEmail(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                  placeholder="user@example.com"
+                />
+              </div>
+            </div>
+
+            <DialogFooter>
+              <div className="flex justify-center gap-3 w-full">
+                <Button
+                  variant="outline"
+                  onClick={() => setIsDialogOpen(false)}
+                  className="w-28 h-9 text-sm border border-gray-300 bg-white text-gray-700 hover:bg-red-400 hover:text-white transition-colors"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleDuplicate}
+                  className="w-28 h-9 text-sm bg-[#4A5BAA] text-white rounded-md hover:bg-[#3B4A8D] transition-colors"
+                >
+                  Duplicate
+                </Button>
+              </div>
+            </DialogFooter>
+
+          </DialogContent>
+        </Dialog>
       </div>
     </TooltipProvider>
   );
