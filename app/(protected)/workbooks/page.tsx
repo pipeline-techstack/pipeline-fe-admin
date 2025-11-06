@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { useWorkbooks } from "@/hooks/use-wb-table";
 import { Workbook } from "./wb-table";
 import { duplicateWorkbook } from "@/services/wb-table-apis";
+import { LoadingButton } from "@/components/loader-button";
 
 const WorkbooksPage = () => {
   const [search, setSearch] = useState("");
@@ -29,6 +30,7 @@ const WorkbooksPage = () => {
   const [selectedWorkbook, setSelectedWorkbook] = useState<Workbook | null>(null);
   const [newName, setNewName] = useState("");
   const [userEmail, setUserEmail] = useState("");
+  const [isDuplicating, setIsDuplicating] = useState(false);
 
   const { data, isLoading, error, refetch } = useWorkbooks(search, page);
 
@@ -40,32 +42,34 @@ const WorkbooksPage = () => {
   };
 
   const handleDuplicate = async () => {
-  if (!selectedWorkbook || !newName.trim() || !userEmail.trim()) {
-    alert("Please fill in all fields");
-    return;
-  }
+    if (!selectedWorkbook || !newName.trim() || !userEmail.trim()) {
+      alert("Please fill in all fields");
+      return;
+    }
 
-  try {
-    const response = await duplicateWorkbook({
-      workbook_id: selectedWorkbook.id,
-      user_email: userEmail.trim(),
-      new_name: newName.trim(),
-    });
+    setIsDuplicating(true);
+    try {
+      const response = await duplicateWorkbook({
+        workbook_id: selectedWorkbook.id,
+        user_email: userEmail.trim(),
+        new_name: newName.trim(),
+      });
 
-    console.log("Duplicate success:", response);
-    alert("Workbook duplicated successfully!");
+      console.log("Duplicate success:", response);
+      alert("Workbook duplicated successfully!");
 
-    setIsDialogOpen(false);
-    setNewName("");
-    setUserEmail("");
-    setSelectedWorkbook(null);
-    refetch();
-  } catch (err) {
-    console.error("Error duplicating workbook:", err);
-    alert(err instanceof Error ? err.message : "Failed to duplicate workbook");
-  }
-};
-
+      setIsDialogOpen(false);
+      setNewName("");
+      setUserEmail("");
+      setSelectedWorkbook(null);
+      refetch();
+    } catch (err) {
+      console.error("Error duplicating workbook:", err);
+      alert(err instanceof Error ? err.message : "Failed to duplicate workbook");
+    } finally {
+      setIsDuplicating(false);
+    }
+  };
 
   return (
     <TooltipProvider>
@@ -211,7 +215,7 @@ const WorkbooksPage = () => {
 
             <div className="space-y-4 py-4">
               <div className="space-y-2">
-                <label htmlFor="workbook-name" className="text-sm font-medium">
+                <label htmlFor="workbook-name" className="text-sm font-medium text-gray-700">
                   New Workbook Name
                 </label>
                 <input
@@ -219,13 +223,14 @@ const WorkbooksPage = () => {
                   type="text"
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                  disabled={isDuplicating}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#4A5BAA] focus:border-[#4A5BAA] disabled:bg-gray-50 disabled:text-gray-500"
                   placeholder="Enter workbook name"
                 />
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="user-email" className="text-sm font-medium">
+                <label htmlFor="user-email" className="text-sm font-medium text-gray-700">
                   User Email
                 </label>
                 <input
@@ -233,7 +238,8 @@ const WorkbooksPage = () => {
                   type="email"
                   value={userEmail}
                   onChange={(e) => setUserEmail(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                  disabled={isDuplicating}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#4A5BAA] focus:border-[#4A5BAA] disabled:bg-gray-50 disabled:text-gray-500"
                   placeholder="user@example.com"
                 />
               </div>
@@ -244,16 +250,19 @@ const WorkbooksPage = () => {
                 <Button
                   variant="outline"
                   onClick={() => setIsDialogOpen(false)}
-                  className="w-28 h-9 text-sm border border-gray-300 bg-white text-gray-700 hover:bg-red-400 hover:text-white transition-colors"
+                  disabled={isDuplicating}
+                  className="w-36 px-6 h-10 text-sm border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Cancel
                 </Button>
-                <Button
+                <LoadingButton
+                  isLoading={isDuplicating}
+                  loadingText="Duplicating..."
                   onClick={handleDuplicate}
-                  className="w-28 h-9 text-sm bg-[#4A5BAA] text-white rounded-md hover:bg-[#3B4A8D] transition-colors"
+                  className="w-36 px-6 h-10 text-sm bg-[#4A5BAA] text-white rounded-md hover:bg-[#3B4A8D] disabled:opacity-50"
                 >
                   Duplicate
-                </Button>
+                </LoadingButton>
               </div>
             </DialogFooter>
           </DialogContent>
