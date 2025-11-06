@@ -4,7 +4,7 @@ import {
   Workbook,
   WorkbookParams,
   WorkbooksResponse,
-} from "@/app/(protected)/workbooks/wb-table";
+} from "@/app/(protected)/workbooks/types/wb-table";
 
 const BASE_URL = process.env.NEXT_PUBLIC_WORKBOOK_URL_DEV;
 

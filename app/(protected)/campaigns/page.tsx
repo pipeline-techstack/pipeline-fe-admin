@@ -106,7 +106,7 @@ const CampaignsPage = () => {
               <thead className="top-0 z-10 sticky bg-gray-50 border-b border-gray-200">
                 <tr>
                   <th className="px-6 py-3 font-semibold text-gray-900 text-left text-sm">
-                    Campaign
+                    Campaigns
                   </th>
                   <th className="px-6 py-3 font-semibold text-gray-900 text-left text-sm">
                     Owner
