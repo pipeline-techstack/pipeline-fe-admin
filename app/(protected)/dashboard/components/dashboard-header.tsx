@@ -10,9 +10,9 @@ const DashboardHeader = ({
   subtitle = "Lead Gen Agency Control Tower - Real-time Client and Campaign health monitoring"
 }: DashboardHeaderProps) => {
   return (
-    <div className="flex flex-col mb-6 text-left">
-      <h1 className="text-3xl font-bold text-gray-900 mb-2">{title}</h1>
-      <p className="text-gray-600">{subtitle}</p>
+    <div className="mb-6">
+      <h1 className="text-2xl font-bold text-gray-900 mb-2">{title}</h1>
+      <p className="text-sm text-gray-600">{subtitle}</p>
     </div>
   );
 };
