@@ -10,24 +10,38 @@ import { WorkbookSearch } from "./components/wb-search";
 import { WorkbookTable } from "./components/wb-table";
 import { TableFooter } from "./components/table-footer";
 import { DuplicateWorkbookDialog } from "./components/duplicate-wb-dialog";
+import CostModal from "./components/cost-estimate-dialog";
 
 const WorkbooksPage = () => {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedWorkbook, setSelectedWorkbook] = useState<Workbook | null>(null);
+  const [selectedWorkbook, setSelectedWorkbook] = useState<Workbook | null>(
+    null
+  );
   const [newName, setNewName] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [isDuplicating, setIsDuplicating] = useState(false);
+  const [isCostOpen, setIsCostOpen] = useState(false);
+  const [costWorkbook, setCostWorkbook] = useState<Workbook | null>(null);
 
   const pageSize = 10;
-  const { data, isLoading, error, refetch } = useWorkbooks(search, page, pageSize);
+  const { data, isLoading, error, refetch } = useWorkbooks(
+    search,
+    page,
+    pageSize
+  );
 
   const handleDuplicateClick = (workbook: Workbook) => {
     setSelectedWorkbook(workbook);
     setNewName(`${workbook.name} (Copy)`);
     setUserEmail("");
     setIsDialogOpen(true);
+  };
+
+  const handleCost = (workbook: Workbook) => {
+    setCostWorkbook(workbook);
+    setIsCostOpen(true);
   };
 
   const handleDuplicate = async () => {
@@ -54,7 +68,9 @@ const WorkbooksPage = () => {
       refetch();
     } catch (err) {
       console.error("Error duplicating workbook:", err);
-      alert(err instanceof Error ? err.message : "Failed to duplicate workbook");
+      alert(
+        err instanceof Error ? err.message : "Failed to duplicate workbook"
+      );
     } finally {
       setIsDuplicating(false);
     }
@@ -69,7 +85,7 @@ const WorkbooksPage = () => {
 
   return (
     <TooltipProvider>
-      <div className="p-6 mx-auto max-w-7xl">
+      <div className="mx-auto p-6 max-w-7xl">
         <div className="flex justify-between items-start mb-6">
           <PageHeader title="Workbooks" subtitle="Manage your workbooks" />
           <WorkbookSearch value={search} onChange={handleSearchChange} />
@@ -80,6 +96,7 @@ const WorkbooksPage = () => {
           isLoading={isLoading}
           error={error}
           onDuplicate={handleDuplicateClick}
+          openCost={handleCost}
         />
 
         <TableFooter
@@ -100,6 +117,11 @@ const WorkbooksPage = () => {
           onNewNameChange={setNewName}
           onUserEmailChange={setUserEmail}
           onConfirm={handleDuplicate}
+        />
+        <CostModal
+          isOpen={isCostOpen}
+          onClose={() => setIsCostOpen(false)}
+          workbook={costWorkbook}
         />
       </div>
     </TooltipProvider>
