@@ -34,7 +34,7 @@ export function LoadingButton({
       onClick={onClick}
       className={`${className} ${isLoading ? 'cursor-not-allowed' : ''}`}
     >
-      {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+      {isLoading && <Loader2 className="mr-2 w-4 h-4 animate-spin" />}
       {isLoading ? loadingText : children}
     </Button>
   );
@@ -54,7 +54,7 @@ export function ExampleUsage() {
 
   return (
     <div className="space-y-4 p-6">
-      <h3 className="text-lg font-semibold">Loading Button Examples</h3>
+      <h3 className="font-semibold text-lg">Loading Button Example</h3>
       
       {/* Add Organization Button */}
       <LoadingButton
@@ -62,7 +62,7 @@ export function ExampleUsage() {
         isLoading={isSubmitting}
         loadingText="Adding organization..."
         onClick={handleSubmit}
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+        className="bg-blue-600 hover:bg-blue-700 w-full text-white"
       >
         Add Organization
       </LoadingButton>
@@ -73,7 +73,7 @@ export function ExampleUsage() {
         isLoading={isSubmitting}
         loadingText="Updating organization..."
         onClick={handleSubmit}
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+        className="bg-blue-600 hover:bg-blue-700 w-full text-white"
       >
         Update Organization
       </LoadingButton>
