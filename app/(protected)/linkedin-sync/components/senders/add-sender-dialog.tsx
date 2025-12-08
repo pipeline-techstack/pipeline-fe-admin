@@ -32,7 +32,7 @@ const AddSenderDialog = ({ open, onOpenChange }: AddSenderDialogProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isValidLinkedInUrl = (url: string) => {
-    const pattern = /^https:\/\/(www\.)?linkedin\.com\/in\/[A-Za-z0-9-_]+\/?$/;
+    const pattern = /^https?:\/\/(www\.)?linkedin\.com\/in\/[^\/\s]+\/?$/i;
     return pattern.test(url.trim());
   };
 
@@ -71,7 +71,7 @@ const AddSenderDialog = ({ open, onOpenChange }: AddSenderDialogProps) => {
     setProfileUrl("");
     onOpenChange(false);
   };
-  
+
   const selectOptions = senderOptions.map((s: any) => ({
     id: String(s.id),
     name: s.name,
@@ -100,10 +100,11 @@ const AddSenderDialog = ({ open, onOpenChange }: AddSenderDialogProps) => {
               Select Sender
             </Label>
             {isLoading ? (
-              <div className="text-sm text-gray-500">Loading senders...</div>
+              <div className="text-gray-500 text-sm">Loading senders...</div>
             ) : selectOptions.length === 0 ? (
-              <div className="text-sm text-red-600">
-                No senders available. Please authenticate your LinkedIn senders first.
+              <div className="text-red-600 text-sm">
+                No senders available. Please authenticate your LinkedIn senders
+                first.
               </div>
             ) : (
               <SenderSelectComponent
