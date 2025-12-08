@@ -28,7 +28,7 @@ const CustomersPage = () => {
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<{
-    [key: string]: { name: string; phone_e164: string };
+    [key: string]: { name: string; phone_e164: string; slack_channel_id: string };
   }>({});
   const [search, setSearch] = useState("");
 
@@ -38,6 +38,7 @@ const CustomersPage = () => {
       [customer.userId]: {
         name: `${customer.firstName || ""} ${customer.lastName || ""}`.trim(),
         phone_e164: customer.phone_e164 || "",
+        slack_channel_id: customer.slack_channel_id || "",
       },
     });
   };
@@ -64,6 +65,7 @@ const CustomersPage = () => {
     const payload: any = {
       email: customer?.email || "",
       phone_e164: formData.phone_e164 || "",
+      slack_channel_id: formData.slack_channel_id || "",
     };
 
     if (firstName) payload.firstName = firstName;
@@ -84,7 +86,7 @@ const CustomersPage = () => {
 
   const fuse = useMemo(() => {
     return new Fuse(customers, {
-      keys: ["firstName", "lastName", "email", "phone_e164"],
+      keys: ["firstName", "lastName", "email", "phone_e164", "slack_channel_id"],
       threshold: 0.3,
     });
   }, [customers]);
@@ -132,6 +134,9 @@ const CustomersPage = () => {
                 </th>
                 <th className="px-6 py-3 font-semibold text-gray-900 text-left text-sm">
                   Phone Number
+                </th>
+                <th className="px-6 py-3 font-semibold text-gray-900 text-left text-sm">
+                  Slack Channel ID
                 </th>
                 <th className="px-6 py-3 font-semibold text-gray-900 text-right text-sm">
                   Actions
@@ -195,6 +200,29 @@ const CustomersPage = () => {
                       )}
                     </td>
 
+                    <td className="px-6 py-4">
+                      {isEditing ? (
+                        <input
+                          aria-label="Slack Channel"
+                          type="text"
+                          value={formData.slack_channel_id || ""}
+                          onChange={(e) =>
+                            handleInputChange(
+                              customer.userId,
+                              "slack_channel_id",
+                              e.target.value
+                            )
+                          }
+                          placeholder="C01234ABCDE"
+                          className="px-3 py-2 border border-gray-300 rounded-md w-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      ) : (
+                        <div className="text-gray-600 text-sm">
+                          {customer.slack_channel_id || "-"}
+                        </div>
+                      )}
+                    </td>
+
                     <td className="flex justify-end px-6 py-4">
                       {isEditing ? (
                         <div className="flex justify-end gap-2">
@@ -229,7 +257,7 @@ const CustomersPage = () => {
               {filteredCustomers.length === 0 && (
                 <tr>
                   <td
-                    colSpan={4}
+                    colSpan={5}
                     className="px-6 py-8 text-gray-500 text-center text-sm"
                   >
                     No matching customers found.

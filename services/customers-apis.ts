@@ -3,7 +3,7 @@ import { getToken } from "@/lib/auth";
 export const getCustomers = async (): Promise<any> => {
   const token = getToken();
   if (!token) throw new Error("Authentication required");
-  const url = `${process.env.NEXT_PUBLIC_PERMISSIONS_URL}/admin/users `;
+  const url = `${process.env.NEXT_PUBLIC_PERMISSIONS_URL}/admin/users`;
   const res = await fetch(url, {
     method: "GET",
     headers: {
@@ -12,7 +12,7 @@ export const getCustomers = async (): Promise<any> => {
     },
   });
 
-  if (!res.ok) throw new Error("Failed to fetch campaigns");
+  if (!res.ok) throw new Error("Failed to fetch customers");
 
   const data = await res.json();
   return data;
@@ -22,10 +22,11 @@ export const updateCustomer = async ({
   payload,
 }: {
   payload: {
-    firstName: string;
-    lastName: string;
+    firstName?: string;
+    lastName?: string;
     phone_e164: string;
     email: string;
+    slack_channel_id?: string;
   };
 }): Promise<any> => {
   const token = getToken();
@@ -42,7 +43,7 @@ export const updateCustomer = async ({
     body: JSON.stringify(payload),
   });
 
-  if (!res.ok) throw new Error("Failed to fetch campaigns");
+  if (!res.ok) throw new Error("Failed to update customer");
 
   const data = await res.json();
   return data;
