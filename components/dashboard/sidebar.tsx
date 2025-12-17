@@ -35,7 +35,7 @@ const navigation = [
   { name: "Permissions", href: "/permissions", icon: KeyRound },
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Feedback", href: "/feedback", icon: Stars },
-  { name: "Prompts", href: "/prompts", icon: MessageSquare },
+  { name: "Enrichments", href: "/enrichments", icon: MessageSquare },
 ];
 
 export function Sidebar() {
