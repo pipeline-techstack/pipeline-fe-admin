@@ -16,6 +16,7 @@ import {
   Network,
   Link2,
   Settings2,
+  MessageSquare,
 } from "lucide-react";
 import {
   Tooltip,
@@ -34,6 +35,7 @@ const navigation = [
   { name: "Permissions", href: "/permissions", icon: KeyRound },
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Feedback", href: "/feedback", icon: Stars },
+  { name: "Enrichments", href: "/enrichments", icon: MessageSquare },
 ];
 
 export function Sidebar() {
@@ -81,7 +83,7 @@ export function Sidebar() {
                 className={cn(
                   "flex items-center px-3 py-2 rounded-lg w-full font-medium text-sm transition-colors",
                   isActive
-                    ? "bg-blue-50 text-blue-800 border-r-2 border-blue-800"
+                    ? "bg-blue-50 text-primary border-r-2 border-primary"
                     : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
                 )}
               >
