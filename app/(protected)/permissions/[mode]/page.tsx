@@ -36,6 +36,7 @@ const CampaignFormPage = () => {
 
   const [email, setEmail] = useState("");
   const [selectedCampaigns, setSelectedCampaigns] = useState<string[]>([]);
+  const [originalCampaigns, setOriginalCampaigns] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -64,6 +65,7 @@ const CampaignFormPage = () => {
           // Normalize campaigns: object → array of IDs
           const campaignIds = Object.keys(data.heyreach?.campaigns || {});
           setSelectedCampaigns(campaignIds);
+          setOriginalCampaigns(campaignIds);
         } catch (err: any) {
           console.error("Failed to fetch user campaigns", err);
           setError(
@@ -81,7 +83,15 @@ const CampaignFormPage = () => {
     e.preventDefault();
     setSaving(true);
     try {
-      await assignCampaignsApi({ email, campaign_ids: selectedCampaigns });
+      const newCampaignIds = selectedCampaigns.filter(
+        (id) => !originalCampaigns.includes(id)
+      );
+
+      if (newCampaignIds.length === 0) {
+        alert("No new campaigns to assign");
+        return;
+      }
+      await assignCampaignsApi({ email, campaign_ids: newCampaignIds });
       alert("Permissions saved successfully");
     } catch (err: any) {
       console.error(err);
