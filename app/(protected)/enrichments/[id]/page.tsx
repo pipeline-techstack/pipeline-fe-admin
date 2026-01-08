@@ -1,19 +1,23 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
-import { getPrompts } from "@/services/enrichments";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getPrompts, editPrompts } from "@/services/enrichments";
 import { useState } from "react";
 
 type SelectedPrompt = {
   title: string;
   subtitle?: string;
   content: string;
+  type: "account_scoring" | "profile_scoring" | "research" | "outreach";
+  criterion_id?: string;
 };
 
 const Prompts = () => {
   const params = useParams();
   const flow_id = params?.id as string;
+
+  const queryClient = useQueryClient();
 
   const {
     data: prompts,
@@ -28,6 +32,9 @@ const Prompts = () => {
 
   const [selected, setSelected] = useState<SelectedPrompt | null>(null);
   const [copied, setCopied] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedContent, setEditedContent] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
   const hasAccountScoring = !!prompts?.account_scoring;
   const hasProfileScoring = !!prompts?.profile_scoring;
@@ -45,6 +52,64 @@ const Prompts = () => {
       .split("_")
       .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
       .join(" ");
+
+  const handleSave = async () => {
+    console.log("selected and prompts", selected, prompts);
+    if (!selected || !prompts) return;
+
+    setIsSaving(true);
+
+    try {
+      let payload: any = {};
+
+      if (selected.type === "account_scoring") {
+        payload = {
+          account_scoring_prompt_text: editedContent,
+        };
+      }
+
+      if (selected.type === "profile_scoring") {
+        payload = {
+          profile_scoring_prompt_text: editedContent,
+        };
+      }
+
+      if (selected.type === "research") {
+        payload = {
+          research_prompts: prompts.research?.items.map((item) => ({
+            criterion_id: item.criterion_id,
+            weight: item.weight,
+            prompt_text:
+              selected.criterion_id === item.criterion_id
+                ? editedContent
+                : item.prompt_text,
+          })),
+        };
+      }
+
+      await editPrompts({
+        flow_id,
+        payload,
+      });
+
+      // Refresh prompts after save
+      queryClient.invalidateQueries({
+        queryKey: ["prompts", flow_id],
+      });
+
+      setSelected({
+        ...selected,
+        content: editedContent,
+      });
+
+      setIsEditing(false);
+    } catch (err) {
+      console.error("Failed to save prompt", err);
+      alert("Failed to save prompt. Please try again.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   if (isLoading) return <div className="p-6">Loading prompts…</div>;
   if (error)
@@ -65,16 +130,18 @@ const Prompts = () => {
             </div>
 
             <div className="divide-y">
-              {/* Account Scoring */}
               {hasAccountScoring && (
                 <button
-                  onClick={() =>
+                  onClick={() => {
                     setSelected({
                       title: "Account Scoring",
                       subtitle: `ID: ${prompts.account_scoring.id}`,
                       content: prompts.account_scoring.prompt_text,
-                    })
-                  }
+                      type: "account_scoring",
+                    });
+                    setEditedContent(prompts.account_scoring.prompt_text);
+                    setIsEditing(false);
+                  }}
                   className="hover:bg-gray-50 px-4 py-3 w-full text-left"
                 >
                   <p className="font-medium">Account Scoring</p>
@@ -82,16 +149,18 @@ const Prompts = () => {
                 </button>
               )}
 
-              {/* Profile Scoring */}
               {hasProfileScoring && (
                 <button
-                  onClick={() =>
+                  onClick={() => {
                     setSelected({
                       title: "Profile Scoring",
                       subtitle: `ID: ${prompts.profile_scoring.id}`,
                       content: prompts.profile_scoring.prompt_text,
-                    })
-                  }
+                      type: "profile_scoring",
+                    });
+                    setEditedContent(prompts.profile_scoring.prompt_text);
+                    setIsEditing(false);
+                  }}
                   className="hover:bg-gray-50 px-4 py-3 w-full text-left"
                 >
                   <p className="font-medium">Profile Scoring</p>
@@ -99,7 +168,6 @@ const Prompts = () => {
                 </button>
               )}
 
-              {/* Research */}
               {hasResearch && (
                 <div>
                   <div className="px-4 py-2 font-semibold text-gray-500 text-xs uppercase">
@@ -109,13 +177,17 @@ const Prompts = () => {
                   {prompts.research.items.map((item) => (
                     <button
                       key={item.criterion_id}
-                      onClick={() =>
+                      onClick={() => {
                         setSelected({
                           title: format(item.criterion_id),
                           subtitle: `Weight: ${item.weight}%`,
                           content: item.prompt_text,
-                        })
-                      }
+                          type: "research",
+                          criterion_id: item.criterion_id,
+                        });
+                        setEditedContent(item.prompt_text);
+                        setIsEditing(false);
+                      }}
                       className="hover:bg-gray-50 px-6 py-3 w-full text-left"
                     >
                       <p className="font-medium text-sm">
@@ -129,16 +201,18 @@ const Prompts = () => {
                 </div>
               )}
 
-              {/* Outreach Sequence (SHOW FOR NOW) */}
               {hasOutreach && (
                 <button
-                  onClick={() =>
+                  onClick={() => {
                     setSelected({
                       title: "Outreach Sequence",
                       subtitle: `ID: ${prompts.outreach_sequence.id}`,
                       content: prompts.outreach_sequence.prompt_text,
-                    })
-                  }
+                      type: "outreach",
+                    });
+                    setEditedContent(prompts.outreach_sequence.prompt_text);
+                    setIsEditing(false);
+                  }}
                   className="hover:bg-gray-50 px-4 py-3 w-full text-left"
                 >
                   <p className="font-medium">Outreach Sequence</p>
@@ -170,18 +244,60 @@ const Prompts = () => {
                     )}
                   </div>
 
-                  <button
-                    onClick={() => copyToClipboard(selected.content)}
-                    className="flex items-center gap-2 hover:bg-gray-50 px-3 py-1.5 border rounded-md text-sm"
-                  >
-                    {copied ? "Copied" : "Copy"}
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() =>
+                        copyToClipboard(
+                          isEditing ? editedContent : selected.content
+                        )
+                      }
+                      className="hover:bg-gray-50 px-3 py-1.5 border rounded-md text-sm"
+                    >
+                      {copied ? "Copied" : "Copy"}
+                    </button>
+
+                    {!isEditing ? (
+                      <button
+                        onClick={() => {
+                          setEditedContent(selected.content);
+                          setIsEditing(true);
+                        }}
+                        className="hover:bg-gray-50 px-3 py-1.5 border rounded-md text-sm"
+                      >
+                        Edit
+                      </button>
+                    ) : (
+                      <>
+                        <button
+                          onClick={handleSave}
+                          disabled={isSaving}
+                          className="bg-gray-900 hover:bg-gray-800 disabled:opacity-50 px-3 py-1.5 rounded-md text-white text-sm"
+                        >
+                          {isSaving ? "Saving..." : "Save"}
+                        </button>
+                        <button
+                          onClick={() => setIsEditing(false)}
+                          className="hover:bg-gray-50 px-3 py-1.5 border rounded-md text-sm"
+                        >
+                          Cancel
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
 
                 <div className="p-6 overflow-auto">
-                  <pre className="font-mono text-gray-700 text-sm leading-relaxed whitespace-pre-wrap">
-                    {selected.content}
-                  </pre>
+                  {isEditing ? (
+                    <textarea
+                      value={editedContent}
+                      onChange={(e) => setEditedContent(e.target.value)}
+                      className="p-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900 w-full h-[500px] font-mono text-gray-700 text-sm resize-none"
+                    />
+                  ) : (
+                    <pre className="font-mono text-gray-700 text-sm leading-relaxed whitespace-pre-wrap">
+                      {selected.content}
+                    </pre>
+                  )}
                 </div>
               </>
             )}

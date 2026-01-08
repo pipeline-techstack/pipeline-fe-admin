@@ -54,7 +54,7 @@ export default function PromptsPage() {
           />
         </div>
 
-        <EnrichmentsTable data={enrichments} />
+       <EnrichmentsTable data={[...enrichments].reverse()} />
       </div>
     </div>
   );
