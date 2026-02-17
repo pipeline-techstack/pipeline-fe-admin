@@ -32,7 +32,8 @@ const navigation = [
   { name: "Organizations", href: "/", icon: Building2 },
   { name: "WB Configs", href: "/wb-config", icon: Settings2 },
   { name: "LinkedIn Sync", href: "/linkedin-sync", icon: Link2 },
-  { name: "Permissions", href: "/permissions", icon: KeyRound },
+  { name: "Campaign Permissions", href: "/permissions", icon: KeyRound },
+  { name: "Feature Allocation", href: "/resource", icon: Network },
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Feedback", href: "/feedback", icon: Stars },
   { name: "Enrichments", href: "/enrichments", icon: MessageSquare },
@@ -113,7 +114,7 @@ export function Sidebar() {
               Pipeline Admin Dashboard
             </p>
             <p className="flex items-center gap-1 text-gray-500 text-xs">
-              <Copyright className="w-3 h-3" /> 2025 All Rights Reserved
+              <Copyright className="w-3 h-3" /> 2026 All Rights Reserved
             </p>
           </div>
         )}
