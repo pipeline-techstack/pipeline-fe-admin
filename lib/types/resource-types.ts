@@ -1,6 +1,6 @@
 export type Permission = {
-    resource: String,
-    permission: String
+    resource: string,
+    permission: string
 }
 export interface PostUserResourcesPyaload {
     email:string,

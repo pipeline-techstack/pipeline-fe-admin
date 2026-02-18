@@ -1,5 +1,4 @@
 "use client";
-import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import {
@@ -11,45 +10,23 @@ import {
 import PageHeader from "@/components/ui/page-header";
 import { useGetResource } from "@/hooks/use-resource";
 
-const mockAllocations = [
-  {
-    email: "john@example.com",
-    resources: [
-      { id: "dashboard", name: "Dashboard" },
-      { id: "crm", name: "CRM" },
-      { id: "campaign", name: "Campaign" },
-    ],
-  },
-  {
-    email: "sarah@example.com",
-    resources: [
-      { id: "data-library", name: "Data Library" },
-    ],
-  },
-  {
-    email: "mike@example.com",
-    resources: [
-      { id: "workbook", name: "Workbook" },
-      { id: "inbox", name: "Inbox" },
-    ],
-  },
-];
-
 const ResourceAllocationPage = () => {
   const router = useRouter();
-  const [allocations] = useState(mockAllocations);
-  const permission = useGetResource()
-  console.log("permissions get ", permission)
+
+  const { permissions, status } = useGetResource();
+
+  console.log("permissions get:", permissions);
+
+  const allocations = permissions || [];
 
   const handleEdit = (user: any) => {
-    // callback usage (can later pass via state/store)
     console.log("Editing user data:", user);
 
     router.push(
       `/resource/edit?email=${encodeURIComponent(user.email)}`
     );
   };
-  
+
   return (
     <TooltipProvider>
       <div className="p-6 mx-auto max-w-7xl">
@@ -67,7 +44,7 @@ const ResourceAllocationPage = () => {
           </Button>
         </div>
 
-        {allocations.length === 0 ? (
+        {!status || allocations.length === 0 ? (
           <p className="text-gray-500 text-sm">
             No feature allocations found
           </p>
@@ -88,47 +65,55 @@ const ResourceAllocationPage = () => {
                     </th>
                   </tr>
                 </thead>
+
                 <tbody className="divide-y divide-gray-200">
-                  {allocations.map((user, index) => (
+                  {allocations.map((user: any, index: number) => (
                     <tr
                       key={index}
                       className="hover:bg-gray-50 transition-colors"
                     >
+                      {/* Email */}
                       <td className="px-6 py-4">
                         <div className="text-gray-900 text-sm">
                           {user.email}
                         </div>
                       </td>
 
+                      {/* Permissions */}
                       <td className="px-6 py-4">
-                        {user.resources.length > 0 ? (
+                        {user.permissions?.length > 0 ? (
                           <div className="flex flex-wrap gap-2">
-                            {user.resources.slice(0, 2).map((r) => (
-                              <span
-                                key={r.id}
-                                className="bg-blue-100 px-2 py-1 rounded-md text-blue-700 text-xs"
-                              >
-                                {r.name}
-                              </span>
-                            ))}
+                            {user.permissions
+                              .slice(0, 2)
+                              .map((perm: any, i: number) => (
+                                <span
+                                  key={i}
+                                  className="bg-blue-100 px-2 py-1 rounded-md text-blue-700 text-xs"
+                                >
+                                  {perm.resource}
+                                </span>
+                              ))}
 
-                            {user.resources.length > 2 && (
+                            {user.permissions.length > 2 && (
                               <Tooltip>
                                 <TooltipTrigger asChild>
                                   <span className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded-md text-gray-700 text-xs cursor-pointer">
-                                    +{user.resources.length - 2} more
+                                    +{user.permissions.length - 2} more
                                   </span>
                                 </TooltipTrigger>
+
                                 <TooltipContent className="max-w-xs max-h-80 overflow-y-auto">
                                   <div className="flex flex-wrap gap-1">
-                                    {user.resources.slice(2).map((r) => (
-                                      <span
-                                        key={r.id}
-                                        className="bg-blue-50 px-2 py-0.5 rounded text-blue-700 text-xs"
-                                      >
-                                        {r.name}
-                                      </span>
-                                    ))}
+                                    {user.permissions
+                                      .slice(2)
+                                      .map((perm: any, i: number) => (
+                                        <span
+                                          key={i}
+                                          className="bg-blue-50 px-2 py-0.5 rounded text-blue-700 text-xs"
+                                        >
+                                          {perm.resource}
+                                        </span>
+                                      ))}
                                   </div>
                                 </TooltipContent>
                               </Tooltip>
@@ -141,11 +126,12 @@ const ResourceAllocationPage = () => {
                         )}
                       </td>
 
+                      {/* Actions */}
                       <td className="px-6 py-4">
                         <Button
                           size="sm"
                           variant="outline"
-                           onClick={() => handleEdit(user)}
+                          onClick={() => handleEdit(user)}
                         >
                           Edit
                         </Button>
@@ -153,6 +139,7 @@ const ResourceAllocationPage = () => {
                     </tr>
                   ))}
                 </tbody>
+
               </table>
             </div>
           </div>

@@ -4,10 +4,10 @@ import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import MultiSelect from "@/components/multi-select";
-import { useCustomerSearch } from "@/hooks/use-customers";
-// import { useGetResource, useSetResource } from "@/hooks/use-resource";
+import { useGetResource, useSetResource } from "@/hooks/use-resource";
 
-const mockResources = [
+
+const resourcesCatalog = [
   { id: "dashboard", name: "Dashboard", type: "mandatory" },
   { id: "data-library", name: "Data Library", type: "mandatory" },
   { id: "workbook", name: "Workbook", type: "mandatory" },
@@ -15,119 +15,89 @@ const mockResources = [
   { id: "inbox", name: "Inbox", type: "optional" },
   { id: "crm", name: "CRM", type: "optional" },
   { id: "campaign", name: "Campaign", type: "optional" },
+  { id: "overview", name: "Overview", type: "optional" },
 ];
-
-const mockExistingAllocations: Record<string, string[]> = {
-  "john@example.com": ["dashboard", "crm", "campaign"],
-  "sarah@example.com": ["data-library"],
-};
 
 const ResourceFormPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const mode = pathname.includes("edit") ? "edit" : "new";
-  const { customers } = useCustomerSearch();
+
+  const { permissions } = useGetResource();
+  const { setResource, loading } = useSetResource();
 
   const [email, setEmail] = useState("");
-  const [selectedResources, setSelectedResources] = useState<string[]>([]);
-  const [saving, setSaving] = useState(false);
+  const [selectedMandatory, setSelectedMandatory] = useState<string[]>(["workbook"]);
+  const [selectedOptional, setSelectedOptional] = useState<string[]>([]);
 
-  const resourceOptions = mockResources.map((r) => ({
-    id: r.id,
-    name: r.name,
-  }));
+  const mandatoryOptions = resourcesCatalog
+    .filter((r) => r.type === "mandatory")
+    .map((r) => ({ id: r.id, name: r.name }));
 
+  const optionalOptions = resourcesCatalog
+    .filter((r) => r.type === "optional")
+    .map((r) => ({ id: r.id, name: r.name }));
+
+  // 🔥 Prefill for edit mode
   useEffect(() => {
     if (mode === "edit") {
       const emailFromQuery = searchParams.get("email");
-      if (emailFromQuery) {
-        setEmail(emailFromQuery);
-        const existing = mockExistingAllocations[emailFromQuery] ;
-        if (existing) setSelectedResources(existing);
-      }
-    }
-  }, [mode, searchParams]);
+      if (!emailFromQuery) return;
 
-  const handleSubmit = (e: React.FormEvent) => {
+      setEmail(emailFromQuery);
+
+      const user = permissions.find(
+        (p) => p.email === emailFromQuery
+      );
+
+      if (!user) return;
+
+      const userResources = user.permissions.map(
+        (p) => p.resource
+      );
+
+      const mandatoryIds = mandatoryOptions.map((m) => m.id);
+
+      setSelectedMandatory(
+        userResources.filter((r) =>
+          mandatoryIds.includes(r)
+        )
+      );
+
+      setSelectedOptional(
+        userResources.filter(
+          (r) => !mandatoryIds.includes(r)
+        )
+      );
+    }
+  }, [mode, searchParams, permissions]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const mandatoryIds = mockResources
-      .filter((r) => r.type === "mandatory")
-      .map((r) => r.id);
-
-    const hasMandatory = selectedResources.some((id) =>
-      mandatoryIds.includes(id)
-    );
-
-    if (!hasMandatory) {
-      alert("At least one mandatory feature must be selected");
+    if (selectedMandatory.length === 0) {
+      alert("Please select at least one mandatory feature");
       return;
     }
 
-    if (selectedResources.length === 0) {
-      alert("Select at least one feature");
-      return;
-    }
+    const finalResources = [
+      ...selectedMandatory,
+      ...selectedOptional,
+    ];
 
-    setSaving(true);
+    const payload = {
+      email,
+      permissions: finalResources.map((resource) => ({
+        resource,
+        permission: "*",
+      })),
+    };
 
-    setTimeout(() => {
-      alert(
-        mode === "edit"
-          ? "Resources updated successfully"
-          : "Resources assigned successfully"
-      );
-      router.push("/resource");
-    }, 800);
+    await setResource(payload);
+
+    router.push("/resource");
   };
-
-//   const handleSubmit = async (e: React.FormEvent) => {
-//   e.preventDefault();
-
-//   const mandatoryIds = mockResources
-//     .filter((r) => r.type === "mandatory")
-//     .map((r) => r.id);
-
-//   const hasMandatory = selectedResources.some((id) =>
-//     mandatoryIds.includes(id)
-//   );
-
-//   if (!hasMandatory) {
-//     alert("At least one mandatory feature must be selected");
-//     return;
-//   }
-
-//   if (selectedResources.length === 0) {
-//     alert("Select at least one feature");
-//     return;
-//   }
-
-//   setSaving(true);
-
-//   try {
-//     const payload = {
-//       email,
-//       resources: selectedResources,
-//     };
-
-//     const response = await setResource(payload);
-
-//     console.log("Set resource response:", response);
-
-//     alert(
-//       mode === "edit"
-//         ? "Resources updated successfully"
-//         : "Resources assigned successfully"
-//     );
-
-//     router.push("/resource");
-//   } catch (error) {
-//     console.error("Error setting resources:", error);
-//   } finally {
-//     setSaving(false);
-//   }
-// };
 
   return (
     <div className="bg-gray-50 px-4 py-8">
@@ -142,12 +112,11 @@ const ResourceFormPage = () => {
               Email *
             </label>
             {mode === "edit" ? (
-              <Input value={email} disabled className="bg-gray-50" />
+              <Input value={email} disabled />
             ) : (
               <Input
                 type="email"
                 required
-                placeholder="Enter user email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -156,24 +125,35 @@ const ResourceFormPage = () => {
 
           <div className="space-y-2 mt-6">
             <label className="block font-semibold text-gray-700 text-sm">
-              Select Resources *
+              Mandatory Features *
             </label>
             <MultiSelect
-              options={resourceOptions}
-              value={selectedResources}
-              onChange={setSelectedResources}
-              placeholder="Choose resources..."
+              options={mandatoryOptions}
+              value={selectedMandatory}
+              onChange={setSelectedMandatory}
+            />
+          </div>
+
+          <div className="space-y-2 mt-6">
+            <label className="block font-semibold text-gray-700 text-sm">
+              Optional Features
+            </label>
+            <MultiSelect
+              options={optionalOptions}
+              value={selectedOptional}
+              onChange={setSelectedOptional}
             />
           </div>
 
           <div className="flex gap-3 mt-8">
             <Button
               type="submit"
-              disabled={!email || saving}
+              disabled={!email || loading}
               className="flex-1 bg-zinc-800 hover:bg-zinc-700"
             >
-              {saving ? "Saving..." : "Save Allocation"}
+              {loading ? "Saving..." : "Save Allocation"}
             </Button>
+
             <Button
               type="button"
               variant="outline"

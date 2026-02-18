@@ -22,7 +22,7 @@ export const getUserResources = async (): Promise<
       };
     }
 
-    const url = `${process.env.NEXT_PUBLIC_ENRICHMENT_URL}/payment/admin/users`;
+    const url = `${process.env.NEXT_PUBLIC_PERMISSIONS_URL}/payment/admin/users`;
 
     const res = await fetch(url, {
       method: "GET",
