@@ -9,6 +9,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import PageHeader from "@/components/ui/page-header";
+import { useGetResource } from "@/hooks/use-resource";
 
 const mockAllocations = [
   {
@@ -37,7 +38,18 @@ const mockAllocations = [
 const ResourceAllocationPage = () => {
   const router = useRouter();
   const [allocations] = useState(mockAllocations);
+  const permission = useGetResource()
+  console.log("permissions get ", permission)
 
+  const handleEdit = (user: any) => {
+    // callback usage (can later pass via state/store)
+    console.log("Editing user data:", user);
+
+    router.push(
+      `/resource/edit?email=${encodeURIComponent(user.email)}`
+    );
+  };
+  
   return (
     <TooltipProvider>
       <div className="p-6 mx-auto max-w-7xl">
@@ -133,13 +145,7 @@ const ResourceAllocationPage = () => {
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() =>
-                            router.push(
-                              `/resource/edit?email=${encodeURIComponent(
-                                user.email
-                              )}`
-                            )
-                          }
+                           onClick={() => handleEdit(user)}
                         >
                           Edit
                         </Button>

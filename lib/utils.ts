@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { EditMemberFormData, Member } from "./types/member-types";
+import { Permission, User } from "./types/resource-types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -82,3 +83,10 @@ export function normalizePermissions(
 //     permissions: permissionMap,
 //   };
 // }
+
+
+export const filterPermissions = (data: User[]): Permission[] => {
+  if (!Array.isArray(data)) return [];
+
+  return data.flatMap((user) => user.permissions ?? []);
+};

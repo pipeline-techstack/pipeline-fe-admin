@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import MultiSelect from "@/components/multi-select";
 import { useCustomerSearch } from "@/hooks/use-customers";
+// import { useGetResource, useSetResource } from "@/hooks/use-resource";
 
 const mockResources = [
   { id: "dashboard", name: "Dashboard", type: "mandatory" },
@@ -26,7 +27,6 @@ const ResourceFormPage = () => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const mode = pathname.includes("edit") ? "edit" : "new";
-
   const { customers } = useCustomerSearch();
 
   const [email, setEmail] = useState("");
@@ -78,9 +78,56 @@ const ResourceFormPage = () => {
           ? "Resources updated successfully"
           : "Resources assigned successfully"
       );
-      router.push("/feature");
+      router.push("/resource");
     }, 800);
   };
+
+//   const handleSubmit = async (e: React.FormEvent) => {
+//   e.preventDefault();
+
+//   const mandatoryIds = mockResources
+//     .filter((r) => r.type === "mandatory")
+//     .map((r) => r.id);
+
+//   const hasMandatory = selectedResources.some((id) =>
+//     mandatoryIds.includes(id)
+//   );
+
+//   if (!hasMandatory) {
+//     alert("At least one mandatory feature must be selected");
+//     return;
+//   }
+
+//   if (selectedResources.length === 0) {
+//     alert("Select at least one feature");
+//     return;
+//   }
+
+//   setSaving(true);
+
+//   try {
+//     const payload = {
+//       email,
+//       resources: selectedResources,
+//     };
+
+//     const response = await setResource(payload);
+
+//     console.log("Set resource response:", response);
+
+//     alert(
+//       mode === "edit"
+//         ? "Resources updated successfully"
+//         : "Resources assigned successfully"
+//     );
+
+//     router.push("/resource");
+//   } catch (error) {
+//     console.error("Error setting resources:", error);
+//   } finally {
+//     setSaving(false);
+//   }
+// };
 
   return (
     <div className="bg-gray-50 px-4 py-8">
@@ -130,7 +177,7 @@ const ResourceFormPage = () => {
             <Button
               type="button"
               variant="outline"
-              onClick={() => router.push("/feature")}
+              onClick={() => router.push("/resource")}
               className="flex-1"
             >
               Cancel
