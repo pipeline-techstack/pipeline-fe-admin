@@ -9,6 +9,7 @@ export interface PostUserResourcesPyaload {
 
 export type User = {
   _id: string;
+  email: string;
   permissions?: Permission[];
-  [key: string]: any;
 };
+

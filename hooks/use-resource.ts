@@ -1,45 +1,29 @@
-"use client"
+"use client";
 
-import { PostUserResourcesPyaload } from "@/lib/types/resource-types"
-import { filterPermissions } from "@/lib/utils"
-import { getUserResources, postUserResources } from "@/services/resource-apis"
+import { PostUserResourcesPyaload } from "@/lib/types/resource-types";
+import { filterPermissions } from "@/lib/utils";
+import { getUserResources, postUserResources } from "@/services/resource-apis";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
-
 export const useGetResource = () => {
-  const [permissions, setPermissions] = useState<PostUserResourcesPyaload[]>([]);
-  const [status, setStatus] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true);
+  const query = useQuery({
+    queryKey: ["resources"],
+    queryFn: async () => {
+      const response = await getUserResources();
 
-  useEffect(() => {
-    const fetchResources = async () => {
-      try {
-        const response = await getUserResources();
+      if (!response?.status) return [];
 
-        if (response?.status) {
-          const filtered = filterPermissions(response.data || []);
-          setPermissions(filtered);
-          setStatus(true);
-        } else {
-          setPermissions([]);
-          setStatus(false);
-        }
-      } catch (error) {
-        console.error("useGetResource error:", error);
-        setPermissions([]);
-        setStatus(false);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchResources();
-  }, []);
+      return filterPermissions(response.data);
+    },
+    staleTime: 1000 * 5
+  });
 
   return {
-    permissions,
-    status,
-    loading,
+    permissions: query.data ?? [],
+    loading: query.isLoading,
+    error: query.isError,
+    refetch: query.refetch,
   };
 };
 

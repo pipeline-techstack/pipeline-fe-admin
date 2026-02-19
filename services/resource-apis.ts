@@ -22,7 +22,7 @@ export const getUserResources = async (): Promise<
       };
     }
 
-    const url = `${process.env.NEXT_PUBLIC_PERMISSIONS_URL}/payment/admin/users`;
+    const url = `${process.env.NEXT_PUBLIC_RESOURCE_URL}/payment/admin/users`;
 
     const res = await fetch(url, {
       method: "GET",
@@ -39,11 +39,11 @@ export const getUserResources = async (): Promise<
       };
     }
 
-    const data: User[] = await res.json();
-
+    const data = await res.json();
+    const response:User[] = data.data
     return {
       status: true,
-      data,
+      data:response,
     };
   } catch (error) {
     console.error("getUserResources error:", error);
@@ -68,7 +68,7 @@ export const postUserResources = async (
       };
     }
 
-    const url = `${process.env.NEXT_PUBLIC_ENRICHMENT_URL}/payment/admin/members/permissions/set`;
+    const url = `${process.env.NEXT_PUBLIC_RESOURCE_URL}/payment/admin/members/permissions/set`;
 
     const res = await fetch(url, {
       method: "POST",

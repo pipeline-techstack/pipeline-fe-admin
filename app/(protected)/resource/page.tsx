@@ -13,7 +13,7 @@ import { useGetResource } from "@/hooks/use-resource";
 const ResourceAllocationPage = () => {
   const router = useRouter();
 
-  const { permissions, status } = useGetResource();
+  const { permissions, loading } = useGetResource();
 
   console.log("permissions get:", permissions);
 
@@ -22,9 +22,7 @@ const ResourceAllocationPage = () => {
   const handleEdit = (user: any) => {
     console.log("Editing user data:", user);
 
-    router.push(
-      `/resource/edit?email=${encodeURIComponent(user.email)}`
-    );
+    router.push(`/resource/edit?email=${encodeURIComponent(user.email)}`);
   };
 
   return (
@@ -44,10 +42,15 @@ const ResourceAllocationPage = () => {
           </Button>
         </div>
 
-        {!status || allocations.length === 0 ? (
-          <p className="text-gray-500 text-sm">
-            No feature allocations found
-          </p>
+        {/* 🔥 Loading State */}
+        {loading ? (
+          <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-8">
+            <div className="flex justify-center items-center h-40">
+              <div className="w-8 h-8 border-4 border-gray-300 border-t-blue-600 rounded-full animate-spin" />
+            </div>
+          </div>
+        ) : allocations.length === 0 ? (
+          <p className="text-gray-500 text-sm">No feature allocations found</p>
         ) : (
           <div className="bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden">
             <div className="max-h-[600px] overflow-y-auto">
@@ -76,6 +79,9 @@ const ResourceAllocationPage = () => {
                       <td className="px-6 py-4">
                         <div className="text-gray-900 text-sm">
                           {user.email}
+                          {user.permissions?.length === 0 && (
+                            <span className="w-2 h-2 bg-blue-500 rounded-full inline-block ml-2" />
+                          )}
                         </div>
                       </td>
 
@@ -139,7 +145,6 @@ const ResourceAllocationPage = () => {
                     </tr>
                   ))}
                 </tbody>
-
               </table>
             </div>
           </div>

@@ -6,8 +6,8 @@ import { Input } from "@/components/ui/input";
 import MultiSelect from "@/components/multi-select";
 import { useGetResource, useSetResource } from "@/hooks/use-resource";
 
-
 const resourcesCatalog = [
+  { id: "*", name: "All Tabs", type: "mandatory" },
   { id: "dashboard", name: "Dashboard", type: "mandatory" },
   { id: "data-library", name: "Data Library", type: "mandatory" },
   { id: "workbook", name: "Workbook", type: "mandatory" },
@@ -23,12 +23,15 @@ const ResourceFormPage = () => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const mode = pathname.includes("edit") ? "edit" : "new";
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const { permissions } = useGetResource();
-  const { setResource, loading } = useSetResource();
+  const { setResource, loading, status } = useSetResource();
 
   const [email, setEmail] = useState("");
-  const [selectedMandatory, setSelectedMandatory] = useState<string[]>(["workbook"]);
+  const [selectedMandatory, setSelectedMandatory] = useState<string[]>([
+    "workbook",
+  ]);
   const [selectedOptional, setSelectedOptional] = useState<string[]>([]);
 
   const mandatoryOptions = resourcesCatalog
@@ -47,44 +50,34 @@ const ResourceFormPage = () => {
 
       setEmail(emailFromQuery);
 
-      const user = permissions.find(
-        (p) => p.email === emailFromQuery
-      );
+      const user = permissions.find((p) => p.email === emailFromQuery);
 
       if (!user) return;
 
-      const userResources = user.permissions.map(
-        (p) => p.resource
-      );
+      const userResources = user.permissions.map((p) => p.resource);
 
       const mandatoryIds = mandatoryOptions.map((m) => m.id);
 
       setSelectedMandatory(
-        userResources.filter((r) =>
-          mandatoryIds.includes(r)
-        )
+        userResources.filter((r) => mandatoryIds.includes(r)),
       );
 
       setSelectedOptional(
-        userResources.filter(
-          (r) => !mandatoryIds.includes(r)
-        )
+        userResources.filter((r) => !mandatoryIds.includes(r)),
       );
     }
   }, [mode, searchParams, permissions]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitError(null);
 
     if (selectedMandatory.length === 0) {
-      alert("Please select at least one mandatory feature");
+      setSubmitError("Please select at least one mandatory feature");
       return;
     }
 
-    const finalResources = [
-      ...selectedMandatory,
-      ...selectedOptional,
-    ];
+    const finalResources = [...selectedMandatory, ...selectedOptional];
 
     const payload = {
       email,
@@ -95,9 +88,17 @@ const ResourceFormPage = () => {
     };
 
     await setResource(payload);
-
-    router.push("/resource");
   };
+
+  useEffect(() => {
+    if (status === true) {
+      router.push("/resource");
+    }
+
+    if (status === false) {
+      setSubmitError("Failed to save permissions. Please try again.");
+    }
+  }, [status, router]);
 
   return (
     <div className="bg-gray-50 px-4 py-8">
@@ -144,6 +145,11 @@ const ResourceFormPage = () => {
               onChange={setSelectedOptional}
             />
           </div>
+          {submitError && (
+            <div className="mt-4 rounded-md bg-red-50 border border-red-200 px-3 py-2 text-sm text-red-600">
+              {submitError}
+            </div>
+          )}
 
           <div className="flex gap-3 mt-8">
             <Button

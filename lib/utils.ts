@@ -86,14 +86,20 @@ export function normalizePermissions(
 
 
 export const filterPermissions = (
-  data: User[]
+  users: User[]
 ): PostUserResourcesPyaload[] => {
-  if (!Array.isArray(data)) return [];
+  if (!Array.isArray(users)) return [];
 
-  return data
-    .filter((user) => user.email) // ensure valid email
+  return users
+    .filter((user) => typeof user.email === "string")
     .map((user) => ({
       email: user.email,
-      permissions: user.permissions ?? [],
+      permissions: Array.isArray(user.permissions)
+        ? user.permissions.map((perm) => ({
+            ...perm,
+            resource: perm.resource === "*" ? "all-tabs" : perm.resource,
+          }))
+        : [],
     }));
 };
+
