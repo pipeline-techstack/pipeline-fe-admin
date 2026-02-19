@@ -27,13 +27,13 @@ import {
 
 const navigation = [
   { name: "Customers", href: "/customers", icon: Users },
+  { name: "Feature Allocation", href: "/resource", icon: Network },
   { name: "Workbooks", href: "/workbooks", icon: BookOpen },
   // { name: "Campaigns", href: "/campaigns", icon: Network },
   { name: "Organizations", href: "/", icon: Building2 },
   { name: "WB Configs", href: "/wb-config", icon: Settings2 },
   { name: "LinkedIn Sync", href: "/linkedin-sync", icon: Link2 },
   { name: "Campaign Permissions", href: "/permissions", icon: KeyRound },
-  { name: "Feature Allocation", href: "/resource", icon: Network },
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Feedback", href: "/feedback", icon: Stars },
   { name: "Enrichments", href: "/enrichments", icon: MessageSquare },

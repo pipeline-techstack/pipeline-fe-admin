@@ -96,7 +96,7 @@ const ResourceAllocationPage = () => {
                                   key={i}
                                   className="bg-blue-100 px-2 py-1 rounded-md text-blue-700 text-xs"
                                 >
-                                  {perm.resource}
+                                  {perm.resource == "*"? "all-tabs" : perm.resource}
                                 </span>
                               ))}
 

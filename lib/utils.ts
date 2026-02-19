@@ -95,10 +95,7 @@ export const filterPermissions = (
     .map((user) => ({
       email: user.email,
       permissions: Array.isArray(user.permissions)
-        ? user.permissions.map((perm) => ({
-            ...perm,
-            resource: perm.resource === "*" ? "all-tabs" : perm.resource,
-          }))
+        ? user.permissions
         : [],
     }));
 };
