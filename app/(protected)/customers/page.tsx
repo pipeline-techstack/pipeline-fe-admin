@@ -28,7 +28,11 @@ const CustomersPage = () => {
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<{
-    [key: string]: { name: string; phone_e164: string; slack_channel_id: string };
+    [key: string]: {
+      name: string;
+      phone_e164: string;
+      slack_channel_id: string;
+    };
   }>({});
   const [search, setSearch] = useState("");
 
@@ -86,7 +90,13 @@ const CustomersPage = () => {
 
   const fuse = useMemo(() => {
     return new Fuse(customers, {
-      keys: ["firstName", "lastName", "email", "phone_e164", "slack_channel_id"],
+      keys: [
+        "firstName",
+        "lastName",
+        "email",
+        "phone_e164",
+        "slack_channel_id",
+      ],
       threshold: 0.3,
     });
   }, [customers]);
@@ -123,36 +133,43 @@ const CustomersPage = () => {
 
       <div className="bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden">
         <div className="max-h-[600px] overflow-y-auto">
-          <table className="w-full border-collapse">
+          <table className="w-full border-collapse table-fixed">
             <thead className="top-0 z-10 sticky bg-gray-50 border-b border-gray-200">
               <tr>
-                <th className="px-6 py-3 font-semibold text-gray-900 text-left text-sm">
-                  Name
-                </th>
-                <th className="px-6 py-3 font-semibold text-gray-900 text-left text-sm">
-                  Email
-                </th>
-                <th className="px-6 py-3 font-semibold text-gray-900 text-left text-sm">
-                  Phone Number
-                </th>
-                <th className="px-6 py-3 font-semibold text-gray-900 text-left text-sm">
-                  Slack Channel ID
-                </th>
-                <th className="px-6 py-3 font-semibold text-gray-900 text-right text-sm">
-                  Actions
-                </th>
+                <th className="w-[20%] px-6 py-3 font-semibold text-gray-900 text-left text-sm">
+  Name
+</th>
+
+<th className="w-[35%] px-6 py-3 font-semibold text-gray-900 text-left text-sm">
+  Email
+</th>
+
+<th className="w-[15%] px-6 py-3 font-semibold text-gray-900 text-left text-sm">
+  Phone Number
+</th>
+
+<th className="w-[20%] px-6 py-3 font-semibold text-gray-900 text-left text-sm">
+  Slack Channel ID
+</th>
+
+<th className="w-[10%] px-6 py-3 font-semibold text-gray-900 text-right text-sm">
+  Actions
+</th>
               </tr>
             </thead>
+
             <tbody className="divide-y divide-gray-200">
               {filteredCustomers.map((customer: any) => {
                 const isEditing = editingId === customer.userId;
                 const formData = editForm[customer.userId] || {};
+
                 return (
                   <tr
                     key={customer.userId}
                     className="hover:bg-gray-50 transition-colors"
                   >
-                    <td className="px-6 py-4">
+                    {/* Name */}
+                    <td className="px-6 py-4 max-w-0">
                       {isEditing ? (
                         <input
                           aria-label="Input"
@@ -162,23 +179,30 @@ const CustomersPage = () => {
                             handleInputChange(
                               customer.userId,
                               "name",
-                              e.target.value
+                              e.target.value,
                             )
                           }
                           className="px-3 py-2 border border-gray-300 rounded-md w-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       ) : (
-                        <div className="font-medium text-gray-900 text-sm">
+                        <div className="font-medium text-gray-900 text-sm truncate">
                           {customer.firstName ?? ""} {customer.lastName ?? ""}
                         </div>
                       )}
                     </td>
 
-                    <td className="px-6 py-4">
-                      <div className="text-gray-600 text-sm">{customer.email}</div>
+                    {/* Email */}
+                    <td className="px-6 py-4 max-w-0">
+                      <div
+                        className="text-gray-600 text-sm break-words line-clamp-2"
+                        title={customer.email}
+                      >
+                        {customer.email}
+                      </div>
                     </td>
 
-                    <td className="px-6 py-4">
+                    {/* Phone */}
+                    <td className="px-6 py-4 max-w-0">
                       {isEditing ? (
                         <input
                           aria-label="Input"
@@ -188,19 +212,20 @@ const CustomersPage = () => {
                             handleInputChange(
                               customer.userId,
                               "phone_e164",
-                              e.target.value
+                              e.target.value,
                             )
                           }
                           className="px-3 py-2 border border-gray-300 rounded-md w-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       ) : (
-                        <div className="text-gray-600 text-sm">
+                        <div className="text-gray-600 text-sm truncate">
                           {customer.phone_e164 || "-"}
                         </div>
                       )}
                     </td>
 
-                    <td className="px-6 py-4">
+                    {/* Slack Channel */}
+                    <td className="px-6 py-4 max-w-0">
                       {isEditing ? (
                         <input
                           aria-label="Slack Channel"
@@ -210,20 +235,21 @@ const CustomersPage = () => {
                             handleInputChange(
                               customer.userId,
                               "slack_channel_id",
-                              e.target.value
+                              e.target.value,
                             )
                           }
                           placeholder="C01234ABCDE"
                           className="px-3 py-2 border border-gray-300 rounded-md w-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       ) : (
-                        <div className="text-gray-600 text-sm">
+                        <div className="text-gray-600 text-sm break-all">
                           {customer.slack_channel_id || "-"}
                         </div>
                       )}
                     </td>
 
-                    <td className="flex justify-end px-6 py-4">
+                    {/* Actions */}
+                    <td className="px-6 py-4 flex justify-end">
                       {isEditing ? (
                         <div className="flex justify-end gap-2">
                           <button
@@ -233,6 +259,7 @@ const CustomersPage = () => {
                           >
                             <Check className="w-4 h-4" />
                           </button>
+
                           <button
                             aria-label="Cancel"
                             onClick={cancelEdit}
@@ -254,6 +281,7 @@ const CustomersPage = () => {
                   </tr>
                 );
               })}
+
               {filteredCustomers.length === 0 && (
                 <tr>
                   <td
