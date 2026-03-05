@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { EditMemberFormData, Member } from "./types/member-types";
+import { PostUserResourcesPyaload, User } from "./types/resource-types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -82,3 +83,20 @@ export function normalizePermissions(
 //     permissions: permissionMap,
 //   };
 // }
+
+
+export const filterPermissions = (
+  users: User[]
+): PostUserResourcesPyaload[] => {
+  if (!Array.isArray(users)) return [];
+
+  return users
+    .filter((user) => typeof user.email === "string")
+    .map((user) => ({
+      email: user.email,
+      permissions: Array.isArray(user.permissions)
+        ? user.permissions
+        : [],
+    }));
+};
+

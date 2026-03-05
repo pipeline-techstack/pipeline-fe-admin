@@ -137,7 +137,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search campaigns..."
+              placeholder="Search..."
               className="flex-1 outline-none text-sm"
               onClick={(e) => e.stopPropagation()}
             />
