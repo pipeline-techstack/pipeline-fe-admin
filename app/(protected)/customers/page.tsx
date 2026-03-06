@@ -32,6 +32,7 @@ const CustomersPage = () => {
       name: string;
       phone_e164: string;
       slack_channel_id: string;
+      teams_webhook_url: string;
     };
   }>({});
   const [search, setSearch] = useState("");
@@ -43,6 +44,7 @@ const CustomersPage = () => {
         name: `${customer.firstName || ""} ${customer.lastName || ""}`.trim(),
         phone_e164: customer.phone_e164 || "",
         slack_channel_id: customer.slack_channel_id || "",
+        teams_webhook_url: customer.teams_webhook_url || "",
       },
     });
   };
@@ -70,6 +72,7 @@ const CustomersPage = () => {
       email: customer?.email || "",
       phone_e164: formData.phone_e164 || "",
       slack_channel_id: formData.slack_channel_id || "",
+      teams_webhook_url: formData.teams_webhook_url || "",
     };
 
     if (firstName) payload.firstName = firstName;
@@ -96,6 +99,7 @@ const CustomersPage = () => {
         "email",
         "phone_e164",
         "slack_channel_id",
+        "teams_webhook_url"
       ],
       threshold: 0.3,
     });
@@ -111,7 +115,7 @@ const CustomersPage = () => {
     return <div className="p-6 text-red-600">Failed to load customers</div>;
 
   return (
-    <div className="p-6 mx-auto max-w-7xl">
+    <div className="mx-auto p-6 max-w-7xl">
       <div className="flex justify-between items-start mb-6">
         <PageHeader
           title="Customers"
@@ -134,27 +138,30 @@ const CustomersPage = () => {
       <div className="bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden">
         <div className="max-h-[600px] overflow-y-auto">
           <table className="w-full border-collapse table-fixed">
-            <thead className="top-0 z-10 sticky bg-gray-50 border-b border-gray-200">
+            <thead className="top-0 z-10 sticky bg-gray-50 border-gray-200 border-b">
               <tr>
-                <th className="w-[20%] px-6 py-3 font-semibold text-gray-900 text-left text-sm">
-  Name
-</th>
+                <th className="px-6 py-3 w-[20%] font-semibold text-gray-900 text-sm text-left">
+                  Name
+                </th>
 
-<th className="w-[35%] px-6 py-3 font-semibold text-gray-900 text-left text-sm">
-  Email
-</th>
+                <th className="px-6 py-3 w-[35%] font-semibold text-gray-900 text-sm text-left">
+                  Email
+                </th>
 
-<th className="w-[15%] px-6 py-3 font-semibold text-gray-900 text-left text-sm">
-  Phone Number
-</th>
+                <th className="px-6 py-3 w-[15%] font-semibold text-gray-900 text-sm text-left">
+                  Phone Number
+                </th>
 
-<th className="w-[20%] px-6 py-3 font-semibold text-gray-900 text-left text-sm">
-  Slack Channel ID
-</th>
+                <th className="px-6 py-3 w-[20%] font-semibold text-gray-900 text-sm text-left">
+                  Slack Channel ID
+                </th>
+                <th className="px-6 py-3 w-[20%] font-semibold text-gray-900 text-sm text-left">
+                  Teams ID
+                </th>
 
-<th className="w-[10%] px-6 py-3 font-semibold text-gray-900 text-right text-sm">
-  Actions
-</th>
+                <th className="px-6 py-3 w-[10%] font-semibold text-gray-900 text-sm text-right">
+                  Actions
+                </th>
               </tr>
             </thead>
 
@@ -182,7 +189,7 @@ const CustomersPage = () => {
                               e.target.value,
                             )
                           }
-                          className="px-3 py-2 border border-gray-300 rounded-md w-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-sm"
                         />
                       ) : (
                         <div className="font-medium text-gray-900 text-sm truncate">
@@ -215,7 +222,7 @@ const CustomersPage = () => {
                               e.target.value,
                             )
                           }
-                          className="px-3 py-2 border border-gray-300 rounded-md w-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-sm"
                         />
                       ) : (
                         <div className="text-gray-600 text-sm truncate">
@@ -239,7 +246,7 @@ const CustomersPage = () => {
                             )
                           }
                           placeholder="C01234ABCDE"
-                          className="px-3 py-2 border border-gray-300 rounded-md w-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-sm"
                         />
                       ) : (
                         <div className="text-gray-600 text-sm break-all">
@@ -248,8 +255,31 @@ const CustomersPage = () => {
                       )}
                     </td>
 
+                    <td className="px-6 py-4 max-w-0">
+                      {isEditing ? (
+                        <input
+                          aria-label="Teams Channel"
+                          type="text"
+                          value={formData.teams_webhook_url || ""}
+                          onChange={(e) =>
+                            handleInputChange(
+                              customer.userId,
+                              "teams_webhook_url",
+                              e.target.value,
+                            )
+                          }
+                          placeholder="C01234ABCDE"
+                          className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-sm"
+                        />
+                      ) : (
+                        <div className="text-gray-600 text-sm break-all">
+                          {customer.teams_webhook_url || "-"}
+                        </div>
+                      )}
+                    </td>
+
                     {/* Actions */}
-                    <td className="px-6 py-4 flex justify-end">
+                    <td className="flex justify-end px-6 py-4">
                       {isEditing ? (
                         <div className="flex justify-end gap-2">
                           <button
@@ -286,7 +316,7 @@ const CustomersPage = () => {
                 <tr>
                   <td
                     colSpan={5}
-                    className="px-6 py-8 text-gray-500 text-center text-sm"
+                    className="px-6 py-8 text-gray-500 text-sm text-center"
                   >
                     No matching customers found.
                   </td>
