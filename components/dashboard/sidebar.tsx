@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
@@ -33,6 +33,7 @@ const navigation = [
   { name: "Organizations", href: "/", icon: Building2 },
   { name: "WB Configs", href: "/wb-config", icon: Settings2 },
   { name: "LinkedIn Sync", href: "/linkedin-sync", icon: Link2 },
+  { name: "Warmup Accounts", href: "/linkedin-warmup", icon: Link2 },
   { name: "Campaign Permissions", href: "/permissions", icon: KeyRound },
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Feedback", href: "/feedback", icon: Stars },
@@ -48,7 +49,7 @@ export function Sidebar() {
     <div
       className={cn(
         "flex flex-col bg-white border-gray-200 border-r h-screen transition-all duration-300",
-        isCollapsed ? "w-20" : "w-64"
+        isCollapsed ? "w-20" : "w-64",
       )}
     >
       {/* Logo + Toggle */}
@@ -85,7 +86,7 @@ export function Sidebar() {
                   "flex items-center px-3 py-2 rounded-lg w-full font-medium text-sm transition-colors",
                   isActive
                     ? "bg-blue-50 text-primary border-r-2 border-primary"
-                    : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+                    : "text-gray-700 hover:bg-gray-50 hover:text-gray-900",
                 )}
               >
                 <item.icon className="w-5 h-5" />
