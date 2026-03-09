@@ -6,3 +6,8 @@ export interface LoginResponse {
     st_access_token: string;
   };
 }
+
+export interface AuthProps {
+  email: string;
+  password: string;
+}

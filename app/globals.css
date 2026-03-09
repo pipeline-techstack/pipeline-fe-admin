@@ -14,6 +14,17 @@ body {
 
 @layer base {
   :root {
+        --gradient-purple: linear-gradient(
+    104.73deg,
+    #5d5fef 17.44%,
+    #8159df 108.81%
+  );
+
+  --gradient-purple-hover: linear-gradient(
+    104.73deg,
+    #4d4fdf 17.44%,
+    #7149cf 108.81%
+  );
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
@@ -81,6 +92,41 @@ body {
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer utilities {
+  .bg-primary {
+    background-image: var(--gradient-purple);
+    background-color: transparent !important;
+  }
+
+  .hover\:bg-primary:hover {
+    background-image: var(--gradient-purple-hover);
+    background-color: transparent !important;
+  }
+  
+  .border-gradient-purple {
+    border: 1px solid transparent;
+    background:
+      linear-gradient(white, white) padding-box,
+      var(--gradient-purple) border-box;
+  }
+
+   .focus-border-gradient-purple:focus-visible {
+    outline: none;
+    border: 2px solid transparent;
+    background:
+      linear-gradient(white, white) padding-box,
+      var(--gradient-purple) border-box;
+  }
+
+  .focus-border-gradient-purple:focus {
+    outline: none;
+    border: 2px solid transparent;
+    background:
+      linear-gradient(white, white) padding-box,
+      var(--gradient-purple) border-box;
   }
 }
 

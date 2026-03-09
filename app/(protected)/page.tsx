@@ -20,7 +20,7 @@ export default function Home() {
           />
 
           <Button
-            className="bg-blue-600 hover:bg-blue-700"
+            className=""
             onClick={() => setIsModalOpen(true)}
           >
             <Plus className="mr-2 w-4 h-4" />
