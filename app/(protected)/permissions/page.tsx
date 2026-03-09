@@ -9,7 +9,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useHeyreach } from "@/hooks/use-heyreach";
-import PageHeader from "@/components/ui/page-header";
+import PageWrapper from "@/components/common/page-wrapper";
 
 const PermissionsPage = () => {
   const router = useRouter();
@@ -18,21 +18,18 @@ const PermissionsPage = () => {
 
   return (
     <TooltipProvider>
-      <div className="p-6 mx-auto max-w-7xl">
-        <div className="flex justify-between items-start mb-6">
-          <PageHeader
-            title="Users & Campaign Permissions"
-            subtitle="Manage user access and campaign assignments"
-          />
-          
-          <Button 
-            className="bg-zinc-800 hover:bg-zinc-700" 
+      <PageWrapper
+        title="Users & Campaign Permissions"
+        subtitle="Manage user access and campaign assignments"
+        rightComponent={
+          <Button
+            className="bg-zinc-800 hover:bg-zinc-700"
             onClick={() => router.push("/permissions/new")}
           >
             New Permission
           </Button>
-        </div>
-
+        }
+      >
         {isLoading ? (
           <p className="text-gray-500 text-sm">Loading users...</p>
         ) : userPermissions.length === 0 ? (
@@ -43,23 +40,32 @@ const PermissionsPage = () => {
               <table className="w-full border-collapse">
                 <thead className="top-0 z-10 sticky bg-gray-50 border-b border-gray-200">
                   <tr>
-                    <th className="px-6 py-3 font-semibold text-gray-900 text-left text-sm">
+                    <th className="px-6 py-3 font-semibold text-left text-sm">
                       Email
                     </th>
-                    <th className="px-6 py-3 font-semibold text-gray-900 text-left text-sm">
+                    <th className="px-6 py-3 font-semibold text-left text-sm">
                       Assigned Campaigns
                     </th>
-                    <th className="px-6 py-3 font-semibold text-gray-900 text-left text-sm">
+                    <th className="px-6 py-3 font-semibold text-left text-sm">
                       Actions
                     </th>
                   </tr>
                 </thead>
+
                 <tbody className="divide-y divide-gray-200">
                   {userPermissions.map((user, index) => (
-                    <tr key={index} className="hover:bg-gray-50 transition-colors">
+                    <tr
+                      key={index}
+                      className="hover:bg-gray-50 transition-colors"
+                    >
+                      {/* Email */}
                       <td className="px-6 py-4">
-                        <div className="text-gray-900 text-sm">{user.email}</div>
+                        <div className="text-gray-900 text-sm">
+                          {user.email}
+                        </div>
                       </td>
+
+                      {/* Campaigns */}
                       <td className="px-6 py-4">
                         {user.campaigns?.length > 0 ? (
                           <div className="flex flex-wrap gap-2">
@@ -79,6 +85,7 @@ const PermissionsPage = () => {
                                     +{user.campaigns.length - 2} more
                                   </span>
                                 </TooltipTrigger>
+
                                 <TooltipContent className="max-w-xs max-h-80 overflow-y-auto">
                                   <div className="flex flex-wrap gap-1">
                                     {user.campaigns.slice(2).map((c) => (
@@ -101,6 +108,7 @@ const PermissionsPage = () => {
                         )}
                       </td>
 
+                      {/* Actions */}
                       <td className="px-6 py-4">
                         <Button
                           size="sm"
@@ -108,8 +116,8 @@ const PermissionsPage = () => {
                           onClick={() =>
                             router.push(
                               `/permissions/edit?email=${encodeURIComponent(
-                                user.email
-                              )}`
+                                user.email,
+                              )}`,
                             )
                           }
                         >
@@ -123,7 +131,7 @@ const PermissionsPage = () => {
             </div>
           </div>
         )}
-      </div>
+      </PageWrapper>
     </TooltipProvider>
   );
 };

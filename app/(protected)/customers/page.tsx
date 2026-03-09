@@ -5,7 +5,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Pencil, Check, X, Search } from "lucide-react";
 import { useState, useMemo } from "react";
 import Fuse from "fuse.js";
-import PageHeader from "@/components/ui/page-header";
+import PageWrapper from "@/components/common/page-wrapper";
 
 const CustomersPage = () => {
   const queryClient = useQueryClient();
@@ -111,14 +111,10 @@ const CustomersPage = () => {
     return <div className="p-6 text-red-600">Failed to load customers</div>;
 
   return (
-    <div className="p-6 mx-auto max-w-7xl">
-      <div className="flex justify-between items-start mb-6">
-        <PageHeader
-          title="Customers"
-          subtitle="Manage your customer information"
-        />
-
-        {/* 🔍 Search Bar */}
+    <PageWrapper
+      title="Customers"
+      subtitle="Manage your customer information"
+      rightComponent={
         <div className="relative w-64">
           <Search className="top-2.5 left-3 absolute w-5 h-5 text-gray-400" />
           <input
@@ -129,32 +125,29 @@ const CustomersPage = () => {
             className="py-2 pr-4 pl-10 border border-gray-300 rounded-md w-full text-sm"
           />
         </div>
-      </div>
-
+      }
+    >
+      {/* Table */}
       <div className="bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden">
         <div className="max-h-[600px] overflow-y-auto">
           <table className="w-full border-collapse table-fixed">
             <thead className="top-0 z-10 sticky bg-gray-50 border-b border-gray-200">
               <tr>
-                <th className="w-[20%] px-6 py-3 font-semibold text-gray-900 text-left text-sm">
-  Name
-</th>
-
-<th className="w-[35%] px-6 py-3 font-semibold text-gray-900 text-left text-sm">
-  Email
-</th>
-
-<th className="w-[15%] px-6 py-3 font-semibold text-gray-900 text-left text-sm">
-  Phone Number
-</th>
-
-<th className="w-[20%] px-6 py-3 font-semibold text-gray-900 text-left text-sm">
-  Slack Channel ID
-</th>
-
-<th className="w-[10%] px-6 py-3 font-semibold text-gray-900 text-right text-sm">
-  Actions
-</th>
+                <th className="w-[20%] px-6 py-3 font-semibold text-left text-sm">
+                  Name
+                </th>
+                <th className="w-[35%] px-6 py-3 font-semibold text-left text-sm">
+                  Email
+                </th>
+                <th className="w-[15%] px-6 py-3 font-semibold text-left text-sm">
+                  Phone Number
+                </th>
+                <th className="w-[20%] px-6 py-3 font-semibold text-left text-sm">
+                  Slack Channel ID
+                </th>
+                <th className="w-[10%] px-6 py-3 font-semibold text-right text-sm">
+                  Actions
+                </th>
               </tr>
             </thead>
 
@@ -164,15 +157,11 @@ const CustomersPage = () => {
                 const formData = editForm[customer.userId] || {};
 
                 return (
-                  <tr
-                    key={customer.userId}
-                    className="hover:bg-gray-50 transition-colors"
-                  >
+                  <tr key={customer.userId} className="hover:bg-gray-50">
                     {/* Name */}
-                    <td className="px-6 py-4 max-w-0">
+                    <td className="px-6 py-4">
                       {isEditing ? (
                         <input
-                          aria-label="Input"
                           type="text"
                           value={formData.name || ""}
                           onChange={(e) =>
@@ -182,30 +171,22 @@ const CustomersPage = () => {
                               e.target.value,
                             )
                           }
-                          className="px-3 py-2 border border-gray-300 rounded-md w-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="px-3 py-2 border rounded-md w-full text-sm"
                         />
                       ) : (
-                        <div className="font-medium text-gray-900 text-sm truncate">
-                          {customer.firstName ?? ""} {customer.lastName ?? ""}
+                        <div className="font-medium text-sm">
+                          {customer.firstName} {customer.lastName}
                         </div>
                       )}
                     </td>
 
                     {/* Email */}
-                    <td className="px-6 py-4 max-w-0">
-                      <div
-                        className="text-gray-600 text-sm break-words line-clamp-2"
-                        title={customer.email}
-                      >
-                        {customer.email}
-                      </div>
-                    </td>
+                    <td className="px-6 py-4 text-sm">{customer.email}</td>
 
                     {/* Phone */}
-                    <td className="px-6 py-4 max-w-0">
+                    <td className="px-6 py-4 text-sm">
                       {isEditing ? (
                         <input
-                          aria-label="Input"
                           type="tel"
                           value={formData.phone_e164 || ""}
                           onChange={(e) =>
@@ -215,20 +196,17 @@ const CustomersPage = () => {
                               e.target.value,
                             )
                           }
-                          className="px-3 py-2 border border-gray-300 rounded-md w-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="px-3 py-2 border rounded-md w-full text-sm"
                         />
                       ) : (
-                        <div className="text-gray-600 text-sm truncate">
-                          {customer.phone_e164 || "-"}
-                        </div>
+                        customer.phone_e164 || "-"
                       )}
                     </td>
 
-                    {/* Slack Channel */}
-                    <td className="px-6 py-4 max-w-0">
+                    {/* Slack */}
+                    <td className="px-6 py-4 text-sm">
                       {isEditing ? (
                         <input
-                          aria-label="Slack Channel"
                           type="text"
                           value={formData.slack_channel_id || ""}
                           onChange={(e) =>
@@ -238,22 +216,18 @@ const CustomersPage = () => {
                               e.target.value,
                             )
                           }
-                          placeholder="C01234ABCDE"
-                          className="px-3 py-2 border border-gray-300 rounded-md w-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="px-3 py-2 border rounded-md w-full text-sm"
                         />
                       ) : (
-                        <div className="text-gray-600 text-sm break-all">
-                          {customer.slack_channel_id || "-"}
-                        </div>
+                        customer.slack_channel_id || "-"
                       )}
                     </td>
 
                     {/* Actions */}
                     <td className="px-6 py-4 flex justify-end">
                       {isEditing ? (
-                        <div className="flex justify-end gap-2">
+                        <div className="flex gap-2">
                           <button
-                            aria-label="Check"
                             onClick={() => saveEdit(customer.userId)}
                             className="bg-green-600 hover:bg-green-700 px-3 py-2 rounded-md text-white"
                           >
@@ -261,7 +235,6 @@ const CustomersPage = () => {
                           </button>
 
                           <button
-                            aria-label="Cancel"
                             onClick={cancelEdit}
                             className="bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-md"
                           >
@@ -271,7 +244,7 @@ const CustomersPage = () => {
                       ) : (
                         <button
                           onClick={() => startEdit(customer)}
-                          className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-md text-sm transition-colors"
+                          className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-md text-sm"
                         >
                           <Pencil className="w-4 h-4" />
                           Edit
@@ -281,26 +254,16 @@ const CustomersPage = () => {
                   </tr>
                 );
               })}
-
-              {filteredCustomers.length === 0 && (
-                <tr>
-                  <td
-                    colSpan={5}
-                    className="px-6 py-8 text-gray-500 text-center text-sm"
-                  >
-                    No matching customers found.
-                  </td>
-                </tr>
-              )}
             </tbody>
           </table>
         </div>
       </div>
 
+      {/* Footer */}
       <div className="mt-4 text-gray-500 text-sm">
         Total customers: {filteredCustomers.length}
       </div>
-    </div>
+    </PageWrapper>
   );
 };
 

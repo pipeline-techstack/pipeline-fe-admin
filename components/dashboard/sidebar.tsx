@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { redirect, usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
   Users,
@@ -17,6 +17,7 @@ import {
   Link2,
   Settings2,
   MessageSquare,
+  LogOut,
 } from "lucide-react";
 import {
   Tooltip,
@@ -24,6 +25,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Button } from "../ui/button";
+import { logout } from "@/lib/auth";
 
 const navigation = [
   { name: "Customers", href: "/customers", icon: Users },
@@ -43,12 +46,16 @@ export function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const [isCollapsed, setIsCollapsed] = useState(false);
+    const handleLogout = () => {
+    logout();
+    redirect("/login");
+  };
 
   return (
     <div
       className={cn(
         "flex flex-col bg-white border-gray-200 border-r h-screen transition-all duration-300",
-        isCollapsed ? "w-20" : "w-64"
+        isCollapsed ? "w-20" : "w-64",
       )}
     >
       {/* Logo + Toggle */}
@@ -85,7 +92,7 @@ export function Sidebar() {
                   "flex items-center px-3 py-2 rounded-lg w-full font-medium text-sm transition-colors",
                   isActive
                     ? "bg-blue-50 text-primary border-r-2 border-primary"
-                    : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+                    : "text-gray-700 hover:bg-gray-50 hover:text-gray-900",
                 )}
               >
                 <item.icon className="w-5 h-5" />
@@ -107,15 +114,18 @@ export function Sidebar() {
 
       {/* Footer */}
       <div className="flex items-center mt-auto p-4 border-gray-200 border-t">
-        <div className="bg-gray-300 rounded-full w-8 h-8" />
+        {/* <div className="bg-gray-300 rounded-full w-8 h-8" /> */}
         {!isCollapsed && (
-          <div className="ml-3">
-            <p className="font-medium text-gray-700 text-sm">
-              Pipeline Admin Dashboard
-            </p>
-            <p className="flex items-center gap-1 text-gray-500 text-xs">
-              <Copyright className="w-3 h-3" /> 2026 All Rights Reserved
-            </p>
+          <div className="ml-3 w-full">
+            <Button 
+              onClick={handleLogout}
+              className="btn-shine bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-all duration-300"
+              aria-label="Logout"
+            >
+              <LogOut size={20} />
+
+              <span className="">Logout</span>
+            </Button>
           </div>
         )}
       </div>

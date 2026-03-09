@@ -1,57 +1,48 @@
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
 import { OrganizationTable } from "@/components/dashboard/org-table";
 import { AddOrganizationDialog } from "@/components/dialog/add-organization";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import PageHeader from "@/components/ui/page-header";
+import PageWrapper from "@/components/common/page-wrapper";
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <div className="flex flex-col flex-1 space-y-6 h-full">
-      <div className="p-6">
-        <div className="flex justify-between items-start mb-6">
-          <PageHeader
-            title="Organizations"
-            subtitle="See subscription details and status for all your organizations"
-          />
+    <PageWrapper
+      title="Organizations"
+      subtitle="See subscription details and status for all your organizations"
+      rightComponent={
+        <Button onClick={() => setIsModalOpen(true)}>
+          <Plus className="mr-2 w-4 h-4" />
+          Add Organization
+        </Button>
+      }
+    >
+      <OrganizationTable />
 
-          <Button
-            className=""
-            onClick={() => setIsModalOpen(true)}
-          >
-            <Plus className="mr-2 w-4 h-4" />
-            Add Organization
-          </Button>
-
-          <AddOrganizationDialog
-            open={isModalOpen}
-            onClose={() => {
-              setIsModalOpen(false);
-            }}
-            defaultValues={{
-              organizationName: "",
-              email: "",
-              quota: 0,
-              enterpriseId: "",
-              seats: 1,
-            }}
-            isEditMode={false}
-            onSuccess={() => {
-              toast({
-                title: "Organization Added",
-                description: "New organization has been created successfully.",
-                variant: "success",
-              });
-            }}
-          />
-        </div>
-
-        <OrganizationTable />
-      </div>
-    </div>
+      <AddOrganizationDialog
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        defaultValues={{
+          organizationName: "",
+          email: "",
+          quota: 0,
+          enterpriseId: "",
+          seats: 1,
+        }}
+        isEditMode={false}
+        onSuccess={() => {
+          toast({
+            title: "Organization Added",
+            description:
+              "New organization has been created successfully.",
+            variant: "success",
+          });
+        }}
+      />
+    </PageWrapper>
   );
 }

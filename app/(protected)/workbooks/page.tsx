@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import PageHeader from "@/components/ui/page-header";
 import { useWorkbooks } from "@/hooks/use-wb-table";
 import { Workbook } from "./types/wb-table";
 import { duplicateWorkbook } from "@/services/wb-table-apis";
@@ -11,6 +10,7 @@ import { WorkbookTable } from "./components/wb-table";
 import { TableFooter } from "./components/table-footer";
 import { DuplicateWorkbookDialog } from "./components/duplicate-wb-dialog";
 import CostModal from "./components/cost-estimate-dialog";
+import PageWrapper from "@/components/common/page-wrapper";
 
 const WorkbooksPage = () => {
   const [search, setSearch] = useState("");
@@ -84,47 +84,49 @@ const WorkbooksPage = () => {
   const totalPages = Math.ceil((data?.total || 0) / pageSize);
 
   return (
-    <TooltipProvider>
-      <div className="mx-auto p-6 max-w-7xl">
-        <div className="flex justify-between items-start mb-6">
-          <PageHeader title="Workbooks" subtitle="Manage your workbooks" />
-          <WorkbookSearch value={search} onChange={handleSearchChange} />
-        </div>
+<TooltipProvider>
+  <PageWrapper
+    title="Workbooks"
+    subtitle="Manage your workbooks"
+    rightComponent={
+      <WorkbookSearch value={search} onChange={handleSearchChange} />
+    }
+  >
+    <WorkbookTable
+      workbooks={data?.workbooks || []}
+      isLoading={isLoading}
+      error={error}
+      onDuplicate={handleDuplicateClick}
+      openCost={handleCost}
+    />
 
-        <WorkbookTable
-          workbooks={data?.workbooks || []}
-          isLoading={isLoading}
-          error={error}
-          onDuplicate={handleDuplicateClick}
-          openCost={handleCost}
-        />
+    <TableFooter
+      total={data?.total || 0}
+      currentPage={page}
+      pageSize={pageSize}
+      totalPages={totalPages}
+      onPageChange={setPage}
+    />
 
-        <TableFooter
-          total={data?.total || 0}
-          currentPage={page}
-          pageSize={pageSize}
-          totalPages={totalPages}
-          onPageChange={setPage}
-        />
+    <DuplicateWorkbookDialog
+      isOpen={isDialogOpen}
+      onClose={() => setIsDialogOpen(false)}
+      workbookName={selectedWorkbook?.name || ""}
+      newName={newName}
+      userEmail={userEmail}
+      isLoading={isDuplicating}
+      onNewNameChange={setNewName}
+      onUserEmailChange={setUserEmail}
+      onConfirm={handleDuplicate}
+    />
 
-        <DuplicateWorkbookDialog
-          isOpen={isDialogOpen}
-          onClose={() => setIsDialogOpen(false)}
-          workbookName={selectedWorkbook?.name || ""}
-          newName={newName}
-          userEmail={userEmail}
-          isLoading={isDuplicating}
-          onNewNameChange={setNewName}
-          onUserEmailChange={setUserEmail}
-          onConfirm={handleDuplicate}
-        />
-        <CostModal
-          isOpen={isCostOpen}
-          onClose={() => setIsCostOpen(false)}
-          workbook={costWorkbook}
-        />
-      </div>
-    </TooltipProvider>
+    <CostModal
+      isOpen={isCostOpen}
+      onClose={() => setIsCostOpen(false)}
+      workbook={costWorkbook}
+    />
+  </PageWrapper>
+</TooltipProvider>
   );
 };
 
