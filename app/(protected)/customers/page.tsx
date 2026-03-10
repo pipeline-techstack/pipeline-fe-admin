@@ -129,7 +129,7 @@ const CustomersPage = () => {
     >
       {/* Table */}
       <div className="bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden">
-        <div className="max-h-[600px] overflow-y-auto">
+        <div className="flex-1 min-h-0 overflow-y-auto">
           <table className="w-full border-collapse table-fixed">
             <thead className="top-0 z-10 sticky bg-gray-50 border-b border-gray-200">
               <tr>

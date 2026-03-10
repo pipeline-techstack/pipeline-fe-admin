@@ -36,7 +36,7 @@ const PermissionsPage = () => {
           <p className="text-gray-500 text-sm">No user permissions found</p>
         ) : (
           <div className="bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden">
-            <div className="max-h-[600px] overflow-y-auto">
+            <div className="max-h-[400px] overflow-y-auto">
               <table className="w-full border-collapse">
                 <thead className="top-0 z-10 sticky bg-gray-50 border-b border-gray-200">
                   <tr>

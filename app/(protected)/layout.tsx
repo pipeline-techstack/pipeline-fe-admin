@@ -16,10 +16,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <div className="flex bg-gray-50 h-screen">
+        <div className="flex">
           <Sidebar />
           <div className="flex flex-col flex-1 overflow-hidden">
-            <main className="flex flex-col flex-1 bg-gray-50 h-full overflow-hidden">
+            <main className="flex flex-col flex-1 overflow-hidden">
               <div className="flex-1 overflow-auto">{children}</div>
             </main>
           </div>

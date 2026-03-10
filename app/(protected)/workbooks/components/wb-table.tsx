@@ -27,7 +27,7 @@ export const WorkbookTable = ({
       )}
 
       <div className="bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden">
-        <div className="max-h-[620px] overflow-y-auto">
+        <div className="max-h-[400px] overflow-y-auto">
           <table className="w-full border-collapse">
             <thead className="top-0 z-10 sticky bg-gray-50 border-gray-200 border-b">
               <tr>

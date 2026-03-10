@@ -54,8 +54,8 @@ export function Sidebar() {
   return (
     <div
       className={cn(
-        "flex flex-col bg-white border-gray-200 border-r h-screen transition-all duration-300",
-        isCollapsed ? "w-20" : "w-64",
+        "flex flex-col h-screen transition-all duration-300",
+        isCollapsed ? "w-20" : "w-60",
       )}
     >
       {/* Logo + Toggle */}
