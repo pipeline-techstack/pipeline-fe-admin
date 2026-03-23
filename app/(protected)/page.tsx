@@ -1,11 +1,12 @@
 "use client";
 import { useState } from "react";
-import { OrganizationTable } from "@/components/dashboard/org-table";
+
 import { AddOrganizationDialog } from "@/components/dialog/add-organization";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import PageWrapper from "@/components/common/page-wrapper";
+import { OrganizationTable } from "./organization/_components/org-table";
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
