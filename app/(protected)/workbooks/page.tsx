@@ -7,7 +7,7 @@ import { Workbook } from "./types/wb-table";
 import { duplicateWorkbook } from "@/services/wb-table-apis";
 import { WorkbookSearch } from "./components/wb-search";
 import { WorkbookTable } from "./components/wb-table";
-import { TableFooter } from "./components/table-footer";
+import { TableFooter } from "../../../components/common/table/table-footer";
 import { DuplicateWorkbookDialog } from "./components/duplicate-wb-dialog";
 import CostModal from "./components/cost-estimate-dialog";
 import PageWrapper from "@/components/common/page-wrapper";
@@ -101,6 +101,7 @@ const WorkbooksPage = () => {
     />
 
     <TableFooter
+      showPagination
       total={data?.total || 0}
       currentPage={page}
       pageSize={pageSize}
