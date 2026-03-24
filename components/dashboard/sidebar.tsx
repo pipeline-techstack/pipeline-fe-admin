@@ -40,6 +40,7 @@ const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Feedback", href: "/feedback", icon: Stars },
   { name: "Enrichments", href: "/enrichments", icon: MessageSquare },
+  { name: "Customer Management", href: "/customers/new", icon: Users },
 ];
 
 export function Sidebar() {
