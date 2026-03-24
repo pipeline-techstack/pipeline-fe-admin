@@ -104,10 +104,10 @@ export function OrganizationTable() {
   const columns = getOrganizationColumns(
     router,
     handleEdit,
-    handleDisableClick, // ✅ correct handler
+    handleDisableClick, 
   );
 
-  const pageSize = 20;
+  const pageSize = 10;
   const paginatedData = data.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize,
