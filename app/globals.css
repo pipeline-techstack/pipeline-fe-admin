@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: 'Inter', Arial, Helvetica, sans-serif;
-}
-
 @layer utilities {
   .text-balance {
     text-wrap: balance;
@@ -14,17 +10,17 @@ body {
 
 @layer base {
   :root {
-        --gradient-purple: linear-gradient(
-    104.73deg,
-    #5d5fef 17.44%,
-    #8159df 108.81%
-  );
+    --gradient-purple: linear-gradient(
+      104.73deg,
+      #5d5fef 17.44%,
+      #8159df 108.81%
+    );
 
-  --gradient-purple-hover: linear-gradient(
-    104.73deg,
-    #4d4fdf 17.44%,
-    #7149cf 108.81%
-  );
+    --gradient-purple-hover: linear-gradient(
+      104.73deg,
+      #4d4fdf 17.44%,
+      #7149cf 108.81%
+    );
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
@@ -34,9 +30,9 @@ body {
     --primary: 229 39% 48%;
     --primary-foreground: 0 0% 98%;
     --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
+    --secondary-foreground: 0 0% 12%;
+    --muted: 240 12% 92%;
+    --muted-foreground: 0 0% 47%;
     --accent: 0 0% 96.1%;
     --accent-foreground: 0 0% 9%;
     --destructive: 0 84.2% 60.2%;
@@ -58,6 +54,10 @@ body {
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    --font-system:
+      -apple-system, BlinkMacSystemFont, "Segoe UI", Ubuntu, Cantarell, Roboto,
+      "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji",
+      "Segoe UI Emoji", "Segoe UI Symbol";
   }
   .dark {
     --background: 0 0% 3.9%;
@@ -92,9 +92,17 @@ body {
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    --font-system:
+      -apple-system, BlinkMacSystemFont, "Segoe UI", Ubuntu, Cantarell, Roboto,
+      "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji",
+      "Segoe UI Emoji", "Segoe UI Symbol";
   }
 }
 
+html,
+body {
+  font-family: var(--font-system);
+}
 @layer utilities {
   .bg-primary {
     background-image: var(--gradient-purple);
@@ -105,7 +113,7 @@ body {
     background-image: var(--gradient-purple-hover);
     background-color: transparent !important;
   }
-  
+
   .border-gradient-purple {
     border: 1px solid transparent;
     background:
@@ -113,7 +121,7 @@ body {
       var(--gradient-purple) border-box;
   }
 
-   .focus-border-gradient-purple:focus-visible {
+  .focus-border-gradient-purple:focus-visible {
     outline: none;
     border: 2px solid transparent;
     background:
@@ -129,8 +137,8 @@ body {
       var(--gradient-purple) border-box;
   }
 
-  .bg-background{
-    background-color: #f6f6fa
+  .bg-background {
+    background-color: #f6f6fa;
   }
 }
 

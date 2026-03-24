@@ -39,13 +39,13 @@ export function DataTable<T extends { _id?: string }>({
   onPageChange,
 }: DataTableProps<T>) {
   return (
-    <div className="bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden">
+    <div className="bg-white overflow-hidden">
       <div className="max-h-[calc(100vh-250px)] overflow-auto">
         <Table>
           <TableHeader>
-            <TableRow className="bg-gray-50">
+            <TableRow >
               {columns.map((col) => (
-                <TableHead key={String(col.key)} className="font-semibold">
+                <TableHead key={String(col.key)}>
                   {col.header}
                 </TableHead>
               ))}
@@ -74,7 +74,7 @@ export function DataTable<T extends { _id?: string }>({
 
       {/* ✅ Footer Logic */}
       {footer && (
-        <div className="bg-gray-50 px-6 py-3 border-t">
+        <div className="px-6 py-3 border-t">
           {typeof footer === "boolean" ? (
             <TableFooter
               total={total}

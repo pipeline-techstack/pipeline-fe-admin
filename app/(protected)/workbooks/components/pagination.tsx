@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface PaginationProps {
@@ -15,80 +16,95 @@ export const Pagination = ({
 
   const getVisiblePages = () => {
     return Array.from({ length: totalPages }, (_, i) => i + 1).filter(
-      (pageNum) =>
-        pageNum === currentPage ||
-        pageNum === currentPage - 1 ||
-        pageNum === currentPage + 1 ||
-        pageNum === currentPage - 2 ||
-        pageNum === currentPage + 2
+      (pageNum) => pageNum >= currentPage - 2 && pageNum <= currentPage + 2,
     );
   };
 
   const visiblePages = getVisiblePages();
+
   const showFirstPage = currentPage > 3;
   const showLastPage = currentPage < totalPages - 2;
   const showFirstEllipsis = currentPage > 4;
   const showLastEllipsis = currentPage < totalPages - 3;
 
+  const baseBtn =
+    "h-9 min-w-[36px] px-3 rounded-md text-sm flex items-center justify-center transition-colors";
+
   return (
     <div className="flex items-center gap-2">
-      <button
+      {/* Previous */}
+      <Button
+        variant="outline"
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="w-28 flex items-center gap-1 px-3 py-2 border border-gray-300 rounded-md text-sm hover:bg-[#4A5BAA] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-black transition-colors"
-        >
+        className={`${baseBtn} gap-1`}
+      >
         <ChevronLeft className="w-4 h-4" />
-        Previous
-      </button>
+        Prev
+      </Button>
 
+      {/* Page Numbers */}
       <div className="flex items-center gap-1">
         {showFirstPage && (
           <>
-            <button
+            <Button
+              variant="outline"
+              className={baseBtn}
               onClick={() => onPageChange(1)}
-              className="px-3 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-50 transition-colors"
             >
               1
-            </button>
-            {showFirstEllipsis && <span className="px-2 text-gray-400">...</span>}
+            </Button>
+            {showFirstEllipsis && (
+              <span className="px-2 text-muted-foreground text-sm">…</span>
+            )}
           </>
         )}
 
-        {visiblePages.map((pageNum) => (
-          <button
-            key={pageNum}
-            onClick={() => onPageChange(pageNum)}
-            className={`px-3 py-2 border rounded-md text-sm transition-colors ${
-              pageNum === currentPage
-                ? "bg-[#4A5BAA] text-white border-[#4A5BAA]"
-                : "border-gray-300 hover:bg-gray-50"
-            }`}
-          >
-            {pageNum}
-          </button>
-        ))}
+        {visiblePages.map((pageNum) => {
+          const isActive = pageNum === currentPage;
+
+          return (
+            <Button
+              key={pageNum}
+              onClick={() => onPageChange(pageNum)}
+              variant={isActive ? "default" : "outline"}
+              className={`${baseBtn} ${
+                isActive
+                  ? "bg-[#4F46E5]/20 text-zinc-700 border"
+                  : "hover:bg-muted"
+              }`}
+            >
+              {pageNum}
+            </Button>
+          );
+        })}
 
         {showLastPage && (
           <>
-            {showLastEllipsis && <span className="px-2 text-gray-400">...</span>}
-            <button
+            {showLastEllipsis && (
+              <span className="px-2 text-muted-foreground text-sm">…</span>
+            )}
+            <Button
+              variant="outline"
+              className={baseBtn}
               onClick={() => onPageChange(totalPages)}
-              className="px-3 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-50 transition-colors"
             >
               {totalPages}
-            </button>
+            </Button>
           </>
         )}
       </div>
 
-      <button
+      {/* Next */}
+      <Button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="w-28 flex items-center justify-end gap-1 px-3 py-2 border border-gray-300 rounded-md text-sm hover:bg-[#4A5BAA] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-black transition-colors"
-        >
+        variant="outline"
+        className={`${baseBtn} gap-1`}
+      >
         Next
         <ChevronRight className="w-4 h-4" />
-      </button>
+      </Button>
     </div>
   );
 };
