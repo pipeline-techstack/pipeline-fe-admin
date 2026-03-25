@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import PageWrapper from "@/components/common/page-wrapper";
 import { DataTable } from "@/components/common/table/data-table";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 // mock data (replace with API later)
 const data = [
@@ -144,10 +145,15 @@ const columns = [
 export default function CustomerPage() {
   const [search, setSearch] = useState("");
   const [datapage, setDatapage] = useState(1);
+  const router = useRouter();
 
   const filteredData = data.filter((item) =>
     item.name.toLowerCase().includes(search.toLowerCase()),
   );
+
+  const handleclick = (row) =>{
+    router.push(`new/${row._id}`)
+  }
 
   return (
     <PageWrapper
@@ -179,6 +185,7 @@ export default function CustomerPage() {
         currentPage={datapage}
         totalPages={data.length}
         onPageChange={setDatapage}
+        onRowClick={handleclick}
       />
     </PageWrapper>
   );
