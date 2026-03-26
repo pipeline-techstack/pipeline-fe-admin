@@ -4,43 +4,63 @@ import React from "react";
 import PageHeader from "../ui/page-header";
 
 interface PageWrapperProps {
-  title: string;
+  title?: string;
   subtitle?: string;
+
+  /** NEW */
+  sectionTitle?: string;
+  sectionSubtitle?: string;
+
   rightComponent?: React.ReactNode;
   children: React.ReactNode;
+
+  onBack?: ()=>void
 }
 
 export default function PageWrapper({
   title,
   subtitle,
+  sectionTitle,
+  sectionSubtitle,
   rightComponent,
   children,
+  onBack
 }: PageWrapperProps) {
   return (
-    <div className="flex flex-col flex-1 min-h-0 ">
-      <div className="p-6 flex flex-col flex-1 min-h-0">
+    <div className="flex flex-col h-screen bg-white border border-gray-200 shadow-sm">
+      <div className="flex flex-col h-screen px-6 py-4 space-y-">
+        <div className="flex flex-col gap-2 shrink-0 ">
+          <div className="flex justify-between items-start shrink-0 border-b border-[#1D1E2029] w-full">
+            <PageHeader
+              title={title || ""}
+              subtitle={subtitle}
+              classNameTitle="text-2xl"
+              onBack={onBack}
+            />
+          </div>
 
-        {/* Main Card Container */}
-        <div className="flex flex-col flex-1 min-h-0 bg-white border border-gray-200 rounded-lg shadow-sm p-6 space-y-6">
+          {/* DIVIDER */}
+          <div className="" />
 
-          {/* Header */}
-          <div className="flex justify-between items-start shrink-0">
-            <PageHeader title={title} subtitle={subtitle} />
-
-            {rightComponent && (
-              <div className="flex items-center gap-2">
-                {rightComponent}
+          {/* SECOND ROW */}
+          {(sectionTitle || sectionSubtitle) && (
+            <div className="flex justify-between items-center w-full">
+              <div>
+                <PageHeader
+                  title={sectionTitle || ""}
+                  subtitle={sectionSubtitle}
+                />
               </div>
-            )}
-          </div>
 
-          {/* Content */}
-          <div className="flex flex-col flex-1 min-h-0">
-            {children}
-          </div>
-
+              {rightComponent && (
+                <div className="flex items-center gap-2">{rightComponent}</div>
+              )}
+            </div>
+          )}
         </div>
 
+        {/* CONTENT */}
+        <div className="flex flex-col flex-1 overflow-auto">{children}</div>
       </div>
     </div>
   );

@@ -22,7 +22,7 @@ export const TableFooter = ({
 
   return (
     <div className="flex justify-between items-center">
-      <div className="text-gray-500 text-sm">
+      <div className="text-muted-foreground  text-sm">
         {total > 0
           ? `Showing ${showingFrom}-${showingTo} of ${total} items`
           : "No data"}

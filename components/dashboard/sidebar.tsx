@@ -27,6 +27,8 @@ import {
 } from "@/components/ui/tooltip";
 import { Button } from "../ui/button";
 import { logout } from "@/lib/auth";
+import Image from "next/image";
+import PageHeader from "../ui/page-header";
 
 const navigation = [
   { name: "Customers", href: "/customers", icon: Users },
@@ -60,20 +62,21 @@ export function Sidebar() {
       )}
     >
       {/* Logo + Toggle */}
-      <div className="flex justify-between items-center px-4 py-4 border-gray-200 border-b">
+      <div className="flex justify-between items-center px-4 py-4">
         {!isCollapsed && (
-          <div className="flex items-center gap-3">
-            <img
+          <div className="flex items-start gap-3">
+            <Image
               src="/logo.png"
               alt="Pipeline AI Logo"
-              className="rounded-md w-10 h-10"
+              className="rounded-md mt-1"
+              width={32}
+              height={32}
             />
-
             <div>
-              <h1 className="text-gray-900 text-xl leading-tight">
+              <h1 className="text-secondary-foreground text-lg leading-tight">
                 Pipeline AI
               </h1>
-              <p className="text-gray-500 text-sm">Admin</p>
+              <p className="text-muted-foreground text-xs">Admin</p>
             </div>
           </div>
         )}

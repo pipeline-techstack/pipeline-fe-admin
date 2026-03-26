@@ -40,7 +40,7 @@ export function DataTable<T extends { _id?: string }>({
 }: DataTableProps<T>) {
   return (
     <div className="bg-white overflow-hidden">
-      <div className="max-h-[calc(100vh-250px)] overflow-auto">
+      <div className="max-h-[calc(100vh-168px)] overflow-auto">
         <Table>
           <TableHeader>
             <TableRow >

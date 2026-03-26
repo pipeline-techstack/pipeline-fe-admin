@@ -157,14 +157,15 @@ export default function CustomerPage() {
 
   return (
     <PageWrapper
-      title="Customer Management"
-      subtitle="All Customers"
+      // title="Customer Management"
+      title="All Customers"
+      subtitle="Click a customer row to view their full profile."
       rightComponent={
         <div className="flex items-center gap-3">
           {/* Records Badge */}
-          <Badge className="bg-gray-100 text-gray-700">
+          {/* <Badge className="bg-gray-100 text-gray-700">
             {filteredData.length} records
-          </Badge>
+          </Badge> */}
 
           {/* Search */}
           <Input

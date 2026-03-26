@@ -36,7 +36,7 @@ export default function SectionCard({
           <div>
             <h3 className="text-sm text-secondary-foreground">{title}</h3>
             {subtitle && (
-              <p className="text-xs text-muted-foreground mt-0.5">{subtitle}</p>
+              <p className="text-sm text-muted-foreground mt-0.5">{subtitle}</p>
             )}
           </div>
         </div>
@@ -75,11 +75,11 @@ export function FieldItem({
 }) {
   return (
     <div className="flex flex-col gap-0.5">
-      <span className={`text-xs text-secondary-foreground ${classNameLable}`}>{label}</span>
+      <span className={`text-sm text-muted-foreground ${classNameLable}`}>{label}</span>
       {children ? (
         children
       ) : (
-        <span className={`text-sm text-muted-foreground ${classNameValue}`}>
+        <span className={`text-sm text-secondary-foreground  ${classNameValue}`}>
           {value ?? <span className="">—</span>}
         </span>
       )}
@@ -115,15 +115,15 @@ export function Badge({
   variant?: "default" | "success" | "warning" | "info" | "outline";
 }) {
   const styles = {
-    default: "bg-gray-100 text-gray-600 w-fit rounded-full",
-    success: "bg-green-50 text-green-700 border border-green-200 w-fit rounded-full",
-    warning: "bg-amber-50 text-amber-700 border border-amber-200 w-fit rounded-full",
-    info: "bg-blue-50 text-blue-700 border border-blue-200 w-fit rounded-full",
-    outline: "bg-white text-gray-600 border border-gray-300 w-fit rounded-full",
+    default: "bg-gray-100 text-gray-600 w-fit rounded-full text-[14px]",
+    success: "bg-green-50 text-green-700 border border-green-200 w-fit rounded-full text-[14px]",
+    warning: "bg-amber-50 text-amber-700 border border-amber-200 w-fit rounded-full text-[14px]",
+    info: "bg-blue-50 text-blue-700 border border-blue-200 w-fit rounded-full text-[14px]",
+    outline: "bg-white text-gray-600 border border-gray-300 w-fit rounded-full text-[14px]",
   };
   return (
     <span
-      className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${styles[variant]}`}
+      className={`inline-flex items-center px-2 py-0.5 rounded ${styles[variant]}`}
     >
       {label}
     </span>
