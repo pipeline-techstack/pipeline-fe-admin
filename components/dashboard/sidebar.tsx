@@ -43,6 +43,7 @@ const navigation = [
   { name: "Feedback", href: "/feedback", icon: Stars },
   { name: "Enrichments", href: "/enrichments", icon: MessageSquare },
   { name: "Customer Management", href: "/customers/new", icon: Users },
+    // { name: "Campaign Setup", href: "/campaigns/new", icon: Users },
 ];
 
 export function Sidebar() {
@@ -62,13 +63,15 @@ export function Sidebar() {
       )}
     >
       {/* Logo + Toggle */}
-      <div className="flex justify-between items-center px-4 py-4">
+      <div
+        className={`flex ${isCollapsed ? "justify-center" : "justify-between"} px-4 py-4`}
+      >
         {!isCollapsed && (
           <div className="flex items-start gap-3">
             <Image
               src="/logo.png"
               alt="Pipeline AI Logo"
-              className="rounded-md mt-1"
+              className="mt-1 rounded-md"
               width={32}
               height={32}
             />
@@ -82,19 +85,19 @@ export function Sidebar() {
         )}
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="p-1 rounded text-gray-500 hover:text-gray-800 transition"
+          className="p-1 rounded text-muted-foreground hover:text-gray-800 transition"
         >
           {isCollapsed ? (
-            <ChevronsRight className="w-6 h-6" />
+            <ChevronsRight className="size-5" />
           ) : (
-            <ChevronsLeft className="w-6 h-6" />
+            <ChevronsLeft className="size-5" />
           )}
         </button>
       </div>
 
       {/* Navigation */}
       <TooltipProvider>
-        <nav className="flex flex-col flex-1 space-y-1 mt-4 px-2">
+        <nav className="flex flex-col flex-1 items-center space-y-1 mt-4 px-2">
           {navigation.map((item) => {
             const isActive = pathname === item.href;
 
@@ -103,10 +106,11 @@ export function Sidebar() {
                 key={item.name}
                 onClick={() => router.push(item.href)}
                 className={cn(
-                  "flex items-center px-3 py-2 rounded-lg w-full font-medium text-sm transition-colors",
+                  "flex items-center px-3 py-2 rounded-lg w-full text-sm transition-colors",
+                  isCollapsed && "justify-center",
                   isActive
-                    ? "bg-blue-50 text-primary border-r-2 border-primary"
-                    : "text-gray-700 hover:bg-gray-50 hover:text-gray-900",
+                    ? "bg-gray-200  "
+                    : "text-muted-foreground hover:bg-gray-50 hover:text-secondary-foreground",
                 )}
               >
                 <item.icon className="w-5 h-5" />
@@ -142,9 +146,7 @@ export function Sidebar() {
 
             {/* Footer Text */}
             <div className="mt-4 text-left">
-              <p className="text-gray-600 text-sm">
-                Pipeline Admin Dashboard
-              </p>
+              <p className="text-gray-600 text-sm">Pipeline Admin Dashboard</p>
               <p className="mt-1 text-gray-400 text-xs">
                 © {new Date().getFullYear()} All Rights Reserved
               </p>
