@@ -106,14 +106,14 @@ export function Sidebar() {
                 key={item.name}
                 onClick={() => router.push(item.href)}
                 className={cn(
-                  "flex items-center px-3 py-2 rounded-lg w-full text-sm transition-colors",
+                  "flex items-center px-3 py-2 rounded-lg w-full text-sm transition-colors text-[#4b4d4e]",
                   isCollapsed && "justify-center",
                   isActive
                     ? "bg-gray-200  "
-                    : "text-muted-foreground hover:bg-gray-50 hover:text-secondary-foreground",
+                    : " hover:bg-gray-100",
                 )}
               >
-                <item.icon className="w-5 h-5" />
+                <item.icon className="w-5 h-5 text-[#4a5464]" />
                 {!isCollapsed && <span className="ml-3">{item.name}</span>}
               </button>
             );
@@ -134,7 +134,7 @@ export function Sidebar() {
       <div className="flex items-center mt-auto p-4 border-gray-200 border-t">
         {/* <div className="bg-gray-300 rounded-full w-8 h-8" /> */}
         {!isCollapsed && (
-          <div className="px-3 pb-4 w-full">
+          <div className=" pb-4 w-full">
             {/* Logout Button */}
             <Button
               onClick={handleLogout}
@@ -145,12 +145,12 @@ export function Sidebar() {
             </Button>
 
             {/* Footer Text */}
-            <div className="mt-4 text-left">
+            {/* <div className="mt-4 text-left">
               <p className="text-gray-600 text-sm">Pipeline Admin Dashboard</p>
               <p className="mt-1 text-gray-400 text-xs">
                 © {new Date().getFullYear()} All Rights Reserved
               </p>
-            </div>
+            </div> */}
           </div>
         )}
       </div>

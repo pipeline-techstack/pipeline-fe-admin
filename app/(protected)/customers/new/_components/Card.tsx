@@ -1,7 +1,8 @@
 "use client";
 import React from "react";
 import { Pencil } from "lucide-react";
- 
+import { Button } from "@/components/ui/button";
+
 interface SectionCardProps {
   title: string;
   subtitle?: string;
@@ -11,7 +12,7 @@ interface SectionCardProps {
   children: React.ReactNode;
   className?: string;
 }
- 
+
 export default function SectionCard({
   title,
   subtitle,
@@ -41,52 +42,69 @@ export default function SectionCard({
           </div>
         </div>
         {onEdit && (
-          <button
+          <Button
+            variant={"outline"}
+            size={'sm'}
             onClick={onEdit}
-            className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-800 border border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50 rounded-md px-2.5 py-1.5 transition-all duration-150 font-medium"
+            className=""
           >
-            <Pencil className="w-3 h-3" />
+            {editLabel === "Edit" && <Pencil className="" />}
             {editLabel}
-          </button>
+          </Button>
         )}
       </div>
- 
+
       {/* Card Content */}
       <div className="px-5 py-4">{children}</div>
     </div>
   );
 }
- 
+
 /* ─── Sub-components for common patterns ─── */
- 
+
 /** A labeled field used inside SectionCard */
 export function FieldItem({
   label,
   value,
+  name,
+  isEditing,
+  onChange,
   classNameLable,
   classNameValue,
   children,
 }: {
   label: string;
   value?: React.ReactNode;
+  name?: string;
+  isEditing?: boolean;
+  onChange?: (name: string, value: string) => void;
   children?: React.ReactNode;
   classNameLable?: string;
   classNameValue?: string;
 }) {
   return (
     <div className="flex flex-col gap-0.5">
-      <span className={`text-sm text-muted-foreground ${classNameLable}`}>{label}</span>
-      {children ? (
+      <span className={`text-sm text-muted-foreground ${classNameLable}`}>
+        {label}
+      </span>
+
+      {isEditing && name ? (
+        <input
+          value={value as string}
+          onChange={(e) => onChange?.(name, e.target.value)}
+          className="text-sm border rounded px-2 py-1"
+        />
+      ) : children ? (
         children
       ) : (
-        <span className={`text-sm text-secondary-foreground  ${classNameValue}`}>
-          {value ?? <span className="">—</span>}
+        <span className={`text-sm text-secondary-foreground ${classNameValue}`}>
+          {value ?? "—"}
         </span>
       )}
     </div>
   );
 }
- 
+
 /** A grid of FieldItems – 3 columns by default */
 export function FieldGrid({
   children,
@@ -105,7 +123,7 @@ export function FieldGrid({
     <div className={`grid ${colMap[cols]} gap-x-8 gap-y-5`}>{children}</div>
   );
 }
- 
+
 /** A simple inline badge */
 export function Badge({
   label,
@@ -115,11 +133,14 @@ export function Badge({
   variant?: "default" | "success" | "warning" | "info" | "outline";
 }) {
   const styles = {
-    default: "bg-gray-100 text-gray-600 w-fit rounded-full text-[14px]",
-    success: "bg-green-50 text-green-700 border border-green-200 w-fit rounded-full text-[14px]",
-    warning: "bg-amber-50 text-amber-700 border border-amber-200 w-fit rounded-full text-[14px]",
-    info: "bg-blue-50 text-blue-700 border border-blue-200 w-fit rounded-full text-[14px]",
-    outline: "bg-white text-gray-600 border border-gray-300 w-fit rounded-full text-[14px]",
+    default: "bg-gray-100 text-gray-600 w-fit rounded-full text-sm",
+    success:
+      "bg-green-50 text-green-700 border border-green-200 w-fit rounded-full text-sm",
+    warning:
+      "bg-amber-50 text-amber-700 border border-amber-200 w-fit rounded-full text-sm",
+    info: "bg-blue-50 text-blue-700 border border-blue-200 w-fit rounded-full text-sm",
+    outline:
+      "bg-white text-gray-600 border border-gray-300 w-fit rounded-full text-sm",
   };
   return (
     <span
@@ -129,7 +150,7 @@ export function Badge({
     </span>
   );
 }
- 
+
 /** A table row inside a SectionCard table */
 export function TableRow({
   children,
@@ -146,7 +167,7 @@ export function TableRow({
     </tr>
   );
 }
- 
+
 /** A simple action text button */
 export function ActionButton({
   label,
@@ -162,8 +183,7 @@ export function ActionButton({
   const base =
     "inline-flex items-center gap-1.5 text-xs font-medium rounded-md px-2.5 py-1.5 transition-all duration-150 cursor-pointer";
   const styles = {
-    ghost:
-      "text-gray-500 hover:text-gray-800 hover:bg-gray-100",
+    ghost: "text-gray-500 hover:text-gray-800 hover:bg-gray-100",
     outline:
       "text-gray-600 hover:text-gray-900 border border-gray-200 hover:border-gray-300 hover:bg-gray-50",
   };

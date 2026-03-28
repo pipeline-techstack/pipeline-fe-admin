@@ -5,6 +5,7 @@ import {
 } from "@/lib/types/customer-types";
 import SectionCard, { Badge, FieldGrid, FieldItem } from "./Card";
 import { Building2, Shield, User, Zap } from "lucide-react";
+import { useState } from "react";
 
 const buildCustomerFields = (c: Customer) => [
   { id: "name", label: "Name", value: c.name, isBadge: false },
@@ -50,9 +51,10 @@ const buildOrgFields = (o: Organization) => [
 const placeholder = () => alert("Dialog / action coming soon!");
 
 export default function GeneralTab({ customer }: { customer: Customer }) {
-
   const customerFields = buildCustomerFields(customer);
   const orgFields = buildOrgFields(customer.organization);
+  const [isEditing, setIsEditing] = useState(false);
+  const [formState, setFormState] = useState(customer);
 
   const campaignsByRole = customer.campaigns.reduce<
     Record<string, CampaignPermission[]>
@@ -60,18 +62,34 @@ export default function GeneralTab({ customer }: { customer: Customer }) {
 
   return (
     <div className="flex flex-col gap-5">
-      
       {/* Customer Details */}
       <SectionCard
         title="Customer Details"
         subtitle="Contact, communication, and integration identifiers."
         icon={<User className="w-4 h-4" />}
-        onEdit={placeholder}
+        onEdit={() => {
+          if (isEditing) {
+            // SAVE
+            console.log("Saving...", formState);
+            // TODO: API call here
+          }
+          setIsEditing(!isEditing);
+        }}
+        editLabel={isEditing?"Save":"Edit"}
       >
         <FieldGrid cols={3}>
           {customerFields.map((f) => (
-            <FieldItem key={f.id} label={f.label} value={f.value}>
-              {f.isBadge && (
+            <FieldItem
+              key={f.id}
+              label={f.label}
+              value={formState[f.id as keyof Customer]}
+              name={f.id}
+              isEditing={isEditing}
+              onChange={(name, val) =>
+                setFormState((prev) => ({ ...prev, [name]: val }))
+              }
+            >
+              {f.isBadge && !isEditing && (
                 <Badge label={f.value} variant={f.badgeVariant ?? "outline"} />
               )}
             </FieldItem>
@@ -128,9 +146,7 @@ export default function GeneralTab({ customer }: { customer: Customer }) {
                     <Shield className="w-3.5 h-3.5 text-gray-500" />
                   </div>
                   <div>
-                    <p className="text-sm text-secondary-foreground">
-                      {role}
-                    </p>
+                    <p className="text-sm text-secondary-foreground">{role}</p>
                     <p className="text-xs text-muted-foreground">
                       {camps.length} campaign{camps.length !== 1 ? "s" : ""}{" "}
                       allocated to this {role.toLowerCase()}
@@ -153,7 +169,9 @@ export default function GeneralTab({ customer }: { customer: Customer }) {
                       }`}
                     >
                       <Badge label={c.role} variant="outline" />
-                      <span className="text-sm text-muted-forground">{c.name}</span>
+                      <span className="text-sm text-muted-forground">
+                        {c.name}
+                      </span>
                     </div>
                   ))}
                 </div>
