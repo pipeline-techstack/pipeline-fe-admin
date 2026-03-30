@@ -31,17 +31,17 @@ import Image from "next/image";
 import PageHeader from "../ui/page-header";
 
 const navigation = [
-  { name: "Customers", href: "/customers", icon: Users },
-  { name: "Feature Allocation", href: "/resource", icon: Network },
-  { name: "Workbooks", href: "/workbooks", icon: BookOpen },
-  // { name: "Campaigns", href: "/campaigns", icon: Network },
-  { name: "Organizations", href: "/", icon: Building2 },
-  { name: "WB Configs", href: "/wb-config", icon: Settings2 },
-  { name: "LinkedIn Sync", href: "/linkedin-sync", icon: Link2 },
-  { name: "Campaign Permissions", href: "/permissions", icon: KeyRound },
-  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Feedback", href: "/feedback", icon: Stars },
-  { name: "Enrichments", href: "/enrichments", icon: MessageSquare },
+  // { name: "Customers", href: "/customers", icon: Users },
+  // { name: "Feature Allocation", href: "/resource", icon: Network },
+  // { name: "Workbooks", href: "/workbooks", icon: BookOpen },
+  // // { name: "Campaigns", href: "/campaigns", icon: Network },
+  // { name: "Organizations", href: "/", icon: Building2 },
+  // { name: "WB Configs", href: "/wb-config", icon: Settings2 },
+  // { name: "LinkedIn Sync", href: "/linkedin-sync", icon: Link2 },
+  // { name: "Campaign Permissions", href: "/permissions", icon: KeyRound },
+  // { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  // { name: "Feedback", href: "/feedback", icon: Stars },
+  // { name: "Enrichments", href: "/enrichments", icon: MessageSquare },
   { name: "Customer Management", href: "/customers/new", icon: Users },
     // { name: "Campaign Setup", href: "/campaigns/new", icon: Users },
 ];
@@ -99,14 +99,14 @@ export function Sidebar() {
       <TooltipProvider>
         <nav className="flex flex-col flex-1 items-center space-y-1 mt-4 px-2">
           {navigation.map((item) => {
-            const isActive = pathname === item.href;
+            const isActive = pathname.startsWith(item.href);
 
             const button = (
               <button
                 key={item.name}
                 onClick={() => router.push(item.href)}
                 className={cn(
-                  "flex items-center px-3 py-2 rounded-lg w-full text-sm transition-colors text-[#4b4d4e]",
+                  "flex items-center px-3 py-2 rounded-lg w-full text-[#4b4d4e] text-sm transition-colors",
                   isCollapsed && "justify-center",
                   isActive
                     ? "bg-gray-200  "
@@ -134,7 +134,7 @@ export function Sidebar() {
       <div className="flex items-center mt-auto p-4 border-gray-200 border-t">
         {/* <div className="bg-gray-300 rounded-full w-8 h-8" /> */}
         {!isCollapsed && (
-          <div className=" pb-4 w-full">
+          <div className="pb-4 w-full">
             {/* Logout Button */}
             <Button
               onClick={handleLogout}

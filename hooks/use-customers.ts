@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import Fuse from "fuse.js";
 import { getCustomers } from "@/services/customers-apis";
 
-export const useCustomerSearch = () => {
+export const useCustomers = () => {
   const {
     data: customers = [],
     isLoading,

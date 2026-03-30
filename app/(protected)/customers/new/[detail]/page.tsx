@@ -11,7 +11,7 @@ import { CUSTOMER_DATA } from "../customers.data";
 type Tab = "general" | "workbook-configs";
 const TABS: TabDef<Tab>[] = [
   { id: "general", label: "General" },
-  { id: "workbook-configs", label: "Workbook Configs" },
+  { id: "workbook-configs", label: "RevOps config" },
 ];
 
 export default function CustomerDetailPage() {

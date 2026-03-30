@@ -37,7 +37,7 @@ export const Pagination = ({
         variant="outline"
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className={`${baseBtn} gap-1`}
+        className={`${baseBtn} gap-1 hover:bg-muted`}
       >
         <ChevronLeft className="w-4 h-4" />
         Prev
@@ -70,7 +70,7 @@ export const Pagination = ({
               variant={isActive ? "default" : "outline"}
               className={`${baseBtn} ${
                 isActive
-                  ? "bg-[#4F46E5]/20 text-zinc-700 border"
+                  ? "bg-[#4F46E5]/20 text-zinc-700 border hover:bg-[#4F46E5]/20"
                   : "hover:bg-muted"
               }`}
             >
@@ -100,7 +100,7 @@ export const Pagination = ({
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
         variant="outline"
-        className={`${baseBtn} gap-1`}
+        className={`${baseBtn} gap-1 hover:bg-muted`}
       >
         Next
         <ChevronRight className="w-4 h-4" />

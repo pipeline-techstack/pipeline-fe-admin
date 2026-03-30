@@ -34,17 +34,17 @@ export function WorkbookConfigsTab({ customer }: { customer: Customer }) {
       header: "Actions",
       className: "text-right",
       render: (row) => (
-        <div className="flex items-center justify-end gap-2">
+        <div className="flex justify-end items-center gap-2">
           <button
             onClick={placeholder}
-            className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-800 border border-gray-200 hover:border-gray-300 hover:bg-gray-50 rounded-md px-2.5 py-1.5 transition-all"
+            className="inline-flex items-center gap-1.5 hover:bg-gray-50 px-2.5 py-1.5 border border-gray-200 hover:border-gray-300 rounded-md text-gray-500 hover:text-gray-800 text-xs transition-all"
           >
             <DollarSign className="w-3 h-3" />
             Cost
           </button>
           <button
             onClick={placeholder}
-            className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-800 border border-gray-200 hover:border-gray-300 hover:bg-gray-50 rounded-md px-2.5 py-1.5 transition-all"
+            className="inline-flex items-center gap-1.5 hover:bg-gray-50 px-2.5 py-1.5 border border-gray-200 hover:border-gray-300 rounded-md text-gray-500 hover:text-gray-800 text-xs transition-all"
           >
             <Copy className="w-3 h-3" />
             Duplicate
@@ -72,7 +72,7 @@ export function WorkbookConfigsTab({ customer }: { customer: Customer }) {
       render: () => (
         <button
           onClick={placeholder}
-          className="text-xs text-gray-500 hover:text-gray-800 font-medium transition-colors"
+          className="font-medium text-gray-500 hover:text-gray-800 text-xs transition-colors"
         >
           Edit
         </button>
@@ -109,7 +109,7 @@ export function WorkbookConfigsTab({ customer }: { customer: Customer }) {
       render: () => (
         <button
           onClick={placeholder}
-          className="text-xs text-gray-500 hover:text-gray-800 font-medium transition-colors"
+          className="font-medium text-gray-500 hover:text-gray-800 text-xs transition-colors"
         >
           Edit
         </button>
@@ -157,7 +157,7 @@ return (
 
       {/* WB Config */}
       <SectionCard
-        title="WB Config"
+        title="Campbook"
         subtitle="Map workbooks to campaigns."
         icon={<Layers className="w-4 h-4" />}
       >
