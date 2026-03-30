@@ -8,6 +8,7 @@ import { Building2, Shield, User, Zap } from "lucide-react";
 import { useState } from "react";
 import { Column } from "@/lib/types/table-types";
 import { DataTable } from "@/components/common/table/data-table";
+import { Button } from "@/components/ui/button";
 
 const buildCustomerFields = (c: Customer) => [
   { id: "name", label: "Name", value: c.name, isBadge: false },
@@ -53,36 +54,31 @@ const buildOrgFields = (o: Organization) => [
 
 export const campaignPermissionColumns = [
   {
-    key: "email",
-    header: "Email",
-    render: (row: any) => (
-      <span className="text-sm text-gray-800">{row.email}</span>
-    ),
-  },
-  {
     key: "campaigns",
     header: "Assigned Campaigns",
     render: (row: any) => (
-      <div className="flex flex-wrap gap-1 max-w-[400px]">
-        {row.campaigns?.slice(0, 3).map((c: string, i: number) => (
-          <span key={i} className="text-xs bg-gray-100 px-2 py-1 rounded">
-            {c}
-          </span>
-        ))}
-
-        {row.campaigns?.length > 3 && (
-          <span className="text-xs text-muted-foreground">
-            +{row.campaigns.length - 3} more
-          </span>
-        )}
-      </div>
+      <span className="text-sm text-gray-800">{row.name}</span>
+    ),
+  },
+  {
+    key: "created at",
+    header: "Created At",
+    render: (row: any) => (
+      <span className="text-sm text-gray-800">{row.createdAt}</span>
+    ),
+  },
+  {
+    key: "updated at",
+    header: "Updated At",
+    render: (row: any) => (
+      <span className="text-sm text-gray-800">{row.updatedAt}</span>
     ),
   },
   {
     key: "actions",
     header: "Actions",
     render: () => (
-      <button className="text-sm text-blue-600 hover:underline">Edit</button>
+      <Button className="" variant={"outline"}>Edit</Button>
     ),
   },
 ];
@@ -94,10 +90,7 @@ export default function GeneralTab({ customer }: { customer: Customer }) {
   const orgFields = buildOrgFields(customer.organization);
   const [isEditing, setIsEditing] = useState(false);
   const [formState, setFormState] = useState(customer);
-
-  const campaignsByRole = customer.campaigns.reduce<
-    Record<string, CampaignPermission[]>
-  >((acc, c) => ({ ...acc, [c.role]: [...(acc[c.role] ?? []), c] }), {});
+  const campaign = customer.campaigns
 
   return (
     <div className="flex flex-col gap-5">
@@ -173,7 +166,7 @@ export default function GeneralTab({ customer }: { customer: Customer }) {
         title="Campaign Permissions"
         subtitle="Campaign access based on users."
         icon={<Shield className="w-4 h-4" />}
-        onEdit={placeholder}
+        // onEdit={placeholder}
       >
         <div className="h-[320px] flex flex-col overflow-hidden">
           <div className="flex-1 overflow-auto">
