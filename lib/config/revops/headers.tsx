@@ -13,8 +13,8 @@ export const workbookColumns: Column<(typeof customer.workbooks)[0]>[] = [
     className: "w-1/2 text-secondary-foreground",
   },
   {
-    key: "owner",
-    header: "Owner",
+    key: "rows",
+    header: "Rows",
     className: "w-1/2 text-secondary-foreground",
   },
   {

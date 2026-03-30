@@ -38,7 +38,7 @@ const navigation = [
   // { name: "Organizations", href: "/", icon: Building2 },
   // { name: "WB Configs", href: "/wb-config", icon: Settings2 },
   // { name: "LinkedIn Sync", href: "/linkedin-sync", icon: Link2 },
-  { name: "Campaign Permissions", href: "/permissions", icon: KeyRound },
+  // { name: "Campaign Permissions", href: "/permissions", icon: KeyRound },
   // { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   // { name: "Feedback", href: "/feedback", icon: Stars },
   // { name: "Enrichments", href: "/enrichments", icon: MessageSquare },

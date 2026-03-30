@@ -30,7 +30,7 @@ export function WorkbookConfigsTab({ customer }: { customer: Customer }) {
             onClick={() =>
               router.push(`/customers/new/${customer._id}/revops/workbooks?name=${customer.name}&email=${customer.email}`)
             }
-            className="text-sm text-secondary-foreground"
+            className="text-muted-foreground hover:text-primary text-sm"
           >
             View More →
           </Button>
@@ -52,7 +52,7 @@ export function WorkbookConfigsTab({ customer }: { customer: Customer }) {
             onClick={() =>
               router.push(`/customers/new/${customer._id}/revops/campbooks?name=${customer.name}&email=${customer.email}`)
             }
-            className="text-sm text-secondary-foreground"
+            className="text-muted-foreground hover:text-primary text-sm"
           >
             View More →
           </Button>
@@ -77,7 +77,7 @@ export function WorkbookConfigsTab({ customer }: { customer: Customer }) {
             onClick={() =>
               router.push(`/customers/new/${customer._id}/revops/enrichments?name=${customer.name}&email=${customer.email}`)
             }
-            className="text-sm text-secondary-foreground"
+              className="text-muted-foreground hover:text-primary text-sm"
           >
             View More →
           </Button>

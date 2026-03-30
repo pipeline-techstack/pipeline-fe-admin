@@ -1,14 +1,11 @@
 import {
-  CampaignPermission,
   Customer,
   Organization,
 } from "@/lib/types/customer-types";
 import SectionCard, { Badge, FieldGrid, FieldItem } from "./Card";
 import { Building2, Shield, User, Zap } from "lucide-react";
 import { useState } from "react";
-import { Column } from "@/lib/types/table-types";
 import { DataTable } from "@/components/common/table/data-table";
-import { Button } from "@/components/ui/button";
 
 const buildCustomerFields = (c: Customer) => [
   { id: "name", label: "Name", value: c.name, isBadge: false },
@@ -43,13 +40,13 @@ const buildOrgFields = (o: Organization) => [
   { id: "seats", label: "Seats", value: String(o.seats), isBadge: false },
   { id: "region", label: "Region", value: o.region, isBadge: false },
   { id: "admins", label: "Admins", value: String(o.admins), isBadge: false },
-  {
-    id: "status",
-    label: "Status",
-    value: o.status,
-    isBadge: true,
-    badgeVariant: "success" as const,
-  },
+  // {
+  //   id: "status",
+  //   label: "Status",
+  //   value: o.status,
+  //   isBadge: true,
+  //   badgeVariant: "success" as const,
+  // },
 ];
 
 export const campaignPermissionColumns = [
@@ -57,30 +54,44 @@ export const campaignPermissionColumns = [
     key: "campaigns",
     header: "Assigned Campaigns",
     render: (row: any) => (
-      <span className="text-sm text-gray-800">{row.name}</span>
+      <span className="text-gray-800 text-sm">{row.name}</span>
     ),
   },
-  {
-    key: "created at",
-    header: "Created At",
-    render: (row: any) => (
-      <span className="text-sm text-gray-800">{row.createdAt}</span>
-    ),
-  },
+  // {
+  //   key: "created at",
+  //   header: "Created At",
+  //   render: (row: any) => (
+  //     <span className="text-gray-800 text-sm">{row.createdAt}</span>
+  //   ),
+  // },
   {
     key: "updated at",
     header: "Updated At",
     render: (row: any) => (
-      <span className="text-sm text-gray-800">{row.updatedAt}</span>
+      <span className="text-gray-800 text-sm">{row.updatedAt}</span>
     ),
   },
   {
-    key: "actions",
-    header: "Actions",
-    render: () => (
-      <Button className="" variant={"outline"}>Edit</Button>
-    ),
+    key: "status",
+    header: "Status",
+    render: (row: any) => {
+      const status = row.status;
+
+      let variant: "success" | "info" | "default" = "default";
+
+      if (status === "Active") variant = "success";
+      else if (status === "Finished") variant = "info";
+
+      return <Badge label={status} variant={variant} />;
+    },
   },
+  // {
+  //   key: "actions",
+  //   header: "Actions",
+  //   render: () => (
+  //     <Button className="" variant={"outline"}>Edit</Button>
+  //   ),
+  // },
 ];
 
 const placeholder = () => alert("Dialog / action coming soon!");
@@ -90,7 +101,7 @@ export default function GeneralTab({ customer }: { customer: Customer }) {
   const orgFields = buildOrgFields(customer.organization);
   const [isEditing, setIsEditing] = useState(false);
   const [formState, setFormState] = useState(customer);
-  const campaign = customer.campaigns
+  const campaign = customer.campaigns;
 
   return (
     <div className="flex flex-col gap-5">
@@ -166,9 +177,9 @@ export default function GeneralTab({ customer }: { customer: Customer }) {
         title="Campaign Permissions"
         subtitle="Campaign access based on users."
         icon={<Shield className="w-4 h-4" />}
-        // onEdit={placeholder}
+        onEdit={placeholder}
       >
-        <div className="h-[320px] flex flex-col overflow-hidden">
+        <div className="flex flex-col h-[320px] overflow-hidden">
           <div className="flex-1 overflow-auto">
             <DataTable
               data={customer.campaigns}

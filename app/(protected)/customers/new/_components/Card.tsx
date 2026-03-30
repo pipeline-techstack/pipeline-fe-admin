@@ -27,17 +27,17 @@ export default function SectionCard({
       className={`border border-gray-200 rounded-lg bg-white overflow-hidden ${className}`}
     >
       {/* Card Header */}
-      <div className="flex items-start justify-between px-5 py-4 border-b border-gray-100">
+      <div className="flex justify-between items-start px-5 py-4 border-gray-100 border-b">
         <div className="flex items-center gap-2.5">
           {icon && (
-            <div className="flex items-center justify-center w-7 h-7 rounded-md bg-gray-50 text-gray-500 shrink-0">
+            <div className="flex justify-center items-center bg-gray-50 rounded-md w-7 h-7 text-gray-500 shrink-0">
               {icon}
             </div>
           )}
           <div>
-            <h3 className="text-sm text-secondary-foreground">{title}</h3>
+            <h3 className="text-secondary-foreground text-sm">{title}</h3>
             {subtitle && (
-              <p className="text-sm text-muted-foreground mt-0.5">{subtitle}</p>
+              <p className="mt-0.5 text-muted-foreground text-sm">{subtitle}</p>
             )}
           </div>
         </div>
@@ -92,7 +92,7 @@ export function FieldItem({
         <input
           value={value as string}
           onChange={(e) => onChange?.(name, e.target.value)}
-          className="text-sm border rounded px-2 py-1"
+          className="px-2 py-1 border rounded text-sm"
         />
       ) : children ? (
         children

@@ -39,10 +39,13 @@ function Page() {
 
       <Tabs defaultValue="revops-config" />
 
-      <SectionCard title={configMap[type].title}
-        
+      <SectionCard
+        title={configMap[type].title}
+        subtitle={configMap[type].subtitle}
+        icon={configMap[type].icon}
+        className="mt-1.5"
       >
-        <div className="h-[calc(100vh-195px)] flex flex-col overflow-hidden">
+        <div className="flex flex-col h-[calc(100vh-200px)] overflow-hidden">
           {/* Table takes scroll */}
           <div className="flex-1 overflow-auto">
             {type === "workbooks" && (
