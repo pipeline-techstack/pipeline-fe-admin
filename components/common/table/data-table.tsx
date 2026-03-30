@@ -22,7 +22,6 @@ interface DataTableProps<T> {
   total?: number;
   currentPage?: number;
   pageSize?: number;
-  totalPages?: number;
   onPageChange?: (page: number) => void;
 }
 
@@ -35,25 +34,28 @@ export function DataTable<T extends { _id?: string }>({
   total = data.length,
   currentPage = 1,
   pageSize = data.length,
-  totalPages = 1,
   onPageChange,
 }: DataTableProps<T>) {
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+
+  const paginatedData = data.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(total / pageSize);
+
   return (
     <div className="bg-white overflow-hidden">
       <div className="max-h-[calc(100vh-168px)] overflow-auto">
         <Table>
           <TableHeader>
-            <TableRow >
+            <TableRow>
               {columns.map((col) => (
-                <TableHead key={String(col.key)}>
-                  {col.header}
-                </TableHead>
+                <TableHead key={String(col.key)}>{col.header}</TableHead>
               ))}
             </TableRow>
           </TableHeader>
 
           <TableBody>
-            {data.map((row, index) => (
+            {paginatedData.map((row, index) => (
               <TableRow
                 key={(row as any)._id ?? index}
                 onClick={() => onRowClick?.(row)}

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +8,7 @@ import PageWrapper from "@/components/common/page-wrapper";
 import { DataTable } from "@/components/common/table/data-table";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useCustomers } from "@/hooks/use-customers";
 
 // mock data (replace with API later)
 const data = [
@@ -119,41 +120,49 @@ const columns = [
   { key: "date", header: "Creation Date" },
   { key: "phone", header: "Phone" },
   {
-  key: "mode",
-  header: "Notification Mode",
-  render: (row: any) => {
-    const isSlack = row.mode === "Slack";
+    key: "mode",
+    header: "Notification Mode",
+    render: (row: any) => {
+      if (!row.mode || row.mode.length === 0) return "-";
 
-    return (
-      <Badge
-        variant="secondary"
-        className="inline-flex items-center gap-2 px-3 py-1 rounded-full w-fit"
-      >
-        <Image
-          src={isSlack ? "/slack.png" : "/teams.png"}
-          alt={row.mode}
-          width={14}
-          height={14}
-        />
-        <span className="text-xs font-medium">{row.mode}</span>
-      </Badge>
-    );
+      return (
+        <div className="flex gap-2">
+          {row.mode.map((m: string) => {
+            const isSlack = m === "Slack";
+
+            return (
+              <Badge
+                key={m}
+                variant="secondary"
+                className="inline-flex items-center gap-2 px-3 py-1 rounded-full w-fit"
+              >
+                <Image
+                  src={isSlack ? "/slack.png" : "/teams.png"}
+                  alt={m}
+                  width={14}
+                  height={14}
+                />
+                <span className="font-medium text-xs">{m}</span>
+              </Badge>
+            );
+          })}
+        </div>
+      );
+    },
   },
-}
 ];
 
 export default function CustomerPage() {
-  const [search, setSearch] = useState("");
+  const { customers, isLoading, search, setSearch } = useCustomers();
   const [datapage, setDatapage] = useState(1);
   const router = useRouter();
 
   const filteredData = data.filter((item) =>
     item.name.toLowerCase().includes(search.toLowerCase()),
   );
-
-  const handleclick = (row) =>{
-    router.push(`new/${row._id}`)
-  }
+  const handleclick = (row) => {
+    router.push(`new/${row._id}`);
+  };
 
   return (
     <PageWrapper
@@ -162,29 +171,23 @@ export default function CustomerPage() {
       subtitle="Click a customer row to view their full profile."
       rightComponent={
         <div className="flex items-center gap-3">
-          {/* Records Badge */}
-          {/* <Badge className="bg-gray-100 text-gray-700">
-            {filteredData.length} records
-          </Badge> */}
-
           {/* Search */}
           <Input
             placeholder="Search customers..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-64"
+            className="border-none focus:border-none outline-none w-64"
           />
         </div>
       }
     >
       {/* Table */}
       <DataTable
-        data={filteredData}
+        data={customers}
         columns={columns}
         footer={true}
-        pageSize={10}
+        pageSize={20}
         currentPage={datapage}
-        totalPages={data.length}
         onPageChange={setDatapage}
         onRowClick={handleclick}
       />
