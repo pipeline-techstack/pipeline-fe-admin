@@ -1,12 +1,12 @@
 export type CustomerStatus = "active" | "inactive";
-export type EnrichmentType = "Prompt" | "Transformer" | "Lookup";
+export type EnrichmentType = "Leads" | "Exploratory" | "Accounts";
 export type CampaignRole = "Owner" | "Viewer" | "Editor";
 
 export interface Feature { id: string; label: string }
 export interface CampaignPermission { id: string; role: CampaignRole; name: string }
-export interface Workbook { id: string; name: string; owner: string }
-export interface WBConfig { id: string; campaign: string; workbook: string }
-export interface Enrichment { id: string; name: string; type: EnrichmentType; createdOn: string }
+export interface Workbook { _id: string; name: string; owner: string }
+export interface WBConfig { _id: string; campaign: string; workbook: string }
+export interface Enrichment { _id: string; name: string; type: EnrichmentType; createdOn: string }
 
 export interface Organization {
   company: string;
@@ -18,7 +18,7 @@ export interface Organization {
 }
 
 export interface Customer {
-  id: string;
+  _id: string;
   name: string;
   email: string;
   phone: string;

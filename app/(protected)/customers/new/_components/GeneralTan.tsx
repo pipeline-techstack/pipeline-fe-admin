@@ -6,6 +6,8 @@ import {
 import SectionCard, { Badge, FieldGrid, FieldItem } from "./Card";
 import { Building2, Shield, User, Zap } from "lucide-react";
 import { useState } from "react";
+import { Column } from "@/lib/types/table-types";
+import { DataTable } from "@/components/common/table/data-table";
 
 const buildCustomerFields = (c: Customer) => [
   { id: "name", label: "Name", value: c.name, isBadge: false },
@@ -48,6 +50,43 @@ const buildOrgFields = (o: Organization) => [
     badgeVariant: "success" as const,
   },
 ];
+
+export const campaignPermissionColumns = [
+  {
+    key: "email",
+    header: "Email",
+    render: (row: any) => (
+      <span className="text-sm text-gray-800">{row.email}</span>
+    ),
+  },
+  {
+    key: "campaigns",
+    header: "Assigned Campaigns",
+    render: (row: any) => (
+      <div className="flex flex-wrap gap-1 max-w-[400px]">
+        {row.campaigns?.slice(0, 3).map((c: string, i: number) => (
+          <span key={i} className="text-xs bg-gray-100 px-2 py-1 rounded">
+            {c}
+          </span>
+        ))}
+
+        {row.campaigns?.length > 3 && (
+          <span className="text-xs text-muted-foreground">
+            +{row.campaigns.length - 3} more
+          </span>
+        )}
+      </div>
+    ),
+  },
+  {
+    key: "actions",
+    header: "Actions",
+    render: () => (
+      <button className="text-sm text-blue-600 hover:underline">Edit</button>
+    ),
+  },
+];
+
 const placeholder = () => alert("Dialog / action coming soon!");
 
 export default function GeneralTab({ customer }: { customer: Customer }) {
@@ -75,7 +114,7 @@ export default function GeneralTab({ customer }: { customer: Customer }) {
           }
           setIsEditing(!isEditing);
         }}
-        editLabel={isEditing?"Save":"Edit"}
+        editLabel={isEditing ? "Save" : "Edit"}
       >
         <FieldGrid cols={3}>
           {customerFields.map((f) => (
@@ -90,7 +129,7 @@ export default function GeneralTab({ customer }: { customer: Customer }) {
               }
             >
               {f.isBadge && !isEditing && (
-                <Badge label={f.value} variant={f.badgeVariant ?? "outline"} />
+                <Badge label={f.value} variant={"info"} />
               )}
             </FieldItem>
           ))}
@@ -106,7 +145,7 @@ export default function GeneralTab({ customer }: { customer: Customer }) {
       >
         <div className="flex flex-wrap gap-2">
           {customer.features.map((f) => (
-            <Badge key={f.id} label={f.label} variant="outline" />
+            <Badge key={f.id} label={f.label} variant="info" />
           ))}
         </div>
       </SectionCard>
@@ -132,52 +171,19 @@ export default function GeneralTab({ customer }: { customer: Customer }) {
       {/* Campaign Permissions */}
       <SectionCard
         title="Campaign Permissions"
-        subtitle="Campaign access based on role."
+        subtitle="Campaign access based on users."
         icon={<Shield className="w-4 h-4" />}
         onEdit={placeholder}
       >
-        <div className="flex flex-col gap-4">
-          {Object.entries(campaignsByRole).map(([role, camps]) => (
-            <div key={role}>
-              {/* role group header */}
-              <div className="flex items-center justify-between bg-gray-50 rounded-lg px-4 py-3 mb-2">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded-full bg-gray-200 flex items-center justify-center shrink-0">
-                    <Shield className="w-3.5 h-3.5 text-gray-500" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-secondary-foreground">{role}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {camps.length} campaign{camps.length !== 1 ? "s" : ""}{" "}
-                      allocated to this {role.toLowerCase()}
-                    </p>
-                  </div>
-                </div>
-                <span className="text-sm text-secondary-foreground">
-                  {camps.length}
-                </span>
-              </div>
-
-              {/* scrollable list – ~4 rows then scroll */}
-              <div className="border border-gray-100 rounded-lg overflow-hidden">
-                <div className="overflow-y-auto max-h-44">
-                  {camps.map((c, idx) => (
-                    <div
-                      key={c.id}
-                      className={`flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50/70 transition-colors ${
-                        idx !== 0 ? "border-t border-gray-100" : ""
-                      }`}
-                    >
-                      <Badge label={c.role} variant="outline" />
-                      <span className="text-sm text-muted-forground">
-                        {c.name}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ))}
+        <div className="h-[320px] flex flex-col overflow-hidden">
+          <div className="flex-1 overflow-auto">
+            <DataTable
+              data={customer.campaigns}
+              columns={campaignPermissionColumns}
+              footer={false}
+              pageSize={10}
+            />
+          </div>
         </div>
       </SectionCard>
     </div>

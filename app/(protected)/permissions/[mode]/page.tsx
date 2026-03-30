@@ -21,7 +21,8 @@ import {
 import { cn } from "@/lib/utils";
 import { useHeyreach } from "@/hooks/use-heyreach";
 import { assignCampaignsApi, getUserCampaigns } from "@/services/heyreach-apis";
-import { useCustomerSearch } from "@/hooks/use-customers";
+import { useCustomers } from "@/hooks/use-customers";
+// import { useCustomersSearch } from "@/hooks/use-customers";
 
 const CampaignFormPage = () => {
   const router = useRouter();
@@ -32,7 +33,7 @@ const CampaignFormPage = () => {
 
   const mode = pathname.includes("edit") ? "edit" : "new";
 
-  const { customers, isLoading: customersLoading } = useCustomerSearch();
+  const { customers, isLoading: customersLoading } = useCustomers();
 
   const [email, setEmail] = useState("");
   const [selectedCampaigns, setSelectedCampaigns] = useState<string[]>([]);

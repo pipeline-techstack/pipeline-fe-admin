@@ -41,10 +41,17 @@ export function DataTable<T extends { _id?: string }>({
 
   const paginatedData = data.slice(startIndex, endIndex);
   const totalPages = Math.ceil(total / pageSize);
-
+  console.log({
+    total,
+    dataLength: data.length,
+    pageSize,
+    currentPage,
+    totalPages: Math.ceil(total / pageSize),
+  });
   return (
-    <div className="bg-white overflow-hidden">
-      <div className="max-h-[calc(100vh-168px)] overflow-auto">
+    <div className="bg-white h-full flex flex-col">
+      {/* Scrollable Table */}
+      <div className="flex-1 overflow-auto max-h-[calc(100vh-168px)]">
         <Table>
           <TableHeader>
             <TableRow>
@@ -74,9 +81,9 @@ export function DataTable<T extends { _id?: string }>({
         </Table>
       </div>
 
-      {/* ✅ Footer Logic */}
+      {/* ✅ Sticky Footer */}
       {footer && (
-        <div className="px-6 py-3 border-t">
+        <div className="px-6 py-3 border-t bg-white sticky bottom-0 z-10">
           {typeof footer === "boolean" ? (
             <TableFooter
               total={total}
