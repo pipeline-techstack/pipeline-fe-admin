@@ -12,6 +12,7 @@ import {
 import { useState } from "react";
 import { DataTable } from "@/components/common/table/data-table";
 import { Button } from "@/components/ui/button";
+import ShowCompanyLogo from "@/components/common/show-company-logo";
 
 const buildCustomerFields = (c: Customer) => [
   { id: "name", label: "Name", value: c.name, isBadge: false },
@@ -223,8 +224,15 @@ export default function GeneralTab({ customer }: { customer: Customer }) {
         // onEdit={placeholder}
       >
         <div className="flex flex-wrap gap-2">
-          {customer.features.map((f) => (
-            <Badge key={f.id} label={f.label} variant="info" />
+          {customer.integrations.map((f) => (
+            <Badge
+            logo={<ShowCompanyLogo domain={f.name} />}
+              key={f.name}
+              label={f.name}
+              variant={f.connected ? "success" : "warning"}
+              disabled={!f.connected}
+              className="capitalize"
+            />
           ))}
         </div>
       </SectionCard>

@@ -11,10 +11,20 @@ export const CUSTOMER_DATA: Customer = {
   dateAdded: "2025-11-14",
   role: "Admin",
   status: "active",
-
-   integrations:[],
-
-
+  integrations: [
+    {
+      name: "heyreach",
+      connected: true,
+    },
+    {
+      name: "salesforce",
+      connected: true,
+    },
+    {
+      name: "hubspot",
+      connected: false,
+    },
+  ],
   features: [
     { id: "feat-1", label: "Credits Pool" },
     { id: "feat-2", label: "Priority Support" },

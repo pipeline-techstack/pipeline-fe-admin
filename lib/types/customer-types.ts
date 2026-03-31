@@ -46,6 +46,11 @@ export interface Payment {
   platform: string;
   payment_terms: string;
 }
+
+export interface Integration {
+  name: string;
+  connected: boolean;
+}
 export interface Customer {
   _id: string;
   name: string;
@@ -59,7 +64,7 @@ export interface Customer {
   status: CustomerStatus;
   features: Feature[];
   paymentDetails: Payment;
-  integrations: [];
+  integrations: Integration[];
   organization: Organization;
   campaigns: CampaignPermission[];
   workbooks: Workbook[];

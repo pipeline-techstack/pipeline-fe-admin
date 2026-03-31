@@ -47,7 +47,6 @@ export function DataTable<T extends { _id?: string }>({
   });
 
   const effectivePageSize = pageSize ?? dynamicPageSize;
-  console.log("dynamicPageSize", dynamicPageSize)
   const startIndex = (currentPage - 1) * effectivePageSize;
   const endIndex = startIndex + effectivePageSize;
 

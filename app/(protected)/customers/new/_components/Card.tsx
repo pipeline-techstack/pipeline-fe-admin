@@ -2,6 +2,7 @@
 import React from "react";
 import { Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import clsx from "clsx";
 
 interface SectionCardProps {
   title: string;
@@ -42,12 +43,7 @@ export default function SectionCard({
           </div>
         </div>
         {onEdit && (
-          <Button
-            variant={"outline"}
-            size={'sm'}
-            onClick={onEdit}
-            className=""
-          >
+          <Button variant={"outline"} size={"sm"} onClick={onEdit} className="">
             {editLabel === "Edit" && <Pencil className="" />}
             {editLabel}
           </Button>
@@ -126,27 +122,37 @@ export function FieldGrid({
 
 /** A simple inline badge */
 export function Badge({
+  logo,
   label,
   variant = "default",
+  className,
+  disabled = false,
 }: {
   label: string;
   variant?: "default" | "success" | "warning" | "info" | "outline";
+  className?: string;
+  disabled?: boolean;
+  logo?: React.ReactNode;
 }) {
   const styles = {
-    default: "bg-gray-100 text-gray-600 w-fit rounded-full text-sm",
-    success:
-      "bg-green-50 text-green-700 border border-green-200 w-fit rounded-full text-sm",
-    warning:
-      "bg-amber-50 text-amber-700 border border-amber-200 w-fit rounded-full text-sm",
-    info: "bg-blue-50 text-blue-700 border border-blue-200 w-fit rounded-full text-sm",
-    outline:
-      "bg-white text-gray-600 border border-gray-300 w-fit rounded-full text-sm",
+    default: "bg-gray-100 text-gray-600",
+    success: "bg-green-50 text-green-700 border border-green-200",
+    warning: "bg-red-50 text-red-700 border border-red-200",
+    info: "bg-blue-50 text-blue-700 border border-blue-200",
+    outline: "bg-white text-gray-600 border border-gray-300",
   };
+
   return (
     <span
-      className={`inline-flex items-center px-2 py-0.5 rounded ${styles[variant]}`}
+      className={clsx(
+        "inline-flex items-center px-2 py-0.5 rounded-full w-fit text-sm",
+        styles[variant],
+        disabled && "opacity-50 pointer-events-none",
+        className,
+      )}
     >
-      {label}
+      {logo ?? logo}
+      <span className="ml-2"> {label}</span>
     </span>
   );
 }
