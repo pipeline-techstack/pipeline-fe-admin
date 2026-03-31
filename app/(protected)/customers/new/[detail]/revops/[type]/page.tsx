@@ -53,7 +53,6 @@ function Page() {
                 data={data.workbooks}
                 columns={configMap.workbooks.columns}
                 footer={true}
-                pageSize={10}
                 currentPage={datapage}
                 onPageChange={setDatapage}
                 onRowClick={handleclick}
@@ -65,7 +64,6 @@ function Page() {
                 data={data.enrichments}
                 columns={configMap.enrichments.columns}
                 footer={true}
-                pageSize={10}
                 currentPage={datapage}
                 onPageChange={setDatapage}
                 onRowClick={handleclick}
@@ -77,7 +75,6 @@ function Page() {
                 data={data.wbConfigs}
                 columns={configMap.campbooks.columns}
                 footer={true}
-                pageSize={10}
                 currentPage={datapage}
                 onPageChange={setDatapage}
                 onRowClick={handleclick}

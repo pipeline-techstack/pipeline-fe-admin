@@ -260,7 +260,7 @@ export default function GeneralTab({ customer }: { customer: Customer }) {
               data={customer.campaigns}
               columns={campaignPermissionColumns}
               footer={false}
-              pageSize={10}
+              pageSize={5}
             />
           </div>
         </div>
