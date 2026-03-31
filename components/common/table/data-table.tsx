@@ -11,6 +11,7 @@ import {
 import { Column } from "@/lib/types/table-types";
 import { TableFooter } from "./table-footer";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useDynamicPageSize } from "@/hooks/use-dynamic-page";
 
 interface DataTableProps<T> {
   data: T[];
@@ -35,30 +36,50 @@ export function DataTable<T extends { _id?: string }>({
   loading,
   total = data.length,
   currentPage = 1,
-  pageSize = data.length,
+  pageSize,
   onPageChange,
 }: DataTableProps<T>) {
-  const startIndex = (currentPage - 1) * pageSize;
-  const endIndex = startIndex + pageSize;
+  const dynamicPageSize = useDynamicPageSize({
+    rowHeight: 48, // adjust if your rows are taller/shorter
+    min: 20,
+    max: 80,
+    offset: 168, // match your max-h calc or tweak
+  });
+
+  const effectivePageSize = pageSize ?? dynamicPageSize;
+  console.log("dynamicPageSize", dynamicPageSize)
+  const startIndex = (currentPage - 1) * effectivePageSize;
+  const endIndex = startIndex + effectivePageSize;
 
   const paginatedData = data.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(total / pageSize);
+  const totalPages = Math.ceil(total / effectivePageSize);
   console.log({
     total,
     dataLength: data.length,
-    pageSize,
+    effectivePageSize,
     currentPage,
-    totalPages: Math.ceil(total / pageSize),
+    totalPages: Math.ceil(total / effectivePageSize),
   });
   return (
-    <div className="bg-white h-full flex flex-col">
+    <div className="flex flex-col bg-white h-full">
       {/* Scrollable Table */}
-      <div className="flex-1 overflow-auto max-h-[calc(100vh-168px)]">
+      <div className="flex-1 max-h-[calc(100vh-168px)] overflow-auto">
         <Table>
           <TableHeader>
             <TableRow>
               {columns.map((col) => (
-                <TableHead key={String(col.key)}>{col.header}</TableHead>
+                <TableHead
+                  key={String(col.key)}
+                  style={{ width: col.width || 200 }}
+                  className="whitespace-nowrap"
+                >
+                  <div className="flex items-center gap-2">
+                    {col.icon && (
+                      <span className="flex items-center">{col.icon}</span>
+                    )}
+                    <span>{col.header}</span>
+                  </div>
+                </TableHead>
               ))}
             </TableRow>
           </TableHeader>
@@ -68,18 +89,18 @@ export function DataTable<T extends { _id?: string }>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="text-center py-6"
+                  className="py-6 text-center"
                 >
                   No data available
                 </TableCell>
               </TableRow>
             )}
             {loading
-              ? Array.from({ length: pageSize || 5 }).map((_, rowIndex) => (
+              ? Array.from({ length: effectivePageSize || 5 }).map((_, rowIndex) => (
                   <TableRow key={rowIndex}>
                     {columns.map((col, colIndex) => (
                       <TableCell key={colIndex}>
-                        <Skeleton className="h-4 w-full" />
+                        <Skeleton className="w-full h-4" />
                       </TableCell>
                     ))}
                   </TableRow>
@@ -108,12 +129,12 @@ export function DataTable<T extends { _id?: string }>({
 
       {/* ✅ Sticky Footer */}
       {footer && (
-        <div className="px-6 py-3 border-t bg-white sticky bottom-0 z-10">
+        <div className="bottom-0 z-10 sticky bg-white px-6 py-3 border-t">
           {typeof footer === "boolean" ? (
             <TableFooter
               total={total}
               currentPage={currentPage}
-              pageSize={pageSize}
+              pageSize={effectivePageSize}
               totalPages={totalPages}
               onPageChange={onPageChange}
               showPagination={!!onPageChange}

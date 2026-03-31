@@ -3,4 +3,6 @@ export interface Column<T> {
   header: string;
   render?: (row: T) => React.ReactNode;
   className?: string;
+   icon?: React.ReactNode;
+  width?: number | string;
 }

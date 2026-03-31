@@ -9,14 +9,23 @@ export const CUSTOMER_DATA: Customer = {
   teamsId: "TMS-8821",
   notificationMode: "Slack",
   dateAdded: "2025-11-14",
-  role: "rows",
+  role: "Admin",
   status: "active",
+
+   integrations:[],
+
 
   features: [
     { id: "feat-1", label: "Credits Pool" },
     { id: "feat-2", label: "Priority Support" },
   ],
 
+  paymentDetails: {
+    id: "payment-1",
+    payment_mode: "Credit Card",
+    platform: "Stripe",
+    payment_terms: "Monthly",
+  },
   organization: {
     company: "Acme Corp",
     quota: "25k credits",
@@ -30,6 +39,7 @@ export const CUSTOMER_DATA: Customer = {
     {
       id: "367738",
       name: "IU - Visharad - Ops Leaders - March",
+      heyreach_id: 367738,
       createdAt: "Jan 19th, 2026",
       updatedAt: "Jan 19th, 2026",
       status: "Active",
@@ -37,6 +47,7 @@ export const CUSTOMER_DATA: Customer = {
     {
       id: "367739",
       name: "SMB Campaign List 4",
+      heyreach_id: 367738,
       createdAt: "Jan 19th, 2026",
       updatedAt: "Jan 19th, 2026",
       status: "Active",
@@ -44,6 +55,7 @@ export const CUSTOMER_DATA: Customer = {
     {
       id: "367740",
       name: "Tech Internal Outreach Campaign",
+      heyreach_id: 367738,
       createdAt: "Jan 19th, 2026",
       updatedAt: "Jan 19th, 2026",
       status: "Finished",
@@ -51,6 +63,7 @@ export const CUSTOMER_DATA: Customer = {
     {
       id: "367741",
       name: "Enterprise Leads - Q1",
+      heyreach_id: 367738,
       createdAt: "Jan 19th, 2026",
       updatedAt: "Jan 19th, 2026",
       status: "Finished",
@@ -59,6 +72,7 @@ export const CUSTOMER_DATA: Customer = {
       id: "367742",
       name: "LinkedIn Automation Batch A",
       createdAt: "Jan 19th, 2026",
+      heyreach_id: 367738,
       updatedAt: "Jan 19th, 2026",
       status: "Finished",
     },

@@ -4,7 +4,7 @@ import CustomerDetailLayout, {
   type TabDef,
 } from "@/app/(protected)/customers/new/_components/customer-layout-wrapper";
 import PageWrapper from "@/components/common/page-wrapper";
-import GeneralTab from "../_components/GeneralTan";
+import GeneralTab from "../_components/GeneralTab";
 import { WorkbookConfigsTab } from "../_components/WorkbookConfigsTab";
 import { CUSTOMER_DATA } from "../customers.data";
 

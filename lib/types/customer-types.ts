@@ -12,6 +12,7 @@ export interface CampaignPermission {
   status: string;
   createdAt: string;
   updatedAt: string;
+  heyreach_id: number;
 }
 export interface Workbook {
   _id: string;
@@ -39,6 +40,12 @@ export interface Organization {
   status: CustomerStatus;
 }
 
+export interface Payment {
+  id: string;
+  payment_mode: string;
+  platform: string;
+  payment_terms: string;
+}
 export interface Customer {
   _id: string;
   name: string;
@@ -51,6 +58,8 @@ export interface Customer {
   role: string;
   status: CustomerStatus;
   features: Feature[];
+  paymentDetails: Payment;
+  integrations: [];
   organization: Organization;
   campaigns: CampaignPermission[];
   workbooks: Workbook[];
