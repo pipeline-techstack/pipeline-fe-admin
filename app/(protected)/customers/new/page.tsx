@@ -119,59 +119,59 @@ const columns = [
   { key: "company", header: "Company" },
   { key: "date", header: "Creation Date" },
   { key: "phone", header: "Phone" },
-   {
-  key: "mode",
-  header: "Notification Mode",
-  render: (row: any) => {
-    const isSlack = row.mode === "Slack";
+//    {
+//   key: "mode",
+//   header: "Notification Mode",
+//   render: (row: any) => {
+//     const isSlack = row.mode === "Slack";
 
-    return (
-      <Badge
-        variant="secondary"
-        className="inline-flex items-center gap-2 px-3 py-1 rounded-full w-fit"
-      >
-        <Image
-          src={isSlack ? "/slack.png" : "/teams.png"}
-          alt={row.mode}
-          width={14}
-          height={14}
-        />
-        <span className="font-medium text-xs">{row.mode}</span>
-      </Badge>
-    );
+//     return (
+//       <Badge
+//         variant="secondary"
+//         className="inline-flex items-center gap-2 px-3 py-1 rounded-full w-fit"
+//       >
+//         <Image
+//           src={isSlack ? "/slack.png" : "/teams.png"}
+//           alt={row.mode}
+//           width={14}
+//           height={14}
+//         />
+//         <span className="font-medium text-xs">{row.mode}</span>
+//       </Badge>
+//     );
+//   },
+// }
+  {
+    key: "mode",
+    header: "Notification Mode",
+    render: (row: any) => {
+      if (!row.mode || row.mode.length === 0) return "-";
+
+      return (
+        <div className="flex gap-2">
+          {row.mode.map((m: string) => {
+            const isSlack = m === "Slack";
+
+            return (
+              <Badge
+                key={m}
+                variant="secondary"
+                className="inline-flex items-center gap-2 px-3 py-1 rounded-full w-fit"
+              >
+                <Image
+                  src={isSlack ? "/slack.png" : "/teams.png"}
+                  alt={m}
+                  width={14}
+                  height={14}
+                />
+                <span className="font-medium text-xs">{m}</span>
+              </Badge>
+            );
+          })}
+        </div>
+      );
+    },
   },
-}
-  // {
-  //   key: "mode",
-  //   header: "Notification Mode",
-  //   render: (row: any) => {
-  //     if (!row.mode || row.mode.length === 0) return "-";
-
-  //     return (
-  //       <div className="flex gap-2">
-  //         {row.mode.map((m: string) => {
-  //           const isSlack = m === "Slack";
-
-  //           return (
-  //             <Badge
-  //               key={m}
-  //               variant="secondary"
-  //               className="inline-flex items-center gap-2 px-3 py-1 rounded-full w-fit"
-  //             >
-  //               <Image
-  //                 src={isSlack ? "/slack.png" : "/teams.png"}
-  //                 alt={m}
-  //                 width={14}
-  //                 height={14}
-  //               />
-  //               <span className="font-medium text-xs">{m}</span>
-  //             </Badge>
-  //           );
-  //         })}
-  //       </div>
-  //     );
-  //   },
-  // },
 ];
 
 export default function CustomerPage() {
@@ -205,13 +205,14 @@ export default function CustomerPage() {
     >
       {/* Table */}
       <DataTable
-        data={filteredData}
+        data={customers}
         columns={columns}
         footer={true}
         pageSize={10}
         currentPage={datapage}
         onPageChange={setDatapage}
         onRowClick={handleclick}
+        loading={isLoading}
       />
     </PageWrapper>
   );

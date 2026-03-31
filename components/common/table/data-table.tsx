@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table";
 import { Column } from "@/lib/types/table-types";
 import { TableFooter } from "./table-footer";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface DataTableProps<T> {
   data: T[];
@@ -23,6 +24,7 @@ interface DataTableProps<T> {
   currentPage?: number;
   pageSize?: number;
   onPageChange?: (page: number) => void;
+  loading?: boolean;
 }
 
 export function DataTable<T extends { _id?: string }>({
@@ -30,7 +32,7 @@ export function DataTable<T extends { _id?: string }>({
   columns,
   onRowClick,
   footer,
-
+  loading,
   total = data.length,
   currentPage = 1,
   pageSize = data.length,
@@ -62,21 +64,44 @@ export function DataTable<T extends { _id?: string }>({
           </TableHeader>
 
           <TableBody>
-            {paginatedData.map((row, index) => (
-              <TableRow
-                key={(row as any)._id ?? index}
-                onClick={() => onRowClick?.(row)}
-                className="hover:bg-gray-50 cursor-pointer"
-              >
-                {columns.map((col) => (
-                  <TableCell key={String(col.key)} className={col.className}>
-                    {col.render
-                      ? col.render(row)
-                      : (row as any)[col.key as keyof T]}
-                  </TableCell>
-                ))}
+            {!loading && paginatedData.length === 0 && (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="text-center py-6"
+                >
+                  No data available
+                </TableCell>
               </TableRow>
-            ))}
+            )}
+            {loading
+              ? Array.from({ length: pageSize || 5 }).map((_, rowIndex) => (
+                  <TableRow key={rowIndex}>
+                    {columns.map((col, colIndex) => (
+                      <TableCell key={colIndex}>
+                        <Skeleton className="h-4 w-full" />
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              : paginatedData.map((row, index) => (
+                  <TableRow
+                    key={(row as any)._id ?? index}
+                    onClick={() => onRowClick?.(row)}
+                    className="hover:bg-gray-50 cursor-pointer"
+                  >
+                    {columns.map((col) => (
+                      <TableCell
+                        key={String(col.key)}
+                        className={col.className}
+                      >
+                        {col.render
+                          ? col.render(row)
+                          : (row as any)[col.key as keyof T]}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
           </TableBody>
         </Table>
       </div>
