@@ -4,9 +4,10 @@ import CustomerDetailLayout, {
   type TabDef,
 } from "@/app/(protected)/customers/new/_components/customer-layout-wrapper";
 import PageWrapper from "@/components/common/page-wrapper";
-import GeneralTab from "../_components/GeneralTab";
-import { WorkbookConfigsTab } from "../_components/WorkbookConfigsTab";
+import GeneralTab from "../_components/tabs/GeneralTab";
 import { CUSTOMER_DATA } from "../customers.data";
+import { useCustomerDetails } from "@/hooks/use-customer-details";
+import { WorkbookConfigsTab } from "../_components/tabs/WorkbookConfigsTab";
 
 type Tab = "general" | "workbook-configs";
 const TABS: TabDef<Tab>[] = [
@@ -17,27 +18,31 @@ const TABS: TabDef<Tab>[] = [
 export default function CustomerDetailPage() {
   const customer = CUSTOMER_DATA;
   const [activeTab, setActiveTab] = useState<Tab>("general");
+  const { customer: data, isLoading, error } = useCustomerDetails();
+  
+  console.log("data", data);
+  //TODO: Change these
+  if (isLoading) {
+    return <div>Loading customer...</div>;
+  }
+
+  if (error || !data) {
+    return <div>Failed to load customer</div>;
+  }
 
   return (
     <PageWrapper
-      title={customer.name}
-      subtitle={customer.email}
+      title={data.name}
+      subtitle={data.email}
       onBack={() => history.back()}
     >
       <CustomerDetailLayout
-        customer={{
-          name: customer.name,
-          email: customer.email,
-          company: customer.organization.company,
-          status: customer.status,
-        }}
-        
         tabs={TABS}
         activeTab={activeTab}
         onTabChange={setActiveTab}
       >
         {activeTab === "general" ? (
-          <GeneralTab customer={customer} />
+          <GeneralTab customer={data} />
         ) : (
           <WorkbookConfigsTab customer={customer} />
         )}

@@ -1,5 +1,5 @@
 import { Customer, Organization } from "@/lib/types/customer-types";
-import SectionCard, { Badge, FieldGrid, FieldItem } from "./Card";
+import SectionCard, { Badge, FieldGrid, FieldItem } from "../Card";
 import {
   Building2,
   Copy,
@@ -13,20 +13,8 @@ import { useState } from "react";
 import { DataTable } from "@/components/common/table/data-table";
 import { Button } from "@/components/ui/button";
 import ShowCompanyLogo from "@/components/common/show-company-logo";
-
-const buildCustomerFields = (c: Customer) => [
-  { id: "name", label: "Name", value: c.name, isBadge: false },
-  { id: "email", label: "Email", value: c.email, isBadge: false },
-  { id: "phone", label: "Phone", value: c.phone, isBadge: false },
-  {
-    id: "slack",
-    label: "Slack Channel ID",
-    value: c.slackChannelId,
-    isBadge: false,
-  },
-  { id: "teams", label: "Teams ID", value: c.teamsId, isBadge: false },
-  { id: "date", label: "Date Added", value: c.dateAdded, isBadge: false },
-];
+import CustomerDetails from "../general/customer-details";
+import FeatureAllocationCard from "../general/feature-details";
 
 const buildOrgFields = (o: Organization) => [
   { id: "company", label: "Company", value: o.company, isBadge: false },
@@ -43,26 +31,7 @@ const buildOrgFields = (o: Organization) => [
   // },
 ];
 
-const buildPaymentFields = (c: Customer) => [
-  {
-    id: "payment_mode",
-    label: "Payment Mode",
-    value: c.paymentDetails.payment_mode,
-    isBadge: false,
-  },
-  {
-    id: "platform",
-    label: "Platform",
-    value: c.paymentDetails.platform,
-    isBadge: false,
-  },
-  {
-    id: "payment_terms",
-    label: "Payment Terms",
-    value: c.paymentDetails.payment_terms,
-    isBadge: false,
-  },
-];
+
 
 export const campaignPermissionColumns = [
   {
@@ -115,9 +84,8 @@ export const campaignPermissionColumns = [
 const placeholder = () => alert("Dialog / action coming soon!");
 
 export default function GeneralTab({ customer }: { customer: Customer }) {
-  const customerFields = buildCustomerFields(customer);
-  const paymentFields = buildPaymentFields(customer);
-  const orgFields = buildOrgFields(customer.organization);
+  // const paymentFields = buildPaymentFields(customer);
+  // const orgFields = buildOrgFields(customer.organization);
   const [editing, setEditing] = useState<{
     customer: boolean;
     payment: boolean;
@@ -126,7 +94,7 @@ export default function GeneralTab({ customer }: { customer: Customer }) {
     payment: false,
   });
   const [formState, setFormState] = useState(customer);
-  const campaign = customer.campaigns;
+  // const campaign = customer.campaigns;
 
   const toggleEdit = (key: "customer" | "payment") => {
     setEditing((prev) => ({
@@ -137,54 +105,13 @@ export default function GeneralTab({ customer }: { customer: Customer }) {
   return (
     <div className="flex flex-col gap-5">
       {/* Customer Details */}
-      <SectionCard
-        title="Customer Details"
-        subtitle="Contact, communication, and integration identifiers."
-        icon={<User className="w-4 h-4" />}
-        onEdit={() => {
-          if (editing.customer) {
-            console.log("Saving customer...", formState);
-          }
-          toggleEdit("customer");
-        }}
-        editLabel={editing.customer ? "Save" : "Edit"}
-      >
-        <FieldGrid cols={3}>
-          {customerFields.map((f) => (
-            <FieldItem
-              key={f.id}
-              label={f.label}
-              value={formState[f.id as keyof Customer]}
-              name={f.id}
-              isEditing={editing.customer}
-              onChange={(name, val) =>
-                setFormState((prev) => ({ ...prev, [name]: val }))
-              }
-            >
-              {f.isBadge && !editing.customer && (
-                <Badge label={f.value} variant="info" />
-              )}
-            </FieldItem>
-          ))}
-        </FieldGrid>
-      </SectionCard>
+      <CustomerDetails customer={customer} />
 
       {/* Feature Allocation */}
-      <SectionCard
-        title="Feature Allocation"
-        subtitle="Assigned resources and entitlements."
-        icon={<Zap className="w-4 h-4" />}
-        onEdit={placeholder}
-      >
-        <div className="flex flex-wrap gap-2">
-          {customer.features.map((f) => (
-            <Badge key={f.id} label={f.label} variant="info" />
-          ))}
-        </div>
-      </SectionCard>
-
+      <FeatureAllocationCard customer={customer} />
+   
       {/* Payment details */}
-      <SectionCard
+      {/* <SectionCard
         title="Payment details"
         subtitle="Know where the dollar comes from."
         icon={<DollarSign className="w-4 h-4" />}
@@ -214,10 +141,10 @@ export default function GeneralTab({ customer }: { customer: Customer }) {
             </FieldItem>
           ))}
         </FieldGrid>
-      </SectionCard>
+      </SectionCard> */}
 
       {/* Platform Integrated */}
-      <SectionCard
+      {/* <SectionCard
         title="Platform Integrated"
         subtitle="Platforms this user is integrated with."
         icon={<Link className="w-4 h-4" />}
@@ -226,7 +153,7 @@ export default function GeneralTab({ customer }: { customer: Customer }) {
         <div className="flex flex-wrap gap-2">
           {customer.integrations.map((f) => (
             <Badge
-            logo={<ShowCompanyLogo domain={f.name} />}
+              logo={<ShowCompanyLogo domain={f.name} />}
               key={f.name}
               label={f.name}
               variant={f.connected ? "success" : "warning"}
@@ -235,10 +162,10 @@ export default function GeneralTab({ customer }: { customer: Customer }) {
             />
           ))}
         </div>
-      </SectionCard>
+      </SectionCard> */}
 
       {/* Organization */}
-      <SectionCard
+      {/* <SectionCard
         title="Organization"
         subtitle="Tenant capacity and status."
         icon={<Building2 className="w-4 h-4" />}
@@ -253,10 +180,10 @@ export default function GeneralTab({ customer }: { customer: Customer }) {
             </FieldItem>
           ))}
         </FieldGrid>
-      </SectionCard>
+      </SectionCard> */}
 
       {/* Campaign Permissions */}
-      <SectionCard
+      {/* <SectionCard
         title="Campaigns"
         subtitle="All campaigns for this user, duplicate to give access to other users."
         icon={<Shield className="w-4 h-4" />}
@@ -272,7 +199,7 @@ export default function GeneralTab({ customer }: { customer: Customer }) {
             />
           </div>
         </div>
-      </SectionCard>
+      </SectionCard> */}
     </div>
   );
 }

@@ -18,6 +18,24 @@ export const getCustomers = async (): Promise<any> => {
   return data;
 };
 
+export const fetchCustomer = async (userId: string): Promise<any> => {
+  const token = getToken();
+  if (!token) throw new Error("Authentication required");
+  const url = `${process.env.NEXT_PUBLIC_CUSTOMER_MANAGEMENT_URL}/admin/users/?user_id=${userId}`;
+  const res = await fetch(url, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
+
+  if (!res.ok) throw new Error("Failed to fetch customer");
+
+  const data = await res.json();
+  return data;
+};
+
 export const updateCustomer = async ({
   payload,
 }: {

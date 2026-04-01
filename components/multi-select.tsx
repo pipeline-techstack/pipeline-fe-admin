@@ -90,7 +90,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   };
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className="z-100 relative" ref={dropdownRef}>
       <div
         className="bg-white px-3 py-2 border border-gray-300 focus-within:border-blue-500 rounded-lg cursor-pointer"
         onClick={handleDropdownToggle}

@@ -22,7 +22,7 @@ export interface TabDef<T extends string = string> {
 
 interface CustomerDetailLayoutProps<T extends string> {
   /** Customer identity shown in the fixed header */
-  customer: CustomerMeta;
+  customer?: CustomerMeta;
   /** Called when the back chevron is clicked */
   onBack?: () => void;
   /** Tab definitions – drives the tab bar */
@@ -45,7 +45,7 @@ export default function CustomerDetailLayout<T extends string>({
 }: CustomerDetailLayoutProps<T>) {
   return (
 
-    <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
+    <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
       
       {/* <div className="flex items-center gap-3 shrink-0">
         {onBack && (
@@ -53,7 +53,7 @@ export default function CustomerDetailLayout<T extends string>({
             variant={"ghost"}
             size={"sm"}
             onClick={onBack}
-            className="flex gap-2 items-center"
+            className="flex items-center gap-2"
           >
             <ChevronLeft className="w-4 h-4" /> Back
           </Button>
@@ -61,7 +61,7 @@ export default function CustomerDetailLayout<T extends string>({
        
       </div> */}
 
-      <div className="flex gap-1 border-b border-gray-200 shrink-0">
+      <div className="flex gap-1 border-gray-200 border-b shrink-0">
         {tabs.map((t) => (
           <button
             key={t.id}
@@ -77,7 +77,7 @@ export default function CustomerDetailLayout<T extends string>({
         ))}
       </div>
 
-      <div className="h-[calc(100vh-168px)] overflow-y-auto pt-4 pr-1">
+      <div className="pt-4 pr-1 h-[calc(100vh-168px)] overflow-y-auto">
         {children}
       </div>
     </div>

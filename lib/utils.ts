@@ -1,7 +1,9 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { EditMemberFormData, Member } from "./types/member-types";
-import { PostUserResourcesPyaload, User } from "./types/resource-types";
+import { Permission, PostUserResourcesPyaload, User } from "./types/resource-types";
+import { Feature } from "framer-motion";
+import { DEFAULT_FEATURES } from "@/app/(protected)/customers/new/_components/customer.constants";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -36,67 +38,30 @@ export const getInitials = (email: string) => {
   );
 };
 
-export function normalizePermissions(
-  flatPermissions: { resource: string; permission: string }[]
-): Member["permissions"] {
-  const grouped: Member["permissions"] = {
-    workbooks: [],
-    prompt: [],
-    CRM: [],
-  };
+export async function copyToClipboard(text: string): Promise<boolean> {
+  if (!text) return false;
 
-  flatPermissions.forEach(({ resource, permission }) => {
-    const key = resource as keyof Member["permissions"];
-    if (grouped[key]) {
-      //@ts-expect-error Ignore type error
-      grouped[key].push(permission);
-    }
-  });
-
-  return grouped;
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch (err) {
+    console.error("Copy failed:", err);
+    return false;
+  }
 }
+export function normalizePermissions(
+  permissions: Permission[] | null | undefined
+): Feature[] {
+  // If API returns empty or invalid → fallback
+  if (!permissions || permissions.length === 0) {
+    return DEFAULT_FEATURES;
+  }
 
-// export function transformToEditForm(member: any): EditMemberFormData {
-//   const permissionMap: EditMemberFormData["permissions"] = {
-//     workbooks: [],
-//     prompt: [],
-//     CRM: [],
-//   };
+  // Map API permissions → Feature[]
+  const features: Feature[] = permissions.map((perm) => ({
+    id: perm.resource,
+    label: capitalize(perm.resource),
+  }));
 
-//   if (member.permissions && Array.isArray(member.permissions)) {
-//     for (const perm of member.permissions) {
-//       const resource = perm.resource as keyof typeof permissionMap;
-//       if (permissionMap[resource]) {
-//         permissionMap[resource].push(perm.permission);
-//       }
-//     }
-//   }
-
-//   return {
-//     memberId: member.userId,
-//     email: member.email,
-//     organizationId: member.organizationId,
-//     quota: String(member.rowQuota), // form expects string
-//     addQuota: 0,
-//     reduceQuota: 0,
-//     role: member.role,
-//     permissions: permissionMap,
-//   };
-// }
-
-
-export const filterPermissions = (
-  users: User[]
-): PostUserResourcesPyaload[] => {
-  if (!Array.isArray(users)) return [];
-
-  return users
-    .filter((user) => typeof user.email === "string")
-    .map((user) => ({
-      email: user.email,
-      permissions: Array.isArray(user.permissions)
-        ? user.permissions
-        : [],
-    }));
-};
-
+  return features;
+}

@@ -8,7 +8,6 @@ export const CUSTOMER_DATA: Customer = {
   slackChannelId: "SLK-2011",
   teamsId: "TMS-8821",
   notificationMode: "Slack",
-  dateAdded: "2025-11-14",
   role: "Admin",
   status: "active",
   integrations: [
@@ -31,7 +30,6 @@ export const CUSTOMER_DATA: Customer = {
   ],
 
   paymentDetails: {
-    id: "payment-1",
     payment_mode: "Credit Card",
     platform: "Stripe",
     payment_terms: "Monthly",
@@ -45,48 +43,48 @@ export const CUSTOMER_DATA: Customer = {
     status: "active",
   },
 
-  campaigns: [
-    {
-      id: "367738",
-      name: "IU - Visharad - Ops Leaders - March",
-      heyreach_id: 367738,
-      createdAt: "Jan 19th, 2026",
-      updatedAt: "Jan 19th, 2026",
-      status: "Active",
-    },
-    {
-      id: "367739",
-      name: "SMB Campaign List 4",
-      heyreach_id: 367738,
-      createdAt: "Jan 19th, 2026",
-      updatedAt: "Jan 19th, 2026",
-      status: "Active",
-    },
-    {
-      id: "367740",
-      name: "Tech Internal Outreach Campaign",
-      heyreach_id: 367738,
-      createdAt: "Jan 19th, 2026",
-      updatedAt: "Jan 19th, 2026",
-      status: "Finished",
-    },
-    {
-      id: "367741",
-      name: "Enterprise Leads - Q1",
-      heyreach_id: 367738,
-      createdAt: "Jan 19th, 2026",
-      updatedAt: "Jan 19th, 2026",
-      status: "Finished",
-    },
-    {
-      id: "367742",
-      name: "LinkedIn Automation Batch A",
-      createdAt: "Jan 19th, 2026",
-      heyreach_id: 367738,
-      updatedAt: "Jan 19th, 2026",
-      status: "Finished",
-    },
-  ],
+  // campaigns: [
+  //   {
+  //     id: "367738",
+  //     name: "IU - Visharad - Ops Leaders - March",
+  //     heyreach_id: 367738,
+  //     createdAt: "Jan 19th, 2026",
+  //     updatedAt: "Jan 19th, 2026",
+  //     status: "Active",
+  //   },
+  //   {
+  //     id: "367739",
+  //     name: "SMB Campaign List 4",
+  //     heyreach_id: 367738,
+  //     createdAt: "Jan 19th, 2026",
+  //     updatedAt: "Jan 19th, 2026",
+  //     status: "Active",
+  //   },
+  //   {
+  //     id: "367740",
+  //     name: "Tech Internal Outreach Campaign",
+  //     heyreach_id: 367738,
+  //     createdAt: "Jan 19th, 2026",
+  //     updatedAt: "Jan 19th, 2026",
+  //     status: "Finished",
+  //   },
+  //   {
+  //     id: "367741",
+  //     name: "Enterprise Leads - Q1",
+  //     heyreach_id: 367738,
+  //     createdAt: "Jan 19th, 2026",
+  //     updatedAt: "Jan 19th, 2026",
+  //     status: "Finished",
+  //   },
+  //   {
+  //     id: "367742",
+  //     name: "LinkedIn Automation Batch A",
+  //     createdAt: "Jan 19th, 2026",
+  //     heyreach_id: 367738,
+  //     updatedAt: "Jan 19th, 2026",
+  //     status: "Finished",
+  //   },
+  // ],
 
   workbooks: [
     {

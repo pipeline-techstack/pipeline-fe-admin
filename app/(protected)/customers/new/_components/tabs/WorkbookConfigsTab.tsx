@@ -1,12 +1,12 @@
 "use client";
 
 import { Customer } from "@/lib/types/customer-types";
-import SectionCard from "./Card";
 import { BookOpen, Layers, Zap } from "lucide-react";
 import { DataTable } from "@/components/common/table/data-table";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { enrichmentColumns, wbConfigColumns, workbookColumns } from "@/lib/config/revops/headers";
+import SectionCard from "../Card";
 
 
 

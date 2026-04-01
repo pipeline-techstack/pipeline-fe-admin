@@ -6,6 +6,7 @@ export interface Feature {
   id: string;
   label: string;
 }
+
 export interface CampaignPermission {
   id: string;
   name: string;
@@ -41,10 +42,10 @@ export interface Organization {
 }
 
 export interface Payment {
-  id: string;
   payment_mode: string;
   platform: string;
-  payment_terms: string;
+  payment_terms?: string;
+  notes?: string;
 }
 
 export interface Integration {
@@ -59,15 +60,10 @@ export interface Customer {
   slackChannelId: string;
   teamsId: string;
   notificationMode: string;
-  dateAdded: string;
+  createdAt: string;
   role: string;
-  status: CustomerStatus;
   features: Feature[];
   paymentDetails: Payment;
   integrations: Integration[];
   organization: Organization;
-  campaigns: CampaignPermission[];
-  workbooks: Workbook[];
-  wbConfigs: WBConfig[];
-  enrichments: Enrichment[];
 }
