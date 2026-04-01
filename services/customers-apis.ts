@@ -3,7 +3,7 @@ import { getToken } from "@/lib/auth";
 export const getCustomers = async (): Promise<any> => {
   const token = getToken();
   if (!token) throw new Error("Authentication required");
-  const url = `${process.env.NEXT_PUBLIC_PERMISSIONS_URL}/admin/users`;
+  const url = `${process.env.NEXT_PUBLIC_CUSTOMER_MANAGEMENT_URL}/admin/users`;
   const res = await fetch(url, {
     method: "GET",
     headers: {
@@ -32,7 +32,7 @@ export const updateCustomer = async ({
   const token = getToken();
   if (!token) throw new Error("Authentication required");
   console.log("payload", payload);
-  const url = `${process.env.NEXT_PUBLIC_PERMISSIONS_URL}/engagements/profile`;
+  const url = `${process.env.NEXT_PUBLIC_CUSTOMER_MANAGEMENT_URL}/engagements/profile`;
   const res = await fetch(url, {
     method: "POST",
     headers: {

@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Fuse from "fuse.js";
 import { getCustomers } from "@/services/customers-apis";
+import { formatDate } from "@/lib/utils";
 
 export const useCustomers = () => {
   const {
@@ -31,26 +32,24 @@ export const useCustomers = () => {
   }, [search, fuse, customers]);
 
   // 🎯 FORMAT data for UI HERE
-const formattedCustomers = useMemo(() => {
-  return filteredRawCustomers.map((item: any) => {
-    const modes = [];
+  const formattedCustomers = useMemo(() => {
+    return filteredRawCustomers.map((item: any) => {
+      const modes = [];
 
-    if (item.slack_channel_id) modes.push("Slack");
-    if (item.teams_webhook_url) modes.push("Teams");
+      if (item.slack_channel_id) modes.push("Slack");
+      if (item.teams_webhook_url) modes.push("Teams");
 
-    return {
-      _id: item._id,
-      name: `${item.firstName || ""} ${item.lastName || ""}`.trim(),
-      email: item.email || "",
-      company: item.company || "",
-      date: item.createdAt
-        ? new Date(item.createdAt).toLocaleDateString()
-        : "",
-      phone: item.phone_e164 || "",
-      mode: modes, // 👈 now it's an array
-    };
-  });
-}, [filteredRawCustomers]);
+      return {
+        _id: item.userId,
+        name: `${item.firstName || ""} ${item.lastName || ""}`.trim(),
+        email: item.email || "",
+        company: item.companyName || "",
+        date: formatDate(item.createdAt),
+        phone: item.phone_e164 || "",
+        mode: modes, // 👈 now it's an array
+      };
+    });
+  }, [filteredRawCustomers]);
 
   return {
     customers: formattedCustomers, // ✅ already formatted

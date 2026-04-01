@@ -11,17 +11,16 @@ import { useRouter } from "next/navigation";
 import { useCustomers } from "@/hooks/use-customers";
 import { Bell, Building, Calendar, Mail, Phone, User } from "lucide-react";
 
-
 const columns = [
-  { key: "name", header: "Name", icon: <User size={16} />, },
-  { key: "email", header: "Email" , icon: <Mail size={16} />, width: 300},
-  { key: "company", header: "Company",  icon: <Building size={16} />, },
-  { key: "date", header: "Creation Date" ,  icon: <Calendar size={16} />, },
-  { key: "phone", header: "Phone",  icon: <Phone size={16} />, },
+  { key: "name", header: "Name", icon: <User size={16} /> },
+  { key: "email", header: "Email", icon: <Mail size={16} />, width: 300 },
+  { key: "company", header: "Company", icon: <Building size={16} /> },
+  { key: "date", header: "Creation Date", icon: <Calendar size={16} /> },
+  { key: "phone", header: "Phone", icon: <Phone size={16} /> },
   {
     key: "mode",
     header: "Notification Mode",
-     icon: <Bell size={16} />,
+    icon: <Bell size={16} />,
     render: (row: any) => {
       if (!row.mode || row.mode.length === 0) return "-";
 
@@ -57,7 +56,7 @@ export default function CustomerPage() {
   const [datapage, setDatapage] = useState(1);
   const router = useRouter();
 
-  const handleclick = (row) => {
+  const handleclick = (row: any) => {
     router.push(`new/${row._id}`);
   };
 
