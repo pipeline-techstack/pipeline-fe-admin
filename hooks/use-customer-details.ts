@@ -32,9 +32,11 @@ export function useCustomerDetails() {
           company: raw.companyName || "",
           quota: String(raw.plan?.rowQuota || 0),
           seats: raw.plan?.seats || 0,
-          region: "N/A", // not available
-          admins: 1, // fallback assumption
-          status: raw.plan?.status || "inactive",
+          plan: raw.plan?.planType || "",
+          status: raw.plan?.status || "",
+          trialStartDate: formatDate(raw.plan?.trialStartDate),
+          trialEndDate: formatDate(raw.plan?.trialEndDate),
+          billingCyvle: raw.plan?.billingCycle,
         },
       };
     },

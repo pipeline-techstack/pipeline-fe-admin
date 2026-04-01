@@ -137,7 +137,7 @@ export function FieldItem({
         <div className="flex items-center gap-2">
           <span
             title={typeof value === "string" ? value : ""}
-            className={`text-sm text-secondary-foreground truncate ${classNameValue}`}
+            className={`text-sm text-secondary-foreground truncate capitalize ${classNameValue}`}
           >
             {value ?? "—"}
           </span>

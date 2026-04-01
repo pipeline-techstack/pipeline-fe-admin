@@ -22,6 +22,12 @@ const buildPaymentFields = (c: Customer) => [
     value: c.paymentDetails.payment_terms,
     isBadge: false,
   },
+    {
+    id: "notes",
+    label: "Notes",
+    value: c.paymentDetails.notes,
+    isBadge: false,
+  },
 ];
 
 
@@ -36,11 +42,15 @@ function PaymentDetailsCard({ customer }: { customer: Customer }) {
       title="Payment details"
       subtitle="Know where the dollar comes from."
       icon={<DollarSign className="w-4 h-4" />}
+      isEditing={editing}
       onEdit={() => {
-        if (editing) {
-          console.log("Saving payment...", formState);
-        }
         setEditing(!editing);
+      }}
+      onCancel={() => {
+        setEditing(false);
+      }}
+      onSave={() => {
+        setEditing(false);
       }}
       editLabel={editing ? "Save" : "Edit"}
     >

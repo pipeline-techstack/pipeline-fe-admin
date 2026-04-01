@@ -139,7 +139,7 @@ export function Sidebar() {
             {/* Logout Button */}
             <Button
               onClick={handleLogout}
-              className="justify-center bg-red-400 hover:bg-red-500 py-2 rounded-xl w-full text-white hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
+              className="justify-center bg-red-400 hover:bg-red-500 py-2 rounded-xl w-full text-white hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 btn-shine"
               aria-label="Logout"
             >
               Logout →

@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { Check, X, ChevronDown, Search } from "lucide-react";
+import { createPortal } from "react-dom";
 
 interface Option {
   id: string;
@@ -26,6 +27,8 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState(search);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [dropdownStyles, setDropdownStyles] = useState<React.CSSProperties>({});
+  const portalRef = useRef<HTMLDivElement>(null);
 
   // debounce
   useEffect(() => {
@@ -35,12 +38,17 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node) &&
+        portalRef.current &&
+        !portalRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
   useEffect(() => {
@@ -51,8 +59,14 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
     return () => document.removeEventListener("keydown", handleEscape);
   }, []);
 
+  useEffect(() => {
+    const handleScroll = () => setIsOpen(false);
+    window.addEventListener("scroll", handleScroll, true);
+    return () => window.removeEventListener("scroll", handleScroll, true);
+  }, []);
+
   const filteredOptions = options.filter((o) =>
-    o.name.toLowerCase().includes(debouncedSearch.toLowerCase())
+    o.name.toLowerCase().includes(debouncedSearch.toLowerCase()),
   );
 
   const allFilteredSelected =
@@ -72,6 +86,18 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   };
 
   const handleDropdownToggle = () => {
+    if (!isOpen && dropdownRef.current) {
+      const rect = dropdownRef.current.getBoundingClientRect();
+
+      setDropdownStyles({
+        position: "absolute",
+        top: rect.bottom + window.scrollY + 4,
+        left: rect.left + window.scrollX,
+        width: rect.width,
+        zIndex: 9999,
+      });
+    }
+
     setIsOpen(!isOpen);
     if (!isOpen) setSearch("");
   };
@@ -80,17 +106,21 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
     e.stopPropagation();
     if (allFilteredSelected) {
       // Deselect all filtered
-      const remaining = value.filter((id) => !filteredOptions.some((o) => o.id === id));
+      const remaining = value.filter(
+        (id) => !filteredOptions.some((o) => o.id === id),
+      );
       onChange(remaining);
     } else {
       // Select all filtered
-      const newIds = Array.from(new Set([...value, ...filteredOptions.map((o) => o.id)]));
+      const newIds = Array.from(
+        new Set([...value, ...filteredOptions.map((o) => o.id)]),
+      );
       onChange(newIds);
     }
   };
 
   return (
-    <div className="z-100 relative" ref={dropdownRef}>
+    <div className="relative" ref={dropdownRef}>
       <div
         className="bg-white px-3 py-2 border border-gray-300 focus-within:border-blue-500 rounded-lg cursor-pointer"
         onClick={handleDropdownToggle}
@@ -104,14 +134,14 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
               return (
                 <span
                   key={id}
-                  className="inline-flex items-center gap-1 bg-blue-100 px-2 py-1 rounded-md font-medium text-blue-800 text-sm"
+                  className="inline-flex items-center gap-1 bg-blue-50 px-2 py-1 border border-blue-200 rounded-full text-blue-700 text-sm"
                 >
                   {campaign?.name || id}
                   <button
                     type="button"
                     aria-label="Remove"
                     onClick={(e) => handleRemove(id, e)}
-                    className="hover:bg-blue-200 p-0.5 rounded-full"
+                    className="hover:bg-blue-100 p-0.5 rounded-full"
                   >
                     <X size={12} />
                   </button>
@@ -128,46 +158,53 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
         </div>
       </div>
 
-      {isOpen && (
-        <div className="z-10 absolute bg-white shadow-lg mt-1 border border-gray-300 rounded-lg w-full max-h-72 overflow-auto">
-          {/* Search + Select All toggle */}
-          <div className="flex items-center gap-2 px-3 py-2 border-b">
-            <Search size={14} className="text-gray-400" />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search..."
-              className="flex-1 outline-none text-sm"
-              onClick={(e) => e.stopPropagation()}
-            />
-            <button
-              type="button"
-              onClick={handleSelectAllToggle}
-              className="font-medium text-blue-600 text-xs hover:underline whitespace-nowrap"
-            >
-              {allFilteredSelected ? "Deselect All" : "Select All"}
-            </button>
-          </div>
-
-          {isLoading ? (
-            <p className="p-3 text-gray-500 text-sm">Loading...</p>
-          ) : filteredOptions.length === 0 ? (
-            <p className="p-3 text-gray-500 text-sm">No campaigns found</p>
-          ) : (
-            filteredOptions.map((option) => (
-              <div
-                key={option.id}
-                className="flex justify-between items-center hover:bg-gray-50 px-3 py-2 cursor-pointer"
-                onClick={() => handleToggle(option)}
+      {isOpen &&
+        createPortal(
+          <div
+            ref={portalRef} 
+            style={dropdownStyles}
+            className="bg-white shadow-lg border border-gray-300 rounded-lg max-h-72 overflow-auto"
+          >
+            {/* Search + Select All toggle */}
+            <div className="flex items-center gap-2 px-3 py-2 border-b">
+              <Search size={14} className="text-gray-400" />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search..."
+                className="flex-1 outline-none text-sm"
+              />
+              <button
+                type="button"
+                onClick={handleSelectAllToggle}
+                className="font-medium text-blue-600 text-xs hover:underline whitespace-nowrap"
               >
-                <span>{option.name}</span>
-                {value.includes(option.id) && <Check size={16} className="text-blue-600" />}
-              </div>
-            ))
-          )}
-        </div>
-      )}
+                {allFilteredSelected ? "Deselect All" : "Select All"}
+              </button>
+            </div>
+
+            {isLoading ? (
+              <p className="p-3 text-gray-500 text-sm">Loading...</p>
+            ) : filteredOptions.length === 0 ? (
+              <p className="p-3 text-gray-500 text-sm">No campaigns found</p>
+            ) : (
+              filteredOptions.map((option) => (
+                <div
+                  key={option.id}
+                  className="flex justify-between items-center hover:bg-gray-50 px-3 py-2 cursor-pointer"
+                  onClick={() => handleToggle(option)}
+                >
+                  <span>{option.name}</span>
+                  {value.includes(option.id) && (
+                    <Check size={16} className="text-blue-600" />
+                  )}
+                </div>
+              ))
+            )}
+          </div>,
+          document.body,
+        )}
     </div>
   );
 };

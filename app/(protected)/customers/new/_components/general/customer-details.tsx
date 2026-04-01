@@ -38,10 +38,17 @@ const CustomerDetails = ({ customer }: { customer: Customer }) => {
   return (
     <SectionCard
       title="Customer Details"
-      subtitle="Contact, communication, and integration identifiers."
+      subtitle="Basic information about the customer."
       icon={<User className="w-4 h-4" />}
       onEdit={() => {
         setEditing(!editing);
+      }}
+      isEditing={editing}
+      onCancel={() => {
+        setEditing(false);
+      }}
+      onSave={() => {
+        setEditing(false);
       }}
       editLabel={editing ? "Save" : "Edit"}
     >

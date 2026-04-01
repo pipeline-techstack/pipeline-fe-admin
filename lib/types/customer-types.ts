@@ -36,9 +36,11 @@ export interface Organization {
   company: string;
   quota: string;
   seats: number;
-  region: string;
-  admins: number;
-  status: CustomerStatus;
+  plan: string;
+  status: string;
+  trialStartDate?: string;
+  trialEndDate?: string;
+  billingCyvle?: string;
 }
 
 export interface Payment {

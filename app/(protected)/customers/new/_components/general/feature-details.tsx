@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { Zap } from "lucide-react";
 import SectionCard, { Badge } from "../Card";
 import { Customer } from "@/lib/types/customer-types";
@@ -21,7 +21,7 @@ const permissionsCatalog = [
 function FeatureAllocationCard({ customer }: { customer: Customer }) {
   const [isEditing, setIsEditing] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-
+  const [features, setFeatures] = useState(customer.features);
   // split catalog
   const mandatoryOptions = permissionsCatalog
     .filter((r) => r.type === "mandatory")
@@ -56,11 +56,26 @@ function FeatureAllocationCard({ customer }: { customer: Customer }) {
     }
 
     try {
-      const finalFeatures = [...selectedMandatory, ...selectedOptional];
+      let finalFeatures = [...selectedMandatory, ...selectedOptional];
+
+      if (finalFeatures.includes("*")) {
+        finalFeatures = ["*"];
+      }
 
       console.log("Saving features:", finalFeatures);
 
       // 👉 call API here
+
+      // ✅ Update local state for UI
+      const mappedFeatures = finalFeatures.map((id) => {
+        const found = permissionsCatalog.find((p) => p.id === id);
+        return {
+          id,
+          label: found?.name || id,
+        };
+      });
+
+      setFeatures(mappedFeatures);
 
       setIsEditing(false);
     } catch (err) {
@@ -71,21 +86,23 @@ function FeatureAllocationCard({ customer }: { customer: Customer }) {
   return (
     <SectionCard
       title="Feature Allocation"
-      subtitle="Assigned resources and entitlements."
+      subtitle="Assigned features to this customer."
       editLabel={isEditing ? "Save" : "Edit"}
       icon={<Zap className="w-4 h-4" />}
-      onEdit={() => {
-        setIsEditing(!isEditing);
-      }}
+      onEdit={() => setIsEditing(true)}
       isEditing={isEditing}
       onCancel={() => setIsEditing(false)}
       onSave={handleSave}
     >
       {!isEditing ? (
         <div className="flex flex-wrap gap-2">
-          {customer.features.map((f) => (
-            <Badge key={f.id} label={f.label} variant="info" />
-          ))}
+          {features.some((f) => f.id === "*") ? (
+            <Badge label="All Tabs" variant="info" />
+          ) : (
+            features.map((f) => (
+              <Badge key={f.id} label={f.label} variant="info" />
+            ))
+          )}
         </div>
       ) : (
         <>
