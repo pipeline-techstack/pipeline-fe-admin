@@ -1,4 +1,4 @@
-import { getWorkbookConfiguration } from "@/app/(protected)/wb-config/services/config-apis";
+import { getWorkbookConfiguration } from "@/services/cambook-apis";
 import { FormData, Column } from "@/app/(protected)/wb-config/types/api";
 import { useEffect, useState } from "react";
 

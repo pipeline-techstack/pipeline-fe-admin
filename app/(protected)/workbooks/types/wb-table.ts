@@ -1,4 +1,5 @@
 export interface Workbook {
+  updated_at: any;
   id: string;
   name: string;
   owners: string[];
@@ -10,12 +11,14 @@ export interface WorkbooksResponse {
   total: number;
   page: number;
   pageSize: number;
+  totalPages: number;
 }
 
 export interface WorkbookParams {
   page?: number;
   pageSize?: number;
   search?: string;
+  id: string;
 }
 
 export interface DuplicateWorkbookPayload {

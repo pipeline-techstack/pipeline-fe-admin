@@ -8,7 +8,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { fetchWorkbookConfigurations } from "./services/config-apis";
+import { fetchWorkbookConfigurations } from "../../../services/cambook-apis";
 import { WorkbookConfiguration } from "./types/api";
 import PageWrapper from "@/components/common/page-wrapper";
 

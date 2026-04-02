@@ -12,20 +12,26 @@ import { useCustomers } from "@/hooks/use-customers";
 import { Bell, Building, Calendar, Mail, Phone, User } from "lucide-react";
 
 const columns = [
-  { key: "name", header: "Name", icon: <User size={16} /> },
-  { key: "email", header: "Email", icon: <Mail size={16} />, width: 300 },
-  { key: "company", header: "Company", icon: <Building size={16} /> },
-  { key: "date", header: "Creation Date", icon: <Calendar size={16} /> },
-  { key: "phone", header: "Phone", icon: <Phone size={16} /> },
+  { key: "name", header: "Name", icon: <User size={16} />, width: 200 },
+
+  { key: "email", header: "Email", icon: <Mail size={16} />, width: 280 },
+
+  { key: "company", header: "Company", icon: <Building size={16} />, width: 220 },
+
+  { key: "date", header: "Creation Date", icon: <Calendar size={16} />, width: 180 },
+
+  { key: "phone", header: "Phone", icon: <Phone size={16} />, width: 180 },
+
   {
     key: "mode",
     header: "Notification Mode",
     icon: <Bell size={16} />,
+    width: 260, // 👈 important for badges
     render: (row: any) => {
       if (!row.mode || row.mode.length === 0) return "-";
 
       return (
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           {row.mode.map((m: string) => {
             const isSlack = m === "Slack";
 

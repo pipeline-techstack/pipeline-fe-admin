@@ -26,6 +26,8 @@ interface DataTableProps<T> {
   pageSize?: number;
   onPageChange?: (page: number) => void;
   loading?: boolean;
+  isServerPagination?: boolean;
+  totalPages?: number
 }
 
 export function DataTable<T extends { _id?: string }>({
@@ -34,31 +36,42 @@ export function DataTable<T extends { _id?: string }>({
   onRowClick,
   footer,
   loading,
-  total = data.length,
+  total = data?.length,
   currentPage = 1,
   pageSize,
   onPageChange,
+  isServerPagination = false,
+  totalPages: totalPagesProp,
+
 }: DataTableProps<T>) {
   const dynamicPageSize = useDynamicPageSize({
-    rowHeight: 48, // adjust if your rows are taller/shorter
+    rowHeight: 48,
     min: 20,
     max: 80,
-    offset: 168, // match your max-h calc or tweak
+    offset: 168,
   });
 
   const effectivePageSize = pageSize ?? dynamicPageSize;
-  const startIndex = (currentPage - 1) * effectivePageSize;
-  const endIndex = startIndex + effectivePageSize;
 
-  const paginatedData = data.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(total / effectivePageSize);
-  console.log({
-    total,
-    dataLength: data.length,
-    effectivePageSize,
-    currentPage,
-    totalPages: Math.ceil(total / effectivePageSize),
-  });
+  // ✅ Only slice for client-side pagination
+  const paginatedData = isServerPagination
+    ? data
+    : data?.slice(
+        (currentPage - 1) * effectivePageSize,
+        currentPage * effectivePageSize
+      );
+
+  const totalPages = isServerPagination
+  ? (totalPagesProp ?? 1)
+  : Math.ceil(total / effectivePageSize);
+  // console.log({
+  //   total,
+  //   dataLength: data?.length,
+  //   effectivePageSize,
+  //   currentPage,
+  //   totalPages: Math.ceil(total / effectivePageSize),
+  //   data
+  // });
   return (
     <div className="flex flex-col bg-white h-full">
       {/* Scrollable Table */}

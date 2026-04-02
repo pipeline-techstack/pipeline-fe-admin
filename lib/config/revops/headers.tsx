@@ -1,31 +1,36 @@
-import { CUSTOMER_DATA } from "@/app/(protected)/customers/new/customers.data";
-import { Column } from "@/lib/types/table-types";
-import { Copy, DollarSign } from "lucide-react";
+"use client";
+
+import { DollarSign, Share } from "lucide-react";
 import { Badge } from "@/app/(protected)/customers/new/_components/Card";
 import { Button } from "@/components/ui/button";
-const customer = CUSTOMER_DATA;
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 const placeholder = () => alert("Dialog / action coming soon!");
 
-export const workbookColumns: Column<(typeof customer.workbooks)[0]>[] = [
+export const workbookColumns = [
   {
     key: "name",
     header: "Name",
-    className: "w-1/2 text-secondary-foreground",
+    className: "text-secondary-foreground",
   },
   {
-    key: "rows",
-    header: "Rows",
-    className: "w-1/2 text-secondary-foreground",
+    key: "updated_at",
+    header: "Updated At",
+    className: "text-secondary-foreground",
   },
   {
     key: "actions",
     header: "Actions",
-    className: "text-left",
+    className: "",
     render: (row) => (
       <div className="flex items-center gap-2">
         <Button
-          variant={'outline'}
-          size={'sm'}
+          variant={"outline"}
+          size={"sm"}
           onClick={placeholder}
           className=""
         >
@@ -33,76 +38,106 @@ export const workbookColumns: Column<(typeof customer.workbooks)[0]>[] = [
           Cost
         </Button>
         <Button
-          variant={'outline'}
-          size={'sm'}
+          variant={"outline"}
+          size={"sm"}
           onClick={placeholder}
           className=""
         >
-          <Copy className="w-3 h-3" />
-          Duplicate
+          <Share className="w-3 h-3" />
+          Share
         </Button>
       </div>
     ),
   },
 ];
 
-export const wbConfigColumns: Column<(typeof customer.wbConfigs)[0]>[] = [
+export const cambookColumns = [
   {
     key: "campaign",
     header: "Campaign",
-    className: "w-1/2 text-secondary-foreground",
+    className: "text-secondary-foreground",
   },
   {
-    key: "workbook",
-    header: "Workbook",
-    className: "w-1/3 text-secondary-foreground",
+    key: "workbooks",
+    header: "Workbooks",
+    className: " text-secondary-foreground",
+
+    render: (row: any) => {
+      const list = row.workbooks || [];
+      const hidden = list.slice(2);
+
+      return (
+        <div className="flex flex-wrap gap-2">
+          {/* visible badges */}
+          {list.slice(0, 2).map((wb: string, i: number) => (
+            <Badge key={i} label={wb} variant="info" />
+          ))}
+
+          {/* +X more with hover */}
+          {hidden.length > 0 && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <Badge variant="outline" label={`+${hidden.length} more`} />
+                  </div>
+                </TooltipTrigger>
+
+                <TooltipContent className="max-w-xs">
+                  <div className="flex flex-col gap-1">
+                    {hidden.map((wb: string, i: number) => (
+                      <span key={i} className="text-sm">
+                        {wb}
+                      </span>
+                    ))}
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+        </div>
+      );
+    },
   },
   {
     key: "actions",
     header: "Actions",
-    className: "text-left",
-    render: () => (
-      <Button
-        variant={'outline'}
-          size={'sm'}
-          onClick={placeholder}
-          className=""
-      >
+    className: "",
+    render: (row: any) => (
+      <Button variant="outline" size="sm">
         Edit
       </Button>
     ),
   },
 ];
 
-export const enrichmentColumns: Column<(typeof customer.enrichments)[0]>[] = [
+export const enrichmentColumns = [
   {
     key: "name",
     header: "Enrichment Name",
-    className: "w-2/5 text-secondary-foreground",
+    className: " text-secondary-foreground",
   },
   {
     key: "type",
     header: "Type",
-    className: "w-1/5",
-    render: (row) => (
-      <Badge label={row.type} variant={'info'} />
-    ),
+    className: "",
+    render: (row) => <Badge label={row.type} variant={"info"} />,
   },
   {
-    key: "createdOn",
-    header: "Created On",
-    className: "w-1/5 text-secondary-foreground",
+    key: "created_at",
+    header: "Created At",
+    className: " text-secondary-foreground",
   },
   {
     key: "actions",
     header: "Actions",
-    className: "text-left",
+    className: "",
     render: () => (
       <Button
-       variant={'outline'}
-          size={'sm'}
-          onClick={placeholder}
-          className=""
+        variant={"outline"}
+        size={"sm"}
+        onClick={placeholder}
+        className=""
       >
         Edit
       </Button>

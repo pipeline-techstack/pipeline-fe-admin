@@ -1,7 +1,7 @@
 "use client";
 import { EnrichmentsTable } from "@/components/dashboard/prompts-table";
 import { useQuery } from "@tanstack/react-query";
-import { getEnrichments } from "@/services/enrichments";
+import { getEnrichments } from "@/services/enrichments-apis";
 import { Loader2 } from "lucide-react";
 import PageWrapper from "@/components/common/page-wrapper";
 

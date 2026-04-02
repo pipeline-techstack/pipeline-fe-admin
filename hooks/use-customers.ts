@@ -13,6 +13,7 @@ export const useCustomers = () => {
   } = useQuery({
     queryKey: ["customers"],
     queryFn: getCustomers,
+    staleTime: 1000 * 60 * 5
   });
 
   const [search, setSearch] = useState("");

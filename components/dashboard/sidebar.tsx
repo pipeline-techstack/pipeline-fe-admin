@@ -43,7 +43,7 @@ const navigation = [
   // { name: "Feedback", href: "/feedback", icon: Stars },
   // { name: "Enrichments", href: "/enrichments", icon: MessageSquare },
   { name: "Customer Management", href: "/customers/new", icon: Users },
-  { name: "Campaign Management", href: "/permissions/new", icon: Network },
+  { name: "Campaign Setup", href: "/permissions/new", icon: Network },
     // { name: "Campaign Setup", href: "/campaigns/new", icon: Users },
 ];
 

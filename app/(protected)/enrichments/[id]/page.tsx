@@ -2,7 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getPrompts, editPrompts } from "@/services/enrichments";
+import { getPrompts, editPrompts } from "@/services/enrichments-apis";
 import { useState } from "react";
 
 type SelectedPrompt = {

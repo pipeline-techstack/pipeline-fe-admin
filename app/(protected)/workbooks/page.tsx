@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { useWorkbooks } from "@/hooks/use-wb-table";
+import { useWorkbooks } from "@/hooks/use-wb";
 import { Workbook } from "./types/wb-table";
-import { duplicateWorkbook } from "@/services/wb-table-apis";
+import { duplicateWorkbook } from "@/services/wb-apis";
 import { WorkbookSearch } from "./components/wb-search";
 import { WorkbookTable } from "./components/wb-table";
 import { TableFooter } from "../../../components/common/table/table-footer";

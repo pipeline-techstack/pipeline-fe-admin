@@ -5,9 +5,11 @@ import CustomerDetailLayout, {
 } from "@/app/(protected)/customers/new/_components/customer-layout-wrapper";
 import PageWrapper from "@/components/common/page-wrapper";
 import GeneralTab from "../_components/tabs/GeneralTab";
+import { RevopsTab } from "../_components/tabs/RevopsTab";
 import { CUSTOMER_DATA } from "../customers.data";
+import { useParams } from "next/navigation";
 import { useCustomerDetails } from "@/hooks/use-customer-details";
-import { WorkbookConfigsTab } from "../_components/tabs/WorkbookConfigsTab";
+
 
 type Tab = "general" | "workbook-configs";
 const TABS: TabDef<Tab>[] = [
@@ -16,6 +18,8 @@ const TABS: TabDef<Tab>[] = [
 ];
 
 export default function CustomerDetailPage() {
+  const {detail} = useParams()
+  const id:string = Array.isArray(detail) ? detail[0] : detail || " "
   const customer = CUSTOMER_DATA;
   const [activeTab, setActiveTab] = useState<Tab>("general");
   const { customer: data, isLoading, error } = useCustomerDetails();
@@ -44,7 +48,7 @@ export default function CustomerDetailPage() {
         {activeTab === "general" ? (
           <GeneralTab customer={data} />
         ) : (
-          <WorkbookConfigsTab customer={customer} />
+          <RevopsTab id={id} name={data?.name} email={data?.email}/>
         )}
       </CustomerDetailLayout>
     </PageWrapper>

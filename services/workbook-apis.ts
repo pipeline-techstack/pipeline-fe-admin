@@ -1,17 +1,18 @@
 import { getToken } from "@/lib/auth";
 
-export const getWorkbooks = async (
-  page = 1,
-  limit = 10,
-  search = ""
-): Promise<any> => {
+export const getWorkbooks = async ({
+  page,
+  page_size,
+  id,
+}: {
+  page?: number;
+  page_size?: number;
+  id: string;
+}): Promise<any> => {
   const token = getToken();
   if (!token) throw new Error("Authentication required");
 
-  let url = `${process.env.NEXT_PUBLIC_PERMISSIONS_URL}/admin/workbooks?page=${page}&page_size=${limit}`;
-  if (search?.trim()) {
-    url += `&search=${encodeURIComponent(search)}`;
-  }
+  let url = `${process.env.NEXT_PUBLIC_PERMISSIONS_URL}/admin/workbooks/${id}?page=${page}&page_size=${page_size}`;
 
   const res = await fetch(url, {
     method: "GET",
