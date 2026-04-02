@@ -4,6 +4,7 @@ import { Check, Copy, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import clsx from "clsx";
 import { copyToClipboard } from "@/lib/utils";
+import SpinLoader from "@/components/common/spin-loader";
 
 interface SectionCardProps {
   title: string;
@@ -16,6 +17,7 @@ interface SectionCardProps {
   editLabel?: string;
   children: React.ReactNode;
   className?: string;
+  isLoading?: boolean;
 }
 
 export default function SectionCard({
@@ -29,6 +31,7 @@ export default function SectionCard({
   editLabel = "Edit",
   children,
   className = "",
+  isLoading,
 }: SectionCardProps) {
   return (
     <div
@@ -46,9 +49,7 @@ export default function SectionCard({
           <div>
             <h3 className="text-secondary-foreground text-sm">{title}</h3>
             {subtitle && (
-              <p className="mt-0.5 text-muted-foreground text-sm">
-                {subtitle}
-              </p>
+              <p className="mt-0.5 text-muted-foreground text-sm">{subtitle}</p>
             )}
           </div>
         </div>
@@ -70,7 +71,13 @@ export default function SectionCard({
                 </Button>
               )}
               {onSave && (
-                <Button size="sm" variant="default" onClick={onSave}>
+                <Button
+                  size="sm"
+                  variant="default"
+                  onClick={onSave}
+                  disabled={isLoading}
+                >
+                  {isLoading && <SpinLoader />}
                   Save
                 </Button>
               )}
@@ -137,7 +144,7 @@ export function FieldItem({
         <div className="flex items-center gap-2">
           <span
             title={typeof value === "string" ? value : ""}
-            className={`text-sm text-secondary-foreground truncate capitalize ${classNameValue}`}
+            className={`text-sm text-secondary-foreground truncate ${classNameValue}`}
           >
             {value ?? "—"}
           </span>

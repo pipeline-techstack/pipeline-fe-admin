@@ -20,7 +20,6 @@ export default function CustomerDetailPage() {
   const [activeTab, setActiveTab] = useState<Tab>("general");
   const { customer: data, isLoading, error } = useCustomerDetails();
   
-  console.log("data", data);
   //TODO: Change these
   if (isLoading) {
     return <div>Loading customer...</div>;
@@ -35,6 +34,7 @@ export default function CustomerDetailPage() {
       title={data.name}
       subtitle={data.email}
       onBack={() => history.back()}
+      showBadge={data.role === "owner"}
     >
       <CustomerDetailLayout
         tabs={TABS}

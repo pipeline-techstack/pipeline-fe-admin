@@ -4,7 +4,7 @@ import SectionCard, { Badge } from "../Card";
 import { Customer } from "@/lib/types/customer-types";
 import MultiSelect from "@/components/multi-select";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+import { postUserResources } from "@/services/resource-apis";
 
 const permissionsCatalog = [
   { id: "*", name: "All Tabs", type: "mandatory" },
@@ -22,6 +22,7 @@ function FeatureAllocationCard({ customer }: { customer: Customer }) {
   const [isEditing, setIsEditing] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [features, setFeatures] = useState(customer.features);
+  const [loading, setLoading] = useState(false);
   // split catalog
   const mandatoryOptions = permissionsCatalog
     .filter((r) => r.type === "mandatory")
@@ -47,9 +48,39 @@ function FeatureAllocationCard({ customer }: { customer: Customer }) {
       .map((f) => f.id),
   );
 
+  const handleEdit = () => {
+    // If All Tabs is selected
+    if (features.some((f) => f.id === "*")) {
+      setSelectedMandatory(["*"]);
+      setSelectedOptional([]);
+    } else {
+      setSelectedMandatory(
+        features
+          .filter((f) =>
+            permissionsCatalog.find(
+              (p) => p.id === f.id && p.type === "mandatory",
+            ),
+          )
+          .map((f) => f.id),
+      );
+
+      setSelectedOptional(
+        features
+          .filter((f) =>
+            permissionsCatalog.find(
+              (p) => p.id === f.id && p.type === "optional",
+            ),
+          )
+          .map((f) => f.id),
+      );
+    }
+
+    setIsEditing(true);
+  };
+
   const handleSave = async () => {
     setSubmitError(null);
-
+    setLoading(true);
     if (selectedMandatory.length === 0) {
       setSubmitError("At least one mandatory feature is required.");
       return;
@@ -62,9 +93,15 @@ function FeatureAllocationCard({ customer }: { customer: Customer }) {
         finalFeatures = ["*"];
       }
 
-      console.log("Saving features:", finalFeatures);
+      const payload = {
+        email: customer.email,
+        permissions: finalFeatures.map((resource) => ({
+          resource,
+          permission: "*",
+        })),
+      };
 
-      // 👉 call API here
+      await postUserResources(payload);
 
       // ✅ Update local state for UI
       const mappedFeatures = finalFeatures.map((id) => {
@@ -80,6 +117,8 @@ function FeatureAllocationCard({ customer }: { customer: Customer }) {
       setIsEditing(false);
     } catch (err) {
       setSubmitError("Failed to update features.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -89,10 +128,11 @@ function FeatureAllocationCard({ customer }: { customer: Customer }) {
       subtitle="Assigned features to this customer."
       editLabel={isEditing ? "Save" : "Edit"}
       icon={<Zap className="w-4 h-4" />}
-      onEdit={() => setIsEditing(true)}
+      onEdit={handleEdit}
       isEditing={isEditing}
       onCancel={() => setIsEditing(false)}
       onSave={handleSave}
+      isLoading={loading}
     >
       {!isEditing ? (
         <div className="flex flex-wrap gap-2">

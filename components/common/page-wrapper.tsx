@@ -13,7 +13,7 @@ interface PageWrapperProps {
 
   rightComponent?: React.ReactNode;
   children: React.ReactNode;
-
+showBadge?: boolean
   onBack?: ()=>void
 }
 
@@ -24,6 +24,7 @@ export default function PageWrapper({
   sectionSubtitle,
   rightComponent,
   children,
+  showBadge,
   onBack
 }: PageWrapperProps) {
   return (
@@ -36,6 +37,7 @@ export default function PageWrapper({
               subtitle={subtitle}
               classNameTitle="text-2xl"
               onBack={onBack}
+              showBadge={showBadge}
             />
             {rightComponent && (
                 <div className="flex items-center gap-2">{rightComponent}</div>

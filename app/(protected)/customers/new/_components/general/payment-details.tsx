@@ -2,40 +2,56 @@ import { useState } from "react";
 import SectionCard, { FieldGrid, FieldItem } from "../Card";
 import { Customer } from "@/lib/types/customer-types";
 import { DollarSign } from "lucide-react";
-
-const buildPaymentFields = (c: Customer) => [
-  {
-    id: "payment_mode",
-    label: "Payment Mode",
-    value: c.paymentDetails.payment_mode,
-    isBadge: false,
-  },
-  {
-    id: "platform",
-    label: "Platform",
-    value: c.paymentDetails.platform,
-    isBadge: false,
-  },
-  {
-    id: "payment_terms",
-    label: "Payment Terms",
-    value: c.paymentDetails.payment_terms,
-    isBadge: false,
-  },
-    {
-    id: "notes",
-    label: "Notes",
-    value: c.paymentDetails.notes,
-    isBadge: false,
-  },
-];
-
+import { updateCustomerPayment } from "@/services/customers-apis";
 
 function PaymentDetailsCard({ customer }: { customer: Customer }) {
   const [editing, setEditing] = useState(false);
   const [formState, setFormState] = useState(customer);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const fields = buildPaymentFields(customer);
+  const fields = [
+    { id: "payment_mode", label: "Payment Mode" },
+    { id: "platform", label: "Platform" },
+    { id: "payment_terms", label: "Payment Terms" },
+    { id: "notes", label: "Notes" },
+  ];
+
+  const handleEdit = () => {
+    if (!editing) {
+      setFormState(customer); // reset to latest data
+    }
+    setEditing(true);
+  };
+
+  const handleCancel = () => {
+    setFormState(customer); // reset changes
+    setEditing(false);
+    setError(null);
+  };
+
+  const handleSave = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      await updateCustomerPayment({
+        user_id: customer._id,
+        payload: {
+          payment_mode: formState.paymentDetails?.payment_mode || "",
+          platform: formState.paymentDetails?.platform || "",
+          payment_terms: formState.paymentDetails?.payment_terms || "",
+          notes: formState.paymentDetails?.notes || "",
+        },
+      });
+
+      setEditing(false);
+    } catch (err) {
+      setError("Failed to update payment details.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <SectionCard
@@ -43,16 +59,11 @@ function PaymentDetailsCard({ customer }: { customer: Customer }) {
       subtitle="Know where the dollar comes from."
       icon={<DollarSign className="w-4 h-4" />}
       isEditing={editing}
-      onEdit={() => {
-        setEditing(!editing);
-      }}
-      onCancel={() => {
-        setEditing(false);
-      }}
-      onSave={() => {
-        setEditing(false);
-      }}
+      onEdit={handleEdit}
+      onCancel={handleCancel}
+      onSave={handleSave}
       editLabel={editing ? "Save" : "Edit"}
+      isLoading={loading}
     >
       <FieldGrid cols={3}>
         {fields.map((f) => (
@@ -74,6 +85,13 @@ function PaymentDetailsCard({ customer }: { customer: Customer }) {
           />
         ))}
       </FieldGrid>
+
+      {/* Error UI */}
+      {error && (
+        <div className="bg-red-50 mt-4 px-3 py-2 border border-red-200 rounded-md text-red-600 text-sm">
+          {error}
+        </div>
+      )}
     </SectionCard>
   );
 }
