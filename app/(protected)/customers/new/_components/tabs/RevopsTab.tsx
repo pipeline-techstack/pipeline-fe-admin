@@ -1,76 +1,141 @@
 "use client";
 
-import { useWorkbooks } from "@/hooks/use-wb";
-import RevopsTable from "../RevopsTable";
-import { BookOpen, Zap } from "lucide-react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  cambookColumns,
-  enrichmentColumns,
-  workbookColumns,
-} from "@/lib/config/revops/headers";
-import { useEnrichments } from "@/hooks/use-enrichment";
-import { useCambook } from "@/hooks/use-cambook";
+import RevopsTable from "../Revops/RevopsTable";
+import { configMap } from "@/lib/config/revops/revops-map";
+import { DuplicateWorkbookDialog } from "@/app/(protected)/workbooks/components/duplicate-wb-dialog";
+import CostModal from "@/app/(protected)/workbooks/components/cost-estimate-dialog";
+import { CampbookDialog } from "../Revops/CambookDialoguebox";
 
-export function RevopsTab({
-  id,
-  name,
-  email,
-}: {
-  id: string;
-  name: string;
-  email: string;
-}) {
+export function RevopsTab({ id, name, email }) {
   const router = useRouter();
-  const wb = useWorkbooks(id);
-  const enrich = useEnrichments(id);
-  const cambook = useCambook(id);
-  console.log("cambook data ", cambook);
 
-  const handleWookbookViewMore = () => {
-    router.push(
-      `/customers/new/${id}/revops/workbooks?name=${name}&email=${email}`,
-    );
+  // For Enrichment
+  const [open, setOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [activeType, setActiveType] = useState(null);
+
+  // For workbooks
+  const [isDuplicateOpen, setIsDuplicateOpen] = useState(false);
+  const [isCostOpen, setIsCostOpen] = useState(false);
+
+  const [selectedWorkbook, setSelectedWorkbook] = useState<any>(null);
+  const [costWorkbook, setCostWorkbook] = useState<any>(null);
+
+  const [newName, setNewName] = useState("");
+  const [userEmail, setUserEmail] = useState("");
+  const [isDuplicating, setIsDuplicating] = useState(false);
+
+  const handleCostClick = (row: any) => {
+    setCostWorkbook(row);
+    setIsCostOpen(true);
   };
-  const handleEnrichViewMore = () => {
-    router.push(
-      `/customers/new/${id}/revops/enrichments?name=${name}&email=${email}`,
-    );
+
+  const handleDuplicate = (row: any) => {
+    setSelectedWorkbook(row);
+    setNewName(`${row.name} Copy`);
+    setUserEmail(row.user_email || "");
+    setIsDuplicateOpen(true);
   };
-  const handleCambookViewMore = () => {
-    router.push(
-      `/customers/new/${id}/revops/campbooks?name=${name}&email=${email}`,
-    );
+
+  // for Campbook
+  const [isCampbookOpen, setIsCampbookOpen] = useState(false);
+  const [campbookMode, setCampbookMode] = useState<"new" | "edit">("new");
+  const [selectedCampbook, setSelectedCampbook] = useState<any>(null);
+  const handleCreateCampbook = () => {
+    setCampbookMode("new");
+    setSelectedCampbook(null);
+    setIsCampbookOpen(true);
+  };
+
+  const handleEditCampbook = (row: any) => {
+    setCampbookMode("edit");
+    setSelectedCampbook(row);
+    setIsCampbookOpen(true);
   };
   return (
-    <div className="flex flex-col gap-5">
-      <RevopsTable
-        title="Workbooks"
-        subtitle="Review owners and workbook operating costs."
-        icon={<BookOpen className="w-4 h-4" />}
-        data={wb.data?.workbooks}
-        handleViewMore={handleWookbookViewMore}
-        columns={workbookColumns}
-        loading={wb.isLoading}
+    <>
+      <div className="flex flex-col gap-5">
+        {Object.entries(configMap).map(([key, config]) => {
+          const query = config.hook(id);
+
+          const handleView = (item: any) => {
+            setSelectedItem(item);
+            setActiveType(key);
+            setOpen(true);
+          };
+
+          const handleViewMore = () => {
+            router.push(
+              `/customers/new/${id}/revops/${config.route}?name=${name}&email=${email}`,
+            );
+          };
+
+          const columns =
+            typeof config.getColumns === "function"
+              ? key === "workbooks"
+                ? config.getColumns(handleCostClick, handleDuplicate)
+                : key === "campbooks"
+                  ? config.getColumns(handleEditCampbook, () => {})
+                  : config.getColumns(handleView, () => {})
+              : config.getColumns;
+
+          return (
+            <RevopsTable
+              key={key}
+              title={config.title}
+              subtitle={config.subtitle}
+              icon={config.icon}
+              data={query.data?.[config.dataKey] ?? []}
+              loading={query.isLoading}
+              columns={columns}
+              handleViewMore={handleViewMore}
+              onEdit={key === "campbooks" ? handleCreateCampbook : undefined}
+              editLabel={key === "campbooks" ? "Create" : undefined}
+            />
+          );
+        })}
+      </div>
+
+      {/* ✅ Dynamic Dialog */}
+      {activeType &&
+        configMap[activeType].Dialog &&
+        (() => {
+          const Dialog = configMap[activeType].Dialog;
+          return (
+            <Dialog open={open} onOpenChange={setOpen} data={selectedItem} />
+          );
+        })()}
+
+      {/* Duplicate Workbook Dialog */}
+      <DuplicateWorkbookDialog
+        isOpen={isDuplicateOpen}
+        onClose={() => setIsDuplicateOpen(false)}
+        workbookName={selectedWorkbook?.name || ""}
+        newName={newName}
+        userEmail={userEmail}
+        isLoading={isDuplicating}
+        onNewNameChange={setNewName}
+        onUserEmailChange={setUserEmail}
+        onConfirm={handleDuplicate}
       />
-      <RevopsTable
-        title="Enrichments"
-        subtitle="Prompt and config-driven enrichments."
-        icon={<Zap className="w-4 h-4" />}
-        data={enrich.data?.enrichments ?? []}
-        handleViewMore={handleEnrichViewMore}
-        columns={enrichmentColumns}
-        loading={enrich.isLoading}
+
+      {/* Cost Modal Workbook Dialog */}
+      <CostModal
+        isOpen={isCostOpen}
+        onClose={() => setIsCostOpen(false)}
+        workbook={costWorkbook}
       />
-      <RevopsTable
-        title="Campbook"
-        subtitle="Map workbooks to campaigns."
-        icon={<Zap className="w-4 h-4" />}
-        data={cambook.data?.cambooks ?? []}
-        handleViewMore={handleCambookViewMore}
-        columns={cambookColumns}
-        loading={cambook.isLoading}
+
+      {/* Campbook Modal */}
+      <CampbookDialog
+        open={isCampbookOpen}
+        onClose={() => setIsCampbookOpen(false)}
+        mode={campbookMode}
+        campaignId={selectedCampbook?.campaignId || ""}
+        selectedCampbook={selectedCampbook} 
       />
-    </div>
+    </>
   );
 }

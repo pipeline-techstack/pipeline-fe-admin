@@ -1,4 +1,4 @@
-import { saveWorkbookConfiguration } from "@/services/cambook-apis";
+import { saveWorkbookConfiguration } from "@/services/campbook-apis";
 import { FormData, WorkbookConfigurationRequest } from "@/app/(protected)/wb-config/types/api";
 
 export const useSaveConfiguration = (

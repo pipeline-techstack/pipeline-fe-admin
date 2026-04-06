@@ -1,4 +1,4 @@
-import { fetchWorkbookColumns } from "@/services/cambook-apis";
+import { fetchWorkbookColumns } from "@/services/campbook-apis";
 import { Column } from "@/app/(protected)/wb-config/types/api";
 import { useState } from "react";
 

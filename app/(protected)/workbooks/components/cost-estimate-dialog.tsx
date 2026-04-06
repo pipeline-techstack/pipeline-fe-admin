@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Workbook } from "../types/wb-table";
 import { getEstimatedCost } from "@/services/cost-estimate-apis";
 import CostColumn from "./cost-column";
+import SpinLoader from "@/components/common/spin-loader";
 
 interface CostModalProps {
   isOpen: boolean;
@@ -51,6 +52,9 @@ const CostModal: React.FC<CostModalProps> = ({ isOpen, onClose, workbook }) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Workbook Cost</DialogTitle>
+        </DialogHeader>
         <Tabs defaultValue="workbook" className="mt-6">
           <TabsList className="justify-start bg-transparent p-0 border-gray-200 border-b rounded-none w-full">
             <TabsTrigger
@@ -69,9 +73,7 @@ const CostModal: React.FC<CostModalProps> = ({ isOpen, onClose, workbook }) => {
 
           <TabsContent value="workbook" className="mt-6">
             {loading && (
-              <div className="py-8 text-gray-500 text-center">
-                Loading workbook cost...
-              </div>
+              <SpinLoader/>
             )}
 
             {error && (
@@ -182,7 +184,10 @@ const CostModal: React.FC<CostModalProps> = ({ isOpen, onClose, workbook }) => {
           </TabsContent>
 
           <TabsContent value="column" className="mt-6">
-            <CostColumn workbookId={workbook?.id} workbookTotalCost={workbookTotalCost}/>
+            <CostColumn
+              workbookId={workbook?.id}
+              workbookTotalCost={workbookTotalCost}
+            />
           </TabsContent>
         </Tabs>
       </DialogContent>

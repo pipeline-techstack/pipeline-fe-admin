@@ -9,12 +9,14 @@ import { RevopsTab } from "../_components/tabs/RevopsTab";
 import { CUSTOMER_DATA } from "../customers.data";
 import { useParams } from "next/navigation";
 import { useCustomerDetails } from "@/hooks/use-customer-details";
+import OutboundTab from "../_components/tabs/OutboundTab";
 
 
-type Tab = "general" | "workbook-configs";
+type Tab = "general" | "revops" | "outbound";
 const TABS: TabDef<Tab>[] = [
   { id: "general", label: "General" },
-  { id: "workbook-configs", label: "RevOps config" },
+  { id: "revops", label: "RevOps config" },
+  { id: "outbound", label: "Outbound config" },
 ];
 
 export default function CustomerDetailPage() {
@@ -32,7 +34,11 @@ export default function CustomerDetailPage() {
   if (error || !data) {
     return <div>Failed to load customer</div>;
   }
-
+  const tabComponents = {
+  general: <GeneralTab customer={data} />,
+  revops: <RevopsTab id={id} name={data?.name} email={data?.email} />,
+  outbound: <OutboundTab id={id} />,
+};
   return (
     <PageWrapper
       title={data.name}
@@ -45,11 +51,8 @@ export default function CustomerDetailPage() {
         activeTab={activeTab}
         onTabChange={setActiveTab}
       >
-        {activeTab === "general" ? (
-          <GeneralTab customer={data} />
-        ) : (
-          <RevopsTab id={id} name={data?.name} email={data?.email}/>
-        )}
+       {tabComponents[activeTab] || null}
+
       </CustomerDetailLayout>
     </PageWrapper>
   );

@@ -12,7 +12,7 @@ export const getWorkbooks = async ({
   const token = getToken();
   if (!token) throw new Error("Authentication required");
 
-  let url = `${process.env.NEXT_PUBLIC_PERMISSIONS_URL}/admin/workbooks/${id}?page=${page}&page_size=${page_size}`;
+  let url = `${process.env.NEXT_PUBLIC_CUSTOMER_MANAGEMENT_URL}/admin/workbooks/${id}?page=${page}&page_size=${page_size}`;
 
   const res = await fetch(url, {
     method: "GET",

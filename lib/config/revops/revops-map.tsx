@@ -1,29 +1,49 @@
 import { BookOpen, Layers, Zap } from "lucide-react";
-import { cambookColumns, enrichmentColumns, workbookColumns } from "./headers";
+import {
+  campbookColumns,
+  enrichmentColumns,
+  workbookColumns,
+} from "./headers";
+
 import { useWorkbooks } from "@/hooks/use-wb";
-import { useCambook } from "@/hooks/use-cambook";
 import { useEnrichments } from "@/hooks/use-enrichment";
+import { EnrichPromptsDialogue } from "@/app/(protected)/customers/new/_components/Revops/EnrichPromptsDialogue";
+import { useCampbook } from "@/hooks/use-campbook";
 
 export const configMap = {
   workbooks: {
     title: "Workbooks",
     subtitle: "Review owners and workbook operating costs.",
     icon: <BookOpen className="w-4 h-4" />,
-    columns: workbookColumns,
-    hook: useWorkbooks
+    getColumns: workbookColumns,
+    hook: useWorkbooks,
+    Dialog: null,
+    dataKey: "workbooks",
+    route: "workbooks",
+    isPaginated: true,
   },
+
   campbooks: {
     title: "Campbook",
     subtitle: "Manage campaign configurations and settings.",
     icon: <Layers className="w-4 h-4" />,
-    columns: cambookColumns,
-    hook: useCambook
+    getColumns: campbookColumns,
+    hook: useCampbook,
+    Dialog: null,
+    dataKey: "campbooks",
+    route: "campbooks",
+    isPaginated: false,
   },
+
   enrichments: {
     title: "Enrichments",
     subtitle: "Track and monitor enrichment processes.",
     icon: <Zap className="w-4 h-4" />,
-    columns: enrichmentColumns,
-    hook: useEnrichments
+    getColumns: enrichmentColumns,
+    hook: useEnrichments,
+    Dialog: EnrichPromptsDialogue,
+    dataKey: "enrichments",
+    route: "enrichments",
+    isPaginated: false,
   },
 };

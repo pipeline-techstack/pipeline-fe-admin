@@ -24,11 +24,11 @@ const getAuthHeaders = () => {
   };
 };
 
-export async function getCambooks(id:string): Promise<
+export async function getCampbooks(id:string): Promise<
   WorkbookConfiguration[]
 > {
   try {
-    const API_URL = `${BASE_URL}/admin/all/configure/workbook-campaign?user_id=&${id}`;
+    const API_URL = `${BASE_URL}/admin/all/configure/workbook-campaign?user_id=${id}`;
     const res = await fetch(API_URL, {
       method: "GET",
       headers: getAuthHeaders(),
@@ -60,7 +60,7 @@ export async function fetchWorkbookColumns(
   workbookId: string
 ): Promise<Column[]> {
   try {
-    const API_URL = `${BASE_URL}/admin/columns/${workbookId}`;
+    const API_URL = `${process.env.NEXT_PUBLIC_WORKBOOK_URL_DEV}/admin/columns/${workbookId}`;
     const res = await fetch(API_URL, {
       method: "GET",
       headers: getAuthHeaders(),
@@ -92,7 +92,7 @@ export async function getWorkbookConfiguration(
   campaignId: string
 ): Promise<WorkbookConfigurationResponse | null> {
   try {
-    const API_URL = `${BASE_URL}/admin/configure/workbook-campaign/${campaignId}`;
+    const API_URL = `${process.env.NEXT_PUBLIC_WORKBOOK_URL_DEV}/admin/configure/workbook-campaign/${campaignId}`;
     const res = await fetch(API_URL, {
       method: "GET",
       headers: getAuthHeaders(),
@@ -116,7 +116,7 @@ export async function saveWorkbookConfiguration(
   configurations: WorkbookConfigurationRequest[]
 ): Promise<WorkbookConfigurationResponse[]> {
   try {
-    const API_URL = `${BASE_URL}/admin/configure/workbook-campaign`;
+    const API_URL = `${process.env.NEXT_PUBLIC_WORKBOOK_URL_DEV}/admin/configure/workbook-campaign`;
     const res = await fetch(API_URL, {
       method: "POST",
       headers: getAuthHeaders(),

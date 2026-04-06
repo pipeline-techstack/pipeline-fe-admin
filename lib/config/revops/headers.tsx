@@ -9,9 +9,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-const placeholder = () => alert("Dialog / action coming soon!");
 
-export const workbookColumns = [
+export const workbookColumns = (handleCostClick, handleDuplicate) => [
   {
     key: "name",
     header: "Name",
@@ -25,23 +24,27 @@ export const workbookColumns = [
   {
     key: "actions",
     header: "Actions",
-    className: "",
     render: (row) => (
       <div className="flex items-center gap-2">
         <Button
-          variant={"outline"}
-          size={"sm"}
-          onClick={placeholder}
-          className=""
+          variant="outline"
+          size="sm"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleCostClick(row); // ✅ your function
+          }}
         >
           <DollarSign className="w-3 h-3" />
           Cost
         </Button>
+
         <Button
-          variant={"outline"}
-          size={"sm"}
-          onClick={placeholder}
-          className=""
+          variant="outline"
+          size="sm"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleDuplicate(row); // ✅ your function
+          }}
         >
           <Share className="w-3 h-3" />
           Share
@@ -51,7 +54,7 @@ export const workbookColumns = [
   },
 ];
 
-export const cambookColumns = [
+export const campbookColumns = (onEditCampbook) => [
   {
     key: "campaign",
     header: "Campaign",
@@ -60,20 +63,17 @@ export const cambookColumns = [
   {
     key: "workbooks",
     header: "Workbooks",
-    className: " text-secondary-foreground",
-
+    className: "text-secondary-foreground",
     render: (row: any) => {
       const list = row.workbooks || [];
       const hidden = list.slice(2);
 
       return (
         <div className="flex flex-wrap gap-2">
-          {/* visible badges */}
           {list.slice(0, 2).map((wb: string, i: number) => (
-            <Badge key={i} label={wb} variant="info" />
+            <Badge key={i} label={wb.name} variant="info" />
           ))}
 
-          {/* +X more with hover */}
           {hidden.length > 0 && (
             <TooltipProvider>
               <Tooltip>
@@ -83,14 +83,10 @@ export const cambookColumns = [
                   </div>
                 </TooltipTrigger>
 
-                <TooltipContent className="max-w-xs">
-                  <div className="flex flex-col gap-1">
-                    {hidden.map((wb: string, i: number) => (
-                      <span key={i} className="text-sm">
-                        {wb}
-                      </span>
-                    ))}
-                  </div>
+                <TooltipContent>
+                  {hidden.map((wb: string, i: number) => (
+                    <div key={i}>{wb.name}</div>
+                  ))}
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -102,45 +98,57 @@ export const cambookColumns = [
   {
     key: "actions",
     header: "Actions",
-    className: "",
     render: (row: any) => (
-      <Button variant="outline" size="sm">
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={(e) => {
+          e.stopPropagation();
+          onEditCampbook(row); 
+        }}
+      >
         Edit
       </Button>
     ),
   },
 ];
 
-export const enrichmentColumns = [
+export const enrichmentColumns = (onView, onDelete) => [
   {
     key: "name",
     header: "Enrichment Name",
-    className: " text-secondary-foreground",
+    className: "text-secondary-foreground",
   },
   {
     key: "type",
     header: "Type",
-    className: "",
     render: (row) => <Badge label={row.type} variant={"info"} />,
   },
   {
     key: "created_at",
     header: "Created At",
-    className: " text-secondary-foreground",
   },
   {
     key: "actions",
     header: "Actions",
-    className: "",
-    render: () => (
-      <Button
-        variant={"outline"}
-        size={"sm"}
-        onClick={placeholder}
-        className=""
-      >
-        Edit
-      </Button>
+    render: (row) => (
+      <div className="flex items-center gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onView(row)}  
+        >
+          View
+        </Button>
+
+        {/* <Button
+          variant="destructive"
+          size="sm"
+          onClick={() => onDelete(row)}
+        >
+          Delete
+        </Button> */}
+      </div>
     ),
   },
 ];
