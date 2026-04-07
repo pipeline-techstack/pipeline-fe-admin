@@ -19,10 +19,6 @@ import PaymentDetailsCard from "../general/payment-details";
 import IntegrationsCard from "../general/platform-integration";
 import OrganizationCard from "../general/organization-details";
 
-
-
-
-
 export const campaignPermissionColumns = [
   {
     key: "campaigns",
@@ -70,7 +66,6 @@ export const campaignPermissionColumns = [
     ),
   },
 ];
-
 
 export default function GeneralTab({ customer }: { customer: Customer }) {
   // const paymentFields = buildPaymentFields(customer);

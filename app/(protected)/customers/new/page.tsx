@@ -58,7 +58,7 @@ const columns = [
 ];
 
 export default function CustomerPage() {
-  const { customers, isLoading, search, setSearch } = useCustomers();
+  const { customers, isLoading, search, setSearch, error } = useCustomers();
   const [datapage, setDatapage] = useState(1);
   const router = useRouter();
 
@@ -92,6 +92,7 @@ export default function CustomerPage() {
         onPageChange={setDatapage}
         onRowClick={handleclick}
         loading={isLoading}
+        error={error}
       />
     </PageWrapper>
   );

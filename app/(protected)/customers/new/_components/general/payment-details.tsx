@@ -3,6 +3,7 @@ import SectionCard, { FieldGrid, FieldItem } from "../Card";
 import { Customer } from "@/lib/types/customer-types";
 import { DollarSign } from "lucide-react";
 import { updateCustomerPayment } from "@/services/customers-apis";
+import ErrorState from "@/components/common/error";
 
 function PaymentDetailsCard({ customer }: { customer: Customer }) {
   const [editing, setEditing] = useState(false);
@@ -88,9 +89,7 @@ function PaymentDetailsCard({ customer }: { customer: Customer }) {
 
       {/* Error UI */}
       {error && (
-        <div className="bg-red-50 mt-4 px-3 py-2 border border-red-200 rounded-md text-red-600 text-sm">
-          {error}
-        </div>
+       <ErrorState/>
       )}
     </SectionCard>
   );

@@ -4,6 +4,7 @@ import { User } from "lucide-react";
 import { Customer } from "@/lib/types/customer-types";
 import { updateCustomer } from "@/services/customers-apis";
 import { useQueryClient } from "@tanstack/react-query";
+import ErrorState from "@/components/common/error";
 
 const buildCustomerFields = (c: Customer) => [
   { id: "name", label: "Name", key: "name", isEditable: true },
@@ -144,9 +145,7 @@ const CustomerDetails = ({ customer }: { customer: Customer }) => {
 
       {/* Error UI */}
       {error && (
-        <div className="bg-red-50 mt-4 px-3 py-2 border border-red-200 rounded-md text-red-600 text-sm">
-          {error}
-        </div>
+        <ErrorState/>
       )}
     </SectionCard>
   );

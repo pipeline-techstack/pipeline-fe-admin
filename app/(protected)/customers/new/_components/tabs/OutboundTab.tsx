@@ -1,6 +1,6 @@
 import React from 'react'
 
-function OutboundTab(id:string) {
+function OutboundTab({id}:{id:string}) {
   return (
     <div>Coming soon..</div>
   )

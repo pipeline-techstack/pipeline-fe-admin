@@ -47,15 +47,15 @@ export const useCustomers = () => {
         company: item.companyName || "",
         date: formatDate(item.createdAt),
         phone: item.phone_e164 || "",
-        mode: modes, // 👈 now it's an array
+        mode: modes, 
       };
     });
   }, [filteredRawCustomers]);
 
   return {
-    customers: formattedCustomers, // ✅ already formatted
+    customers: formattedCustomers, 
     isLoading,
-    error,
+    error: !!error,
     search,
     setSearch,
   };

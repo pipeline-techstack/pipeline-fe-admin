@@ -1,5 +1,7 @@
 "use client";
 
+import PageWrapper from "./page-wrapper";
+
 type SpinLoaderProps = {
   size?: "sm" | "md" | "lg" | "xl";
   fullScreen?: boolean;
@@ -20,7 +22,7 @@ const innerSizeMap = {
   xl: "w-[92%] h-[92%]",
 };
 
-const SpinLoader = ({ size = "md", fullScreen = false }: SpinLoaderProps) => {
+const SpinLoader = ({ size = "md", fullScreen = true }: SpinLoaderProps) => {
   const loader = (
     <div
       className={`relative ${sizeMap[size]} rounded-full bg-loader animate-spin`}
@@ -33,13 +35,19 @@ const SpinLoader = ({ size = "md", fullScreen = false }: SpinLoaderProps) => {
   );
 
   if (!fullScreen) {
-    return <div className="flex items-center justify-center">{loader}</div>;
+    return (
+      <PageWrapper>
+        <div className="flex items-center justify-center">{loader}</div>
+      </PageWrapper>
+    );
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {loader}
-    </div>
+    <PageWrapper>
+      <div className="fixed inset-0 z-50 flex items-center justify-center">
+        {loader}
+      </div>
+    </PageWrapper>
   );
 };
 

@@ -14,18 +14,18 @@ export const workbookColumns = (handleCostClick, handleDuplicate) => [
   {
     key: "name",
     header: "Name",
-    className: "text-secondary-foreground",
+    className: "min-w-[300px] text-secondary-foreground",
   },
   {
     key: "updated_at",
     header: "Updated At",
-    className: "text-secondary-foreground",
+    className: "min-w-[200px] text-secondary-foreground",
   },
   {
     key: "actions",
     header: "Actions",
     render: (row) => (
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-3 ">
         <Button
           variant="outline"
           size="sm"
@@ -58,12 +58,12 @@ export const campbookColumns = (onEditCampbook) => [
   {
     key: "campaign",
     header: "Campaign",
-    className: "text-secondary-foreground",
+    className: "min-w-[250px] text-secondary-foreground",
   },
   {
     key: "workbooks",
     header: "Workbooks",
-    className: "text-secondary-foreground",
+    className: "min-w-[300px] text-secondary-foreground",
     render: (row: any) => {
       const list = row.workbooks || [];
       const hidden = list.slice(2);
@@ -104,7 +104,7 @@ export const campbookColumns = (onEditCampbook) => [
         size="sm"
         onClick={(e) => {
           e.stopPropagation();
-          onEditCampbook(row); 
+          onEditCampbook(row);
         }}
       >
         Edit
@@ -117,27 +117,25 @@ export const enrichmentColumns = (onView, onDelete) => [
   {
     key: "name",
     header: "Enrichment Name",
-    className: "text-secondary-foreground",
+    className: "min-w-[250px] text-secondary-foreground",
   },
   {
     key: "type",
     header: "Type",
-    render: (row) => <Badge label={row.type} variant={"info"} />,
+    className: "min-w-[150px]",
   },
   {
     key: "created_at",
     header: "Created At",
+    className: "min-w-[200px]",
   },
   {
     key: "actions",
     header: "Actions",
+    // className:"w-1/4",
     render: (row) => (
-      <div className="flex items-center gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => onView(row)}  
-        >
+      <div className="flex items-center gap-3">
+        <Button variant="outline" size="sm" onClick={() => onView(row)}>
           View
         </Button>
 

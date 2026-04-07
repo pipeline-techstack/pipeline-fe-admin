@@ -12,12 +12,14 @@ import { Column } from "@/lib/types/table-types";
 import { TableFooter } from "./table-footer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDynamicPageSize } from "@/hooks/use-dynamic-page";
+import ErrorState from "../error";
+import { cn } from "@/lib/utils";
 
 interface DataTableProps<T> {
   data: T[];
   columns: Column<T>[];
   onRowClick?: (row: T) => void;
-
+  error?: boolean;
   footer?: boolean | React.ReactNode;
 
   // pagination support
@@ -34,6 +36,7 @@ export function DataTable<T extends { _id?: string }>({
   data,
   columns,
   onRowClick,
+  error,
   footer,
   loading,
   total = data?.length,
@@ -72,6 +75,15 @@ export function DataTable<T extends { _id?: string }>({
   //   totalPages: Math.ceil(total / effectivePageSize),
   //   data
   // });
+
+  if (error) {
+  return (
+    <div className="flex items-center justify-center h-full bg-white">
+      <ErrorState />
+    </div>
+  );
+}
+
   return (
     <div className="flex flex-col bg-white h-full">
       {/* Scrollable Table */}
