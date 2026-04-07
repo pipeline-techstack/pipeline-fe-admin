@@ -9,8 +9,6 @@ import { useWorkbooks } from "@/hooks/use-wb";
 import { useEnrichments } from "@/hooks/use-enrichment";
 import { EnrichPromptsDialogue } from "@/app/(protected)/customers/new/_components/Revops/EnrichPromptsDialogue";
 import { useCampbook } from "@/hooks/use-campbook";
-import { campaignsColumns } from "../outboud/headers";
-import { useOutbound } from "@/hooks/use-outbound";
 
 export const configMap = {
   workbooks: {
@@ -34,7 +32,7 @@ export const configMap = {
     Dialog: null,
     dataKey: "campbooks",
     route: "campbooks",
-    isPaginated: true,
+    isPaginated: false,
   },
 
   enrichments: {
@@ -46,18 +44,6 @@ export const configMap = {
     Dialog: EnrichPromptsDialogue,
     dataKey: "enrichments",
     route: "enrichments",
-    isPaginated: true,
-  },
-
-  campaigns: {
-    title: "Campaigns",
-    subtitle: "All campaigns for this user, share to give access to other users",
-    icon: <Shield className="w-4 h-4" />,
-    getColumns: campaignsColumns,
-    hook: useOutbound,
-    Dialog: null,
-    dataKey: null,
-    route: "campaigns",
-    isPaginated: true,
+    isPaginated: false,
   },
 };

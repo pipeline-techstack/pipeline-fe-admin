@@ -33,7 +33,7 @@ export const useWorkbooks = (
 
         total: data.pagination?.total_items ?? 0,
         page: data.pagination?.current_page ?? 1,
-        pageSize: data.pagination?.page_size ?? 10,
+        pageSize: data.pagination?.page_size ?? 20,
         totalPages: data.pagination?.total_pages ?? 1,
       };
     },

@@ -12,8 +12,10 @@ import { useRouter } from "next/navigation";
 import { DuplicateWorkbookDialog } from "@/app/(protected)/workbooks/components/duplicate-wb-dialog";
 import CostModal from "@/app/(protected)/workbooks/components/cost-estimate-dialog";
 import { CampbookDialog } from "../../../_components/Revops/CambookDialoguebox";
+import { outboudConfigMap } from "@/lib/config/outboud/outbound-map";
 
 type ConfigType = keyof typeof configMap;
+type TableType = "workbooks" | "campbooks" | "enrichments" | "campaigns";
 
 function Page() {
   const router = useRouter();
@@ -90,8 +92,11 @@ function Page() {
   };
 
   //  CONFIG
-
-  const config = configMap[type];
+  const typedType: TableType = type as TableType;
+  const config =
+    typedType === "campaigns"
+      ? outboudConfigMap["campaigns"] // now TS knows this is safe
+      : configMap[typedType as Exclude<TableType, "campaigns">];
 
   if (!config) return <div>Invalid type</div>;
 
