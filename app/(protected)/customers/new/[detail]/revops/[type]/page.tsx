@@ -13,7 +13,6 @@ import { DuplicateWorkbookDialog } from "@/app/(protected)/workbooks/components/
 import CostModal from "@/app/(protected)/workbooks/components/cost-estimate-dialog";
 import { CampbookDialog } from "../../../_components/Revops/CambookDialoguebox";
 
-
 type ConfigType = keyof typeof configMap;
 
 function Page() {
@@ -34,16 +33,14 @@ function Page() {
   const [datapage, setDatapage] = useState(1);
   const pageSize = 20;
 
- 
   //  COMMON STATE (enrichment dialog)
- 
+
   const [open, setOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [activeType, setActiveType] = useState<ConfigType | null>(null);
 
- 
   //  WORKBOOK STATE
- 
+
   const [isDuplicateOpen, setIsDuplicateOpen] = useState(false);
   const [isCostOpen, setIsCostOpen] = useState(false);
 
@@ -66,9 +63,8 @@ function Page() {
     setIsDuplicateOpen(true);
   };
 
- 
   //  CAMPBOOK STATE
- 
+
   const [isCampbookOpen, setIsCampbookOpen] = useState(false);
   const [campbookMode, setCampbookMode] = useState<"new" | "edit">("new");
   const [selectedCampbook, setSelectedCampbook] = useState<any>(null);
@@ -85,18 +81,16 @@ function Page() {
     setIsCampbookOpen(true);
   };
 
- 
   //  ENRICHMENT VIEW
- 
+
   const handleView = (item: any) => {
     setSelectedItem(item);
     setActiveType(type);
     setOpen(true);
   };
 
- 
   //  CONFIG
- 
+
   const config = configMap[type];
 
   if (!config) return <div>Invalid type</div>;
@@ -104,22 +98,19 @@ function Page() {
   const { title, subtitle, icon, getColumns, hook, dataKey, isPaginated } =
     config;
 
- 
   //  DATA FETCH
- 
   const { data, isLoading } = hook(id, datapage, pageSize);
-  const tableData = data?.[dataKey] ?? [];
+  const tableData = dataKey ? (data?.[dataKey] ?? []) : (data ?? []);
 
- 
   //  COLUMN LOGIC (IMPORTANT)
- 
+
   const columns =
     typeof getColumns === "function"
       ? type === "workbooks"
         ? getColumns(handleCostClick, handleDuplicate)
         : type === "campbooks"
-        ? getColumns(handleEditCampbook, () => {})
-        : getColumns(handleView, () => {})
+          ? getColumns(handleEditCampbook, () => {})
+          : getColumns(handleView, () => {})
       : getColumns;
 
   useEffect(() => {
@@ -145,7 +136,7 @@ function Page() {
               <div className="flex justify-end mb-3">
                 <button
                   onClick={handleCreateCampbook}
-                  className="px-3 py-1.5 text-sm bg-primary text-white rounded-md"
+                  className="bg-primary px-3 py-1.5 rounded-md text-white text-sm"
                 >
                   Create Campbook
                 </button>
@@ -170,9 +161,8 @@ function Page() {
         </SectionCard>
       </PageWrapper>
 
-      
       {/*  ENRICHMENT DIALOG */}
-      
+
       {activeType &&
         configMap[activeType].Dialog &&
         (() => {
@@ -182,9 +172,8 @@ function Page() {
           );
         })()}
 
-      
       {/*  WORKBOOK DIALOGS */}
-      
+
       <DuplicateWorkbookDialog
         isOpen={isDuplicateOpen}
         onClose={() => setIsDuplicateOpen(false)}
@@ -203,9 +192,8 @@ function Page() {
         workbook={costWorkbook}
       />
 
-      
       {/*  CAMPBOOK DIALOG */}
-      
+
       <CampbookDialog
         open={isCampbookOpen}
         onClose={() => setIsCampbookOpen(false)}

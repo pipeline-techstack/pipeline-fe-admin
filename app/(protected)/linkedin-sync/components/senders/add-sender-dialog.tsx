@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import { useHeyreachSenders } from "../../hooks/useHeyrechSenders";
+import { useHeyreachSenders } from "../../../../../hooks/useHeyrechSenders";
 import { addLinkedinSender } from "@/services/linkedin-senders";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";

@@ -1,13 +1,28 @@
 import { getToken } from "@/lib/auth";
-import { CampaignApiResponse } from "../types/campaign";
+import { CampaignApiResponse } from "../app/(protected)/linkedin-sync/types/campaign";
 
-const BASE_URL = process.env.NEXT_PUBLIC_PERMISSIONS_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_CUSTOMER_MANAGEMENT_URL;
 
-/**
- * Fetch all admin tasks (campaigns)
- * @param status - Optional filter by status (e.g., 'pending', 'completed')
- * @returns Promise with campaign tasks data
- */
+
+export const  getCampaignByUserId = async (userId: string): Promise<CampaignApiResponse> => {
+  const token = getToken();
+  if (!token) throw new Error("Authentication required");
+
+  const url = new URL(`${BASE_URL}/campaign-engagement/admin/campaigns-engagements?query_user_id=${userId}`);
+  const res = await fetch(url.toString(), {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error(`Failed to fetch campaign tasks: ${res.status} ${res.statusText}`);
+  }
+
+  return res.json();
+}
 export const getAdminTasks = async (status?: string): Promise<CampaignApiResponse> => {
   const token = getToken();
   if (!token) throw new Error("Authentication required");
@@ -32,12 +47,7 @@ export const getAdminTasks = async (status?: string): Promise<CampaignApiRespons
   return res.json();
 };
 
-/**
- * Update a campaign task by linking it with a HeyReach campaign
- * @param taskId - The task ID to update
- * @param heyreachCampaignId - The HeyReach campaign ID to link
- * @returns Promise with response data
- */
+
 export const updateCampaignTask = async (
   taskId: string,
   heyreachCampaignId: string

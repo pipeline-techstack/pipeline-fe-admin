@@ -19,7 +19,7 @@ import CreateCampaignDialog from "./create-campaign-dialog";
 import UpdateCampaignDialog from "./update-campaign-dialog";
 import CampaignPreviewDialog from "./campaign-preview-dialog";
 import { CampaignTask } from "../../types/campaign";
-import { updateCampaignTask, markCampaignAsUpdated } from "../../services/campaign-apis";
+import { updateCampaignTask, markCampaignAsUpdated } from "../../../../../services/campaign-apis";
 import { 
   getLinkedInSenderNames, 
   getTaskTypeDisplay, 
@@ -111,7 +111,7 @@ const CampaignTable = ({ campaigns, onRefresh, isLoading }: CampaignTableProps) 
         <CardContent className="p-8">
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (
-              <Skeleton key={i} className="h-16 w-full" />
+              <Skeleton key={i} className="w-full h-16" />
             ))}
           </div>
         </CardContent>
@@ -182,7 +182,7 @@ const CampaignTable = ({ campaigns, onRefresh, isLoading }: CampaignTableProps) 
                             )}
                           </>
                         ) : (
-                          <span className="text-sm text-gray-500">No senders</span>
+                          <span className="text-gray-500 text-sm">No senders</span>
                         )}
                       </div>
                     </TableCell>
@@ -230,7 +230,7 @@ const CampaignTable = ({ campaigns, onRefresh, isLoading }: CampaignTableProps) 
                       {task.status !== "completed" && (
                         <Button
                           size="sm"
-                          className="bg-[#5569c0] text-white hover:bg-[#3d4c92]"
+                          className="bg-[#5569c0] hover:bg-[#3d4c92] text-white"
                           onClick={() => handleUpdateClick(task)}
                         >
                           <RefreshCw className="w-4 h-4" />

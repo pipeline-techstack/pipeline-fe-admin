@@ -12,36 +12,45 @@ import OutboundTab from "../_components/tabs/OutboundTab";
 import ErrorState from "@/components/common/error";
 import SpinLoader from "@/components/common/spin-loader";
 
-
 type Tab = "general" | "revops" | "outbound";
 const TABS: TabDef<Tab>[] = [
   { id: "general", label: "General" },
-  { id: "revops", label: "RevOps config" },
-  { id: "outbound", label: "Outbound config" },
+  { id: "revops", label: "RevOps" },
+  { id: "outbound", label: "Outbound" },
 ];
 
 export default function CustomerDetailPage() {
-  const {detail} = useParams()
-  const id:string = Array.isArray(detail) ? detail[0] : detail || " "
+  const { detail } = useParams();
+  const id: string = Array.isArray(detail) ? detail[0] : detail || " ";
   const [activeTab, setActiveTab] = useState<Tab>("general");
   const { customer: data, isLoading, error } = useCustomerDetails();
 
+  const renderTabContent = (tab: Tab) => {
+    switch (tab) {
+      case "general":
+        return <GeneralTab customer={data} />;
+      case "revops":
+        return <RevopsTab id={id} name={data?.name} email={data?.email} />;
+      case "outbound":
+        return <OutboundTab id={id} name={data?.name} email={data?.email} />;
+      default:
+        return null;
+    }
+  };
+
+  //TODO: Change these
   if (isLoading) {
-    return <SpinLoader size="lg"/>
+    return <SpinLoader size="lg" fullScreen={false} />;
   }
 
   if (error) {
-  return (
-    <div className="flex items-center justify-center h-full bg-white">
-      <ErrorState />
-    </div>
-  );
-}
-  const tabComponents = {
-  general: <GeneralTab customer={data} />,
-  revops: <RevopsTab id={id} name={data?.name} email={data?.email} />,
-  outbound: <OutboundTab id={id} />,
-};
+    return (
+      <div className="flex justify-center items-center bg-white h-full">
+        <ErrorState />
+      </div>
+    );
+  }
+
   return (
     <PageWrapper
       title={data.name}
@@ -54,8 +63,7 @@ export default function CustomerDetailPage() {
         activeTab={activeTab}
         onTabChange={setActiveTab}
       >
-       {tabComponents[activeTab] || null}
-
+        {renderTabContent(activeTab)}
       </CustomerDetailLayout>
     </PageWrapper>
   );

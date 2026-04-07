@@ -37,14 +37,14 @@ const SpinLoader = ({ size = "md", fullScreen = true }: SpinLoaderProps) => {
   if (!fullScreen) {
     return (
       <PageWrapper>
-        <div className="flex items-center justify-center">{loader}</div>
+        <div className="flex justify-center items-center my-auto">{loader}</div>
       </PageWrapper>
     );
   }
 
   return (
     <PageWrapper>
-      <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div className="z-50 fixed inset-0 flex justify-center items-center">
         {loader}
       </div>
     </PageWrapper>

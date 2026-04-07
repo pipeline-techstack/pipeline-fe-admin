@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { CampaignTask } from '../types/campaign';
-import { getAdminTasks } from '../services/campaign-apis';
+import { getAdminTasks } from '../../../../services/campaign-apis';
 import { toast } from 'sonner';
 
 export const useCampaignTasks = (statusFilter?: string) => {
