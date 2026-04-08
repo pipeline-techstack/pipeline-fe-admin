@@ -1,3 +1,4 @@
+//DELETE
 "use client";
 
 import { useState } from "react";
@@ -8,8 +9,8 @@ import { duplicateWorkbook } from "@/services/wb-apis";
 import { WorkbookSearch } from "./components/wb-search";
 import { WorkbookTable } from "./components/wb-table";
 import { TableFooter } from "../../../components/common/table/table-footer";
-import { DuplicateWorkbookDialog } from "./components/duplicate-wb-dialog";
-import CostModal from "./components/cost-estimate-dialog";
+import { DuplicateWorkbookDialog } from "../customers/new/_components/revops/DuplicateWorkbookDialog";
+import CostModal from "../customers/new/_components/revops/CostModal";
 import PageWrapper from "@/components/common/page-wrapper";
 
 const WorkbooksPage = () => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { DollarSign, Share } from "lucide-react";
+import { DollarSign, Eye, Pencil, Share } from "lucide-react";
 import { Badge } from "@/app/(protected)/customers/new/_components/Card";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,6 +9,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Column } from "@/lib/types/table-types";
+import { calculatePercentage, formatCurrency } from "@/lib/utils";
 
 export const workbookColumns = (handleCostClick, handleDuplicate) => [
   {
@@ -25,7 +27,7 @@ export const workbookColumns = (handleCostClick, handleDuplicate) => [
     key: "actions",
     header: "Actions",
     render: (row) => (
-      <div className="flex items-center gap-3 ">
+      <div className="space-x-2">
         <Button
           variant="outline"
           size="sm"
@@ -70,7 +72,7 @@ export const campbookColumns = (onEditCampbook) => [
 
       return (
         <div className="flex flex-wrap gap-2">
-          {list.slice(0, 2).map((wb: string, i: number) => (
+          {list.slice(0, 1).map((wb: string, i: number) => (
             <Badge key={i} label={wb.name} variant="info" />
           ))}
 
@@ -107,6 +109,7 @@ export const campbookColumns = (onEditCampbook) => [
           onEditCampbook(row);
         }}
       >
+        <Pencil className="w-3 h-3" />
         Edit
       </Button>
     ),
@@ -134,19 +137,58 @@ export const enrichmentColumns = (onView, onDelete) => [
     header: "Actions",
     // className:"w-1/4",
     render: (row) => (
-      <div className="flex items-center gap-3">
+      <div>
         <Button variant="outline" size="sm" onClick={() => onView(row)}>
+          <Eye className="w-3 h-3" />
           View
         </Button>
-
-        {/* <Button
-          variant="destructive"
-          size="sm"
-          onClick={() => onDelete(row)}
-        >
-          Delete
-        </Button> */}
       </div>
+    ),
+  },
+];
+
+
+
+export const columnBreakdownColumns: Column<any>[] = [
+  {
+    key: "column_name",
+    header: "Column",
+    render: (row) => (
+      <div>
+        <div className="">
+          {row.column_name}
+        </div>
+        <div className="mt-1 text-gray-500 text-xs">
+          {row.column_id}
+        </div>
+      </div>
+    ),
+  },
+  {
+    key: "column_type",
+    header: "Type",
+    render: (row) => (
+      <span className="text-sm capitalize">
+        {row.column_type.split("_").join(" ")}
+      </span>
+    ),
+  },
+  {
+    key: "cost",
+    header: "Cost (USD)",
+    render: (row) => (
+      <span className="">
+        {formatCurrency(row.cost)}
+      </span>
+    ),
+  },
+  {
+    key: "percentage",
+    header: "% of Total",
+    render: (row) => (
+      <span className="">
+        {calculatePercentage(row.cost, row.total_cost)}
+      </span>
     ),
   },
 ];

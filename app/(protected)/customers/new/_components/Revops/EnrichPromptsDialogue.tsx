@@ -20,6 +20,7 @@ import { getPrompts, editPrompts } from "@/services/enrichments-apis";
 import { toast } from "sonner";
 import { Copy, Pencil } from "lucide-react";
 import SpinLoader from "@/components/common/spin-loader";
+import { Textarea } from "@/components/ui/textarea";
 
 type Props = {
   open: boolean;
@@ -151,24 +152,15 @@ export function EnrichPromptsDialogue({ open, onOpenChange, data }: Props) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-5xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
-          <div className="flex justify-between items-start gap-4">
+          <div className="flex justify-between items-start gap-2">
             <div>
-              {/* ✅ Enrichment Name */}
-              <DialogTitle className="text-xl ">
-                {enrichmentName}
-              </DialogTitle>
+              <DialogTitle className="text-xl">{enrichmentName}</DialogTitle>
 
-              <p className="text-sm text-muted-foreground mt-2">
-                Prompt Type
-              </p>
+              <p className="mt-2 text-muted-foreground text-sm">Prompt Type</p>
 
-              {/* ✅ Radix Select */}
-              <div className="mt-1 w-[220px]">
-                <Select
-                  value={selectedType}
-                  onValueChange={setSelectedType}
-                >
-                  <SelectTrigger>
+              <div className="mt-1 w-[250px]">
+                <Select value={selectedType} onValueChange={setSelectedType}>
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select type" />
                   </SelectTrigger>
 
@@ -185,16 +177,6 @@ export function EnrichPromptsDialogue({ open, onOpenChange, data }: Props) {
 
             {/* Actions */}
             <div className="flex gap-2 mr-10">
-              <Button
-                size="sm"
-                variant="default"
-                onClick={handleCopy}
-                disabled={isEmpty}
-              >
-                <Copy/>
-                Copy
-              </Button>
-
               {!isEditing ? (
                 <Button
                   size="sm"
@@ -202,38 +184,55 @@ export function EnrichPromptsDialogue({ open, onOpenChange, data }: Props) {
                   onClick={() => setIsEditing(true)}
                   disabled={isEmpty}
                 >
-                  <Pencil/>
+                  <Pencil />
                   Edit
                 </Button>
               ) : (
-                <Button
-                  size="sm"
-                  onClick={handleSave}
-                  disabled={saving}
-                >
-                  {saving ? "Saving..." : "Save"}
-                </Button>
+                <>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      setIsEditing(false);
+                      setEditedText(originalText); // reset changes
+                    }}
+                  >
+                    Cancel
+                  </Button>
+
+                  <Button size="sm" onClick={handleSave} disabled={saving}>
+                    {saving ? "Saving..." : "Save"}
+                  </Button>
+                </>
               )}
             </div>
           </div>
         </DialogHeader>
 
         {/* Content */}
-        <div className="mt-4">
+        <div className="mt-2">
           {loading ? (
-            <SpinLoader/>
+            <SpinLoader />
           ) : isEmpty ? (
-            <div className="border rounded p-4 text-sm text-muted-foreground">
+            <div className="p-4 border rounded text-muted-foreground text-sm">
               No prompt available for this type.
             </div>
           ) : isEditing ? (
-            <textarea
+            <Textarea
               value={editedText}
               onChange={(e) => setEditedText(e.target.value)}
-              className="w-full h-[500px] p-4 border rounded-md text-sm font-mono"
+              className="p-4 border rounded-md w-full h-[500px] font-mono text-sm"
             />
           ) : (
-            <div className="whitespace-pre-wrap text-sm font-mono leading-6">
+            <div className="relative p-3 border rounded-md font-mono text-muted-foreground text-sm leading-6 whitespace-pre-wrap">
+              {/* ✅ Copy button inside content */}
+              <button
+                onClick={handleCopy}
+                className="top-2 right-2 absolute hover:bg-gray-100 p-1 rounded"
+              >
+                <Copy className="w-4 h-4" />
+              </button>
+
               {editedText}
             </div>
           )}

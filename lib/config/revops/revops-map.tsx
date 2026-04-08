@@ -7,7 +7,7 @@ import {
 
 import { useWorkbooks } from "@/hooks/use-wb";
 import { useEnrichments } from "@/hooks/use-enrichment";
-import { EnrichPromptsDialogue } from "@/app/(protected)/customers/new/_components/Revops/EnrichPromptsDialogue";
+import { EnrichPromptsDialogue } from "@/app/(protected)/customers/new/_components/revops/EnrichPromptsDialogue";
 import { useCampbook } from "@/hooks/use-campbook";
 
 export const configMap = {

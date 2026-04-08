@@ -65,3 +65,11 @@ export function normalizePermissions(
 
   return features;
 }
+
+ export const formatCurrency = (amount: number) => {
+    return `$${amount.toFixed(3)}`;
+  };
+
+  export const calculatePercentage = (cost: number, total: number) => {
+    return `${Math.round((cost / total) * 100)}%`;
+  };

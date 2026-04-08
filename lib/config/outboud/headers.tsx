@@ -1,8 +1,7 @@
 import { Badge } from "@/app/(protected)/customers/new/_components/Card";
 import { Button } from "@/components/ui/button";
-import { Copy } from "lucide-react";
-
-export const campaignsColumns = [
+import { Copy, Share } from "lucide-react";
+export const campaignsColumns = (handleShare: (row: any) => void) => [
   {
     key: "campaigns",
     header: "Name",
@@ -17,7 +16,7 @@ export const campaignsColumns = [
       <span className="text-gray-800 text-sm">{row.heyreach_id}</span>
     ),
   },
-    {
+  {
     key: "senders_counts",
     header: "No of Senders",
     render: (row: any) => (
@@ -48,9 +47,13 @@ export const campaignsColumns = [
   {
     key: "actions",
     header: "Actions",
-    render: () => (
-      <Button className="" variant={"outline"} size={"sm"}>
-        <Copy className="size-4" />
+    render: (row: any) => (
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => handleShare(row)} // 👈 important
+      >
+        <Share className="size-4" />
         Share
       </Button>
     ),

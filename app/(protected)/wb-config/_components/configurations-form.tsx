@@ -17,15 +17,11 @@ type Props = {
   onChange: (field: keyof FormData, val: string) => void;
 };
 
-export const ConfigurationForm = ({
-  formData,
-  columns,
-  onChange,
-}: Props) => (
+export const ConfigurationForm = ({ formData, columns, onChange }: Props) => (
   <Card>
     <CardContent className="space-y-4 p-4">
       {/* ✅ Title */}
-      <h3 className="text-secondary-foreground text-lg">
+      <h3 className="text-secondary-foreground text-sm">
         {formData.researchType === "company"
           ? "Company Research Configuration"
           : "Lead Research Configuration"}
@@ -46,9 +42,7 @@ export const ConfigurationForm = ({
 
               <Select
                 value={formData[field as keyof FormData]}
-                onValueChange={(val) =>
-                  onChange(field as keyof FormData, val)
-                }
+                onValueChange={(val) => onChange(field as keyof FormData, val)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select column" />
@@ -76,9 +70,7 @@ export const ConfigurationForm = ({
 
               <Select
                 value={formData[field as keyof FormData]}
-                onValueChange={(val) =>
-                  onChange(field as keyof FormData, val)
-                }
+                onValueChange={(val) => onChange(field as keyof FormData, val)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select column" />

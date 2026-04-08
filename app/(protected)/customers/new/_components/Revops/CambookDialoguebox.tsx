@@ -61,7 +61,6 @@ export function CampbookDialog({
       name: c.name,
     })) ?? [];
 
-  
   useEffect(() => {
     const prefill = async () => {
       if (mode === "edit" && selectedCampbook) {
@@ -74,8 +73,9 @@ export function CampbookDialog({
 
           const config = wb.config || {};
 
-          const researchType: "company" | "lead" =
-            config.company_research ? "company" : "lead";
+          const researchType: "company" | "lead" = config.company_research
+            ? "company"
+            : "lead";
 
           const formData = {
             workbookName: wb.name,
@@ -86,8 +86,7 @@ export function CampbookDialog({
               config.company_linkedin_url_column_id || "",
             accountScoringColumn: config.account_scoring_column_id || "",
 
-            leadLinkedInUrlColumn:
-              config.lead_linkedin_url_column_id || "",
+            leadLinkedInUrlColumn: config.lead_linkedin_url_column_id || "",
             leadScoringColumn: config.lead_scoring_column_id || "",
           };
 
@@ -132,9 +131,7 @@ export function CampbookDialog({
     loadWorkbooks,
     loading: workbooksLoading,
     handleSearch,
-  } = useWorkbookConfigurations(
-    mode === "new" ? selectedCampaign : campaignId
-  );
+  } = useWorkbookConfigurations(mode === "new" ? selectedCampaign : campaignId);
 
   const { save } = useSaveConfiguration(
     configs.map((c) => c.formData),
@@ -144,22 +141,20 @@ export function CampbookDialog({
       alert("Configuration saved successfully!");
       onClose();
     },
-    () => alert("Error saving configuration.")
+    () => alert("Error saving configuration."),
   );
 
   const updateConfig = (index: number, changes: Partial<WorkbookConfig>) => {
     setConfigs((prev) =>
-      prev.map((c, i) => (i === index ? { ...c, ...changes } : c))
+      prev.map((c, i) => (i === index ? { ...c, ...changes } : c)),
     );
   };
 
   const updateFormData = (index: number, field: string, value: string) => {
     setConfigs((prev) =>
       prev.map((c, i) =>
-        i === index
-          ? { ...c, formData: { ...c.formData, [field]: value } }
-          : c
-      )
+        i === index ? { ...c, formData: { ...c.formData, [field]: value } } : c,
+      ),
     );
   };
 
@@ -173,11 +168,11 @@ export function CampbookDialog({
         </DialogHeader>
 
         {loading ? (
-          <div className="flex justify-center items-center py-10">
+          <div className="flex justify-center items-center py-3">
             <SpinLoader />
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-4">
             {/* Campaign select (NEW only) */}
             {mode === "new" && (
               <SingleSelectComponent
@@ -191,12 +186,15 @@ export function CampbookDialog({
             {configs.map((config, idx) => (
               <div
                 key={idx}
-                className="space-y-4 shadow-sm p-4 border rounded-lg"
+                className="space-y-4 bg-white shadow-sm p-4 border rounded-lg"
               >
                 {/* EDIT → fixed workbook */}
                 {mode === "edit" ? (
-                  <div className="p-2 border rounded bg-gray-50 text-sm">
-                    {config.formData.workbookName}
+                  <div className="flex items-center gap-2">
+                    <span className="text-muted-foreground text-sm">Workbook:</span>
+                    <span className="w-full text-sm">
+                      {config.formData.workbookName}
+                    </span>
                   </div>
                 ) : (
                   <WorkbookSelect
@@ -224,8 +222,8 @@ export function CampbookDialog({
                 )}
 
                 {loadingColumns === idx && (
-                  <div className="flex items-center gap-2 text-sm text-gray-500">
-                    <SpinLoader/>
+                  <div className="flex items-center gap-2 text-gray-500 text-sm">
+                    <SpinLoader />
                     Loading columns...
                   </div>
                 )}

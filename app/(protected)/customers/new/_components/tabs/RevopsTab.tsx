@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import RevopsTable from "../Revops/RevopsTable";
+import RevopsTable from "../revops/RevopsTable";
 import { configMap } from "@/lib/config/revops/revops-map";
-import { DuplicateWorkbookDialog } from "@/app/(protected)/workbooks/components/duplicate-wb-dialog";
-import CostModal from "@/app/(protected)/workbooks/components/cost-estimate-dialog";
-import { CampbookDialog } from "../Revops/CambookDialoguebox";
+import { DuplicateWorkbookDialog } from "@/app/(protected)/customers/new/_components/revops/DuplicateWorkbookDialog";
+import CostModal from "@/app/(protected)/customers/new/_components/revops/CostModal";
+import { CampbookDialog } from "../revops/CambookDialoguebox";
 
 export function RevopsTab({ id, name, email }) {
   const router = useRouter();

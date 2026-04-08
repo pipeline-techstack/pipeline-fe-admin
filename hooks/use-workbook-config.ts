@@ -24,6 +24,7 @@ export const useWorkbookConfigurations = (id:string) => {
       try {
         const currentPage = reset ? 1 : pageRef.current;
 
+        // if(id === "") return;
         const data = await getWorkbooks({id, page:currentPage, page_size:20});
 
         const transformed = data.items.map((item: any) => ({

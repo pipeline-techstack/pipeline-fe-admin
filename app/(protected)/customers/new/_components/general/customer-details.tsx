@@ -5,6 +5,14 @@ import { Customer } from "@/lib/types/customer-types";
 import { updateCustomer } from "@/services/customers-apis";
 import { useQueryClient } from "@tanstack/react-query";
 import ErrorState from "@/components/common/error";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const buildCustomerFields = (c: Customer) => [
   { id: "name", label: "Name", key: "name", isEditable: true },
@@ -106,23 +114,25 @@ const CustomerDetails = ({ customer }: { customer: Customer }) => {
           if (editing && f.key === "createdAt") {
             return (
               <div key="campaignRole">
-                <label className="block mb-1 text-gray-500 text-sm">
-                  Campaign Role
-                </label>
-                <select
-                  className="px-2 py-1 border rounded-md w-full text-sm"
+                <Label>Campaign Role</Label>
+                <Select
                   value={formState.role || ""}
-                  onChange={(e) =>
+                  onValueChange={(val) =>
                     setFormState((prev) => ({
                       ...prev,
-                      role: e.target.value,
+                      role: val,
                     }))
                   }
                 >
-                  <option value="">Select role</option>
-                  <option value="owner">Campaign Owner</option>
-                  <option value="rep">Campaign Rep</option>
-                </select>
+                  <SelectTrigger className="bg-white w-full h-9 text-sm">
+                    <SelectValue placeholder="Select role" />
+                  </SelectTrigger>
+
+                  <SelectContent>
+                    <SelectItem value="owner">Campaign Owner</SelectItem>
+                    <SelectItem value="rep">Campaign Rep</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             );
           }
@@ -144,9 +154,7 @@ const CustomerDetails = ({ customer }: { customer: Customer }) => {
       </FieldGrid>
 
       {/* Error UI */}
-      {error && (
-        <ErrorState/>
-      )}
+      {error && <ErrorState />}
     </SectionCard>
   );
 };

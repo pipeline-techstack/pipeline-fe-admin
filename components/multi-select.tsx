@@ -127,7 +127,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
       >
         <div className="flex flex-wrap items-center gap-1">
           {value.length === 0 ? (
-            <span className="text-gray-500">{placeholder}</span>
+            <span className="text-muted-foreground text-sm">{placeholder}</span>
           ) : (
             value.map((id) => {
               const campaign = options.find((c) => c.id === id);
@@ -195,7 +195,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
                   className="flex justify-between items-center hover:bg-gray-50 px-3 py-2 cursor-pointer"
                   onClick={() => handleToggle(option)}
                 >
-                  <span>{option.name}</span>
+                  <span className="text-secondary-foreground text-sm">{option.name}</span>
                   {value.includes(option.id) && (
                     <Check size={16} className="text-blue-600" />
                   )}

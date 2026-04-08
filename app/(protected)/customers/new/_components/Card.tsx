@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import clsx from "clsx";
 import { copyToClipboard } from "@/lib/utils";
 import SpinLoader from "@/components/common/spin-loader";
+import { Input } from "@/components/ui/input";
 
 interface SectionCardProps {
   title: string;
@@ -133,10 +134,10 @@ export function FieldItem({
       </span>
 
       {isEditing && name ? (
-        <input
+        <Input
           value={value as string}
           onChange={(e) => onChange?.(name, e.target.value)}
-          className="px-2 py-1 border rounded text-sm"
+          className="border text-sm"
         />
       ) : children ? (
         children
@@ -201,11 +202,11 @@ export function Badge({
   logo?: React.ReactNode;
 }) {
   const styles = {
-    default: "bg-gray-100 text-gray-600",
+    default: "bg-gray-100 text-muted-foreground",
     success: "bg-green-50 text-green-700 border border-green-200",
     warning: "bg-red-50 text-red-700 border border-red-200",
     info: "bg-blue-50 text-blue-700 border border-blue-200",
-    outline: "bg-white text-gray-600 border border-gray-300",
+    outline: "bg-white text-muted-foreground border border-gray-300",
   };
 
   return (
@@ -257,7 +258,7 @@ export function ActionButton({
   const styles = {
     ghost: "text-gray-500 hover:text-gray-800 hover:bg-gray-100",
     outline:
-      "text-gray-600 hover:text-gray-900 border border-gray-200 hover:border-gray-300 hover:bg-gray-50",
+      "text-muted-foreground hover:text-gray-900 border border-gray-200 hover:border-gray-300 hover:bg-gray-50",
   };
   return (
     <button onClick={onClick} className={`${base} ${styles[variant]}`}>

@@ -9,9 +9,9 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 // dialogs
-import { DuplicateWorkbookDialog } from "@/app/(protected)/workbooks/components/duplicate-wb-dialog";
-import CostModal from "@/app/(protected)/workbooks/components/cost-estimate-dialog";
-import { CampbookDialog } from "../../../_components/Revops/CambookDialoguebox";
+import { DuplicateWorkbookDialog } from "@/app/(protected)/customers/new/_components/revops/DuplicateWorkbookDialog";
+import CostModal from "@/app/(protected)/customers/new/_components/revops/CostModal";
+import { CampbookDialog } from "../../../_components/revops/CambookDialoguebox";
 import { outboudConfigMap } from "@/lib/config/outboud/outbound-map";
 
 type ConfigType = keyof typeof configMap;
