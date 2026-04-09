@@ -2,7 +2,7 @@ import { Workbook } from "@/app/(protected)/wb-config/types/api";
 import { getWorkbooks } from "@/services/workbook-apis";
 import { useState, useEffect, useCallback, useRef } from "react";
 
-export const useWorkbookConfigurations = (id:string) => {
+export const useWorkbookConfigurations = (id: string) => {
   const [workbooks, setWorkbooks] = useState<Workbook[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -16,6 +16,11 @@ export const useWorkbookConfigurations = (id:string) => {
     pageRef.current = page;
   }, [page]);
 
+  useEffect(() => {
+    if (!id) return;
+    loadWorkbooks(true);
+  }, [searchTerm, id]);
+
   const loadWorkbooks = useCallback(
     async (reset: boolean = false) => {
       if (loading) return;
@@ -24,8 +29,11 @@ export const useWorkbookConfigurations = (id:string) => {
       try {
         const currentPage = reset ? 1 : pageRef.current;
 
-        // if(id === "") return;
-        const data = await getWorkbooks({id, page:currentPage, page_size:20});
+        const data = await getWorkbooks({
+          id,
+          page: currentPage,
+          page_size: 20,
+        });
 
         const transformed = data.items.map((item: any) => ({
           id: item.id,
@@ -47,7 +55,7 @@ export const useWorkbookConfigurations = (id:string) => {
         setLoading(false);
       }
     },
-    [loading, searchTerm]
+    [loading, searchTerm],
   );
 
   const handleSearch = (term: string) => {

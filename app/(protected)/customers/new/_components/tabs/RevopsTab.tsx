@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import RevopsTable from "../revops/RevopsTable";
 import { configMap } from "@/lib/config/revops/revops-map";
-import { DuplicateWorkbookDialog } from "@/app/(protected)/customers/new/_components/revops/DuplicateWorkbookDialog";
-import CostModal from "@/app/(protected)/customers/new/_components/revops/CostModal";
-import { CampbookDialog } from "../revops/CambookDialoguebox";
+
+import { CampbookDialog } from "../Revops/CambookDialoguebox";
+import { RevopsSection } from "../Revops/RevopsSection";
+import CostModal from "../revops/CostModal";
+import { DuplicateWorkbookDialog } from "../revops/DuplicateWorkbookDialog";
 
 export function RevopsTab({ id, name, email }) {
   const router = useRouter();
@@ -57,45 +58,27 @@ export function RevopsTab({ id, name, email }) {
   return (
     <>
       <div className="flex flex-col gap-5">
-        {Object.entries(configMap).map(([key, config]) => {
-          const query = config.hook(id);
-
-          const handleView = (item: any) => {
-            setSelectedItem(item);
-            setActiveType(key);
-            setOpen(true);
-          };
-
-          const handleViewMore = () => {
-            router.push(
-              `/customers/new/${id}/revops/${config.route}?name=${name}&email=${email}`,
-            );
-          };
-
-          const columns =
-            typeof config.getColumns === "function"
-              ? key === "workbooks"
-                ? config.getColumns(handleCostClick, handleDuplicate)
-                : key === "campbooks"
-                  ? config.getColumns(handleEditCampbook, () => {})
-                  : config.getColumns(handleView, () => {})
-              : config.getColumns;
-
-          return (
-            <RevopsTable
-              key={key}
-              title={config.title}
-              subtitle={config.subtitle}
-              icon={config.icon}
-              data={query.data?.[config.dataKey] ?? []}
-              loading={query.isLoading}
-              columns={columns}
-              handleViewMore={handleViewMore}
-              onEdit={key === "campbooks" ? handleCreateCampbook : undefined}
-              editLabel={key === "campbooks" ? "Create" : undefined}
-            />
-          );
-        })}
+        {Object.entries(configMap).map(([key, config]) => (
+          <RevopsSection
+            key={key}
+            configKey={key}
+            config={config}
+            id={id}
+            name={name}
+            email={email}
+            handlers={{
+              handleCostClick,
+              handleDuplicate,
+              handleEditCampbook,
+              handleCreateCampbook,
+              handleView: (item) => {
+                setSelectedItem(item);
+                setActiveType(key);
+                setOpen(true);
+              },
+            }}
+          />
+        ))}
       </div>
 
       {/* ✅ Dynamic Dialog */}
@@ -129,13 +112,15 @@ export function RevopsTab({ id, name, email }) {
       />
 
       {/* Campbook Modal */}
-      <CampbookDialog
-        open={isCampbookOpen}
-        onClose={() => setIsCampbookOpen(false)}
-        mode={campbookMode}
-        campaignId={selectedCampbook?.campaignId || ""}
-        selectedCampbook={selectedCampbook} 
-      />
+      {isCampbookOpen && (
+        <CampbookDialog
+          open={isCampbookOpen}
+          onClose={() => setIsCampbookOpen(false)}
+          mode={campbookMode}
+          campaignId={selectedCampbook?.campaignId || ""}
+          selectedCampbook={selectedCampbook}
+        />
+      )}
     </>
   );
 }

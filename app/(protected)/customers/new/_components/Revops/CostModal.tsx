@@ -8,12 +8,14 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Workbook } from "../../../../workbooks/types/wb-table";
 import { getEstimatedCost } from "@/services/cost-estimate-apis";
-import CostColumn from "./CostColumn";
+
 import SpinLoader from "@/components/common/spin-loader";
 import { DataTable } from "@/components/common/table/data-table";
 import { columnBreakdownColumns } from "@/lib/config/revops/headers";
 import { formatCurrency } from "@/lib/utils";
 import CustomerDetailLayout from "../customer-layout-wrapper";
+import CostColumn from "./CostColumn";
+
 
 interface CostModalProps {
   isOpen: boolean;

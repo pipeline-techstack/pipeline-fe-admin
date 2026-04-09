@@ -34,7 +34,7 @@ export const getWb = async (
     throw new Error("Authentication required");
   }
   const queryParams = new URLSearchParams();
-
+  console.log("getWb called with ")
   if (params.page !== undefined) {
     queryParams.append("page", String(params.page));
   }

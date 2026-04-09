@@ -11,7 +11,7 @@ export const getWorkbooks = async ({
 }): Promise<any> => {
   const token = getToken();
   if (!token) throw new Error("Authentication required");
-
+  console.log("wb api called from getworkbooks")
   let url = `${process.env.NEXT_PUBLIC_CUSTOMER_MANAGEMENT_URL}/admin/workbooks/${id}?page=${page}&page_size=${page_size}`;
 
   const res = await fetch(url, {

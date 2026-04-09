@@ -98,15 +98,16 @@ function Page() {
       ? outboudConfigMap["campaigns"] // now TS knows this is safe
       : configMap[typedType as Exclude<TableType, "campaigns">];
 
+  //  DATA FETCH
+
+  const safehook =
+    config?.hook ?? (() => ({ data: undefined, isLoading: false }));
+  const { data, isLoading } = safehook(id, datapage, pageSize);
   if (!config) return <div>Invalid type</div>;
 
-  const { title, subtitle, icon, getColumns, hook, dataKey, isPaginated } =
-    config;
+  const { title, subtitle, icon, getColumns, dataKey, isPaginated } = config;
 
-  //  DATA FETCH
-  const { data, isLoading } = hook(id, datapage, pageSize);
-  const tableData = dataKey ? (data?.[dataKey] ?? []) : (data ?? []);
-
+  const tableData = data?.[dataKey] ?? [];
   //  COLUMN LOGIC (IMPORTANT)
 
   const columns =
@@ -141,7 +142,7 @@ function Page() {
               <div className="flex justify-end mb-3">
                 <button
                   onClick={handleCreateCampbook}
-                  className="bg-primary px-3 py-1.5 rounded-md text-white text-sm"
+                  className="px-3 py-1.5 text-sm bg-primary text-white rounded-md"
                 >
                   Create Campbook
                 </button>
@@ -199,13 +200,15 @@ function Page() {
 
       {/*  CAMPBOOK DIALOG */}
 
-      <CampbookDialog
-        open={isCampbookOpen}
-        onClose={() => setIsCampbookOpen(false)}
-        mode={campbookMode}
-        campaignId={selectedCampbook?.campaignId || ""}
-        selectedCampbook={selectedCampbook}
-      />
+      {isCampbookOpen && (
+        <CampbookDialog
+          open={isCampbookOpen}
+          onClose={() => setIsCampbookOpen(false)}
+          mode={campbookMode}
+          campaignId={selectedCampbook?.campaignId || ""}
+          selectedCampbook={selectedCampbook}
+        />
+      )}
     </>
   );
 }

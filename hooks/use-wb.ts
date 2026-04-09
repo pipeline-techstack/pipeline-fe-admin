@@ -14,8 +14,9 @@ export const useWorkbooks = (
     queryFn: () => getWb({ id, search, page, pageSize }),
     enabled: !!id,
     placeholderData: (prev) => prev,
-    staleTime: 1000 * 60,
-
+    staleTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,  
     select: (data: any) => {
       if (!data) return data;
 

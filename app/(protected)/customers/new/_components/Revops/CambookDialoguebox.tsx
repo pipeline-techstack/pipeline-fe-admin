@@ -131,7 +131,7 @@ export function CampbookDialog({
     loadWorkbooks,
     loading: workbooksLoading,
     handleSearch,
-  } = useWorkbookConfigurations(mode === "new" ? selectedCampaign : campaignId);
+  } = useWorkbookConfigurations(mode === "new" ? selectedCampaign : "");
 
   const { save } = useSaveConfiguration(
     configs.map((c) => c.formData),
@@ -223,7 +223,7 @@ export function CampbookDialog({
 
                 {loadingColumns === idx && (
                   <div className="flex items-center gap-2 text-gray-500 text-sm">
-                    <SpinLoader />
+                    <SpinLoader  />
                     Loading columns...
                   </div>
                 )}

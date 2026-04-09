@@ -1,3 +1,5 @@
+'use client';
+
 import { BookOpen, Layers, Shield, Zap } from "lucide-react";
 import {
   campbookColumns,
