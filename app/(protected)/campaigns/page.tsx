@@ -57,12 +57,7 @@ const columns = [
     icon: <CheckCircle size={16} />, 
     render: (row: any) => (
       <Badge
-        variant="secondary"
-        className={`${
-          row.status === "Completed"
-            ? "bg-green-100 text-green-700"
-            : "bg-yellow-100 text-yellow-700"
-        }`}
+       variant={row.status === "Completed" ? "success" : "info"}
       >
         {row.status}
       </Badge>
@@ -99,7 +94,7 @@ const columns = [
           router.push(`/campaigns/${row.id}`);
         }}
       >
-        Complete Campaign
+        {row.status === "Completed" ? "Update" : "Complete"}
       </Button>
     ),
   },

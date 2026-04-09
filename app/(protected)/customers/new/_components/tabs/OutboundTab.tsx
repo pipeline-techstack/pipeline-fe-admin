@@ -5,6 +5,7 @@ import { useOutbound } from "@/hooks/use-outbound";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import ShareModal from "../outbound/ShareModal";
+import OutboundAnalytics from "../outbound/analytics/OutboundAnalytics";
 
 const OutboundTab = ({
   id,
@@ -34,6 +35,8 @@ const OutboundTab = ({
 
   return (
     <div className="flex flex-col gap-5">
+      <OutboundAnalytics />
+      
       <RevopsTable
         title="Campaigns"
         subtitle="All campaigns for this user, share to give access to other users"
