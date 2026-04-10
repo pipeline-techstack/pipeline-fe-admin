@@ -1,7 +1,8 @@
 import { Badge } from "@/app/(protected)/customers/new/_components/Card";
 import { Button } from "@/components/ui/button";
-import { Copy, Share } from "lucide-react";
-export const campaignsColumns = (handleShare: (row: any) => void) => [
+import { Copy, RefreshCw, Share, Upload } from "lucide-react";
+
+export const campaignsColumns = (handleShare: (row: any) => void , handleUpdateOwner: (row: any) => void) => [
   {
     key: "campaigns",
     header: "Name",
@@ -48,14 +49,24 @@ export const campaignsColumns = (handleShare: (row: any) => void) => [
     key: "actions",
     header: "Actions",
     render: (row: any) => (
+      <div className="flex gap-2">
       <Button
         variant="outline"
         size="sm"
-        onClick={() => handleShare(row)} // 👈 important
+        onClick={() => handleShare(row)} 
       >
         <Share className="size-4" />
         Share
       </Button>
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => handleUpdateOwner(row)} 
+      >
+        <RefreshCw className="size-4" />
+        Owner
+      </Button>
+      </div>
     ),
   },
 ];

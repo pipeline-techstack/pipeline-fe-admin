@@ -26,7 +26,8 @@ export const useOutbound = (id: string, page?: number, size?: number) => {
 
     enabled: !!id,
     staleTime: 1000 * 60,
-
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
     select: (data: any) => {
       if (!data?.campaigns) return [];
 
@@ -46,6 +47,7 @@ export const useOutbound = (id: string, page?: number, size?: number) => {
             ? formatDate(campaign.updated_at)
             : "—",
           status: formatStatus(finalStatus),
+          ownerName: campaign.owner_name || "—",
         };
       });
     },

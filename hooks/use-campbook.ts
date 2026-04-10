@@ -17,7 +17,9 @@ export const useCampbook = (id: string) => {
 
     enabled: !!id,
     staleTime: 1000 * 60,
-
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    
     select: (data: any) => {
       const campaigns = Array.isArray(data) ? data : (data?.campaigns ?? []);
 

@@ -21,6 +21,8 @@ export const useEnrichments = (id: string) => {
 
     enabled: !!id,
     staleTime: 1000 * 60,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
 
     select: (data: any): { enrichments: EnrichmentRow[] } => {
 

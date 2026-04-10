@@ -13,7 +13,9 @@ export const useCustomers = () => {
   } = useQuery({
     queryKey: ["customers"],
     queryFn: getCustomers,
-    staleTime: 1000 * 60 * 5
+    staleTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 
   const [search, setSearch] = useState("");

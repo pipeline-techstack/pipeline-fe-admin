@@ -11,6 +11,8 @@ export function useCustomerDetails() {
     queryKey: ["customer", userId],
     queryFn: () => fetchCustomer(userId as string),
     enabled: !!userId,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
     select: (data) => {
       const raw = data?.[0];
       if (!raw) return null;

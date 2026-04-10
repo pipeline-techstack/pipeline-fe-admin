@@ -55,11 +55,11 @@ export const shareCampaign = async (
     }),
   });
 
-if (!res.ok) {
-  const errorData = await res.json();
+  if (!res.ok) {
+    const errorData = await res.json();
 
-  throw new Error(errorData?.detail || "Something went wrong");
-}
+    throw new Error(errorData?.detail || "Something went wrong");
+  }
 
   return res.json();
 };
@@ -212,4 +212,31 @@ export const markCampaignAsUpdated = async (
   const result = await res.json();
   console.log("✅ Mark as Updated Success:", result);
   return result;
+};
+
+// Campaign Owner name update API
+
+export const updateCampaignOwner = async (id: string, ownerName: string) => {
+  const token = getToken();
+  if (!token) throw new Error("Authentication required");
+  if (!id || !ownerName) {
+    throw new Error("Campaign ID and Owner Name are required");
+  }
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_CUSTOMER_MANAGEMENT_URL}/campaign-engagement/admin/update-campaign/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ owner_name: ownerName }),
+      },
+    );
+    return await res.json();
+  } catch (error) {
+    console.error("Error updating campaign owner:", error);
+    throw new Error("Failed to update campaign owner");
+  }
 };
