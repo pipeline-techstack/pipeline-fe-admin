@@ -3,6 +3,28 @@ import { SelectOption } from "./types/misc";
 import { OrganizationFormData } from "./types/org-types";
 import toast from "react-hot-toast";
 
+export const fetchWrapper = async (url: string, options: RequestInit = {}) => {
+  const token = getToken();
+
+  // Handle headers nicely while respecting anything passed in
+  const headers = new Headers(options.headers);
+  if (!headers.has("Content-Type")) headers.set("Content-Type", "application/json");
+  if (!headers.has("Accept")) headers.set("Accept", "application/json");
+  if (token && !headers.has("Authorization")) headers.set("Authorization", `Bearer ${token}`);
+
+  const res = await fetch(url, { ...options, headers });
+
+  if (!res.ok) {
+    const error: any = new Error("API Error");
+    error.status = res.status; // ✅ VERY IMPORTANT
+    error.body = await res.json().catch(() => null);
+    throw error;
+  }
+
+  if (res.status === 204) return null;
+  return res.json().catch(() => null);
+};
+
 interface UsageData {
   email: string;
   count: number;
@@ -12,55 +34,33 @@ interface UsageData {
 export async function manageSubscriptionUsage(
   usageData: UsageData
 ): Promise<any> {
-  const token = getToken();
-  if (!token) {
-    throw new Error("Authentication required");
-  }
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/payment/users/usage`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(usageData),
-    }
-  );
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.message || "Failed to update subscription usage");
-  }
-  return await response.json();
+  // Authentication is now checked implicitly if token is not available depending on endpoint 
+  // but to be safe we can throw if getToken() is strictly required:
+  if (!getToken()) throw new Error("Authentication required");
+
+  return fetchWrapper(`${process.env.NEXT_PUBLIC_API_URL}/payment/users/usage`, {
+    method: "POST",
+    body: JSON.stringify(usageData),
+  });
 }
 
 export const getCampaignsApi = async (): Promise<SelectOption[]> => {
-  const authToken = localStorage.getItem("authToken");
-  if (!authToken) return [];
   try {
-    const response = await fetch(
+    const resData = await fetchWrapper(
       `${process.env.NEXT_PUBLIC_WORKBOOK_URL_DEV}/heyreach/campaigns`,
       {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${authToken}`,
-        },
         credentials: "include",
+        // fetchWrapper auto-appends auth token and content types
       }
     );
-    const resData = await response.json();
 
-    if (!response.ok) {
-      toast.error("Failed to get campaigns");
-      throw new Error("Failed to fetch campaigns api");
-    }
-
-    return Object.entries(resData.campaigns || {}).map(([id, name]) => ({
+    return Object.entries(resData?.campaigns || {}).map(([id, name]) => ({
       value: id,
       label: name as string,
     }));
   } catch (error) {
+    toast.error("Failed to get campaigns");
     console.error("Error fetching campaigns", error);
     return [];
   }

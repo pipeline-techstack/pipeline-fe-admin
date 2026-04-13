@@ -1,40 +1,14 @@
-import { getToken } from "@/lib/auth";
+import { fetchWrapper } from "@/lib/api";
 import { Payment } from "@/lib/types/customer-types";
 
 export const getCustomers = async (): Promise<any> => {
-  const token = getToken();
-  if (!token) throw new Error("Authentication required");
   const url = `${process.env.NEXT_PUBLIC_CUSTOMER_MANAGEMENT_URL}/admin/users`;
-  const res = await fetch(url, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: "application/json",
-    },
-  });
-
-  if (!res.ok) throw new Error("Failed to fetch customers");
-
-  const data = await res.json();
-  return data;
+  return fetchWrapper(url, { method: "GET" });
 };
 
 export const fetchCustomer = async (userId: string): Promise<any> => {
-  const token = getToken();
-  if (!token) throw new Error("Authentication required");
   const url = `${process.env.NEXT_PUBLIC_CUSTOMER_MANAGEMENT_URL}/admin/users/?user_id=${userId}`;
-  const res = await fetch(url, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: "application/json",
-    },
-  });
-
-  if (!res.ok) throw new Error("Failed to fetch customer");
-
-  const data = await res.json();
-  return data;
+  return fetchWrapper(url, { method: "GET" });
 };
 
 export const updateCustomer = async ({
@@ -49,24 +23,12 @@ export const updateCustomer = async ({
     campaign_role?: string;
   };
 }): Promise<any> => {
-  const token = getToken();
-  if (!token) throw new Error("Authentication required");
   console.log("payload", payload);
   const url = `${process.env.NEXT_PUBLIC_CUSTOMER_MANAGEMENT_URL}/engagements/profile`;
-  const res = await fetch(url, {
+  return fetchWrapper(url, {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify(payload),
   });
-
-  if (!res.ok) throw new Error("Failed to update customer");
-
-  const data = await res.json();
-  return data;
 };
 
 export const updateCustomerPayment = async ({
@@ -76,16 +38,9 @@ export const updateCustomerPayment = async ({
   user_id: string;
   payload: Payment;
 }): Promise<any> => {
-  const token = getToken();
-  if (!token) throw new Error("Authentication required");
   const url = `${process.env.NEXT_PUBLIC_CUSTOMER_MANAGEMENT_URL}/admin/users/${user_id}/payment-details`;
-  const res = await fetch(url, {
+  return fetchWrapper(url, {
     method: "PATCH",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify({
       payment_mode: payload.payment_mode,
       platform: payload.platform,
@@ -93,9 +48,4 @@ export const updateCustomerPayment = async ({
       notes: payload.notes
     }),
   });
-
-  if (!res.ok) throw new Error("Failed to update customer");
-
-  const data = await res.json();
-  return data;
 };
