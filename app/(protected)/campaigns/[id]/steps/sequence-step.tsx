@@ -19,7 +19,7 @@ export default function SequenceStep(props: any) {
     <StepPageWrapper
       {...props}
       title="Sequences"
-      subtitle="Define outreach messages for each step."
+      subtitle="Verify outreach messages for each step."
     >
       <div className=" mx-auto space-y-5">
         {sequenceSteps.map((step, index) => (

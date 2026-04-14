@@ -10,7 +10,7 @@ export default function TemplateStep(props: any) {
     <StepPageWrapper
       {...props}
       title="Template"
-      subtitle="Download the lead template, complete it, and upload it back for validation."
+      subtitle="Download the lead template, verify it, and upload it on Heyreach."
     //   rightComponent={<Button variant="outline">Save Draft</Button>}
     >
       <div className="space-y-">

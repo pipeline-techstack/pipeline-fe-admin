@@ -17,17 +17,16 @@ export default function LoginForm() {
   const {isloading, login} = useAuth();
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      await login({email, password})
-      toast.success("Login successfull!!");
-      router.push("/");
-    } catch (err) {
-      toast.error("Something went wrong!!");
-      console.error("Login failed:", err);
-    }
-  };
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  const query = new URLSearchParams({
+    email,
+    password,
+  }).toString();
+
+  router.push(`/loading?${query}`);
+};
 
   return (
     <>

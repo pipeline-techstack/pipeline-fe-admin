@@ -12,10 +12,10 @@ const KpiCard: React.FC<KpiCardProps> = ({ card }) => {
         <div className="text-muted-foreground">{card.icon}</div>
       </div>
       <div>
-        <p className="text-3xl text-secondary-foreground tracking-tight font-semibold">
+        <p className="text-3xl text-secondary-foreground">
           {card.value}
         </p>
-        <p className="text-xs uppercase tracking-widest text-muted-foreground mt-1">
+        <p className="text-xs tracking-widest text-muted-foreground mt-1">
           {card.label}
         </p>
       </div>

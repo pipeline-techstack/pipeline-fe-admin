@@ -124,7 +124,7 @@ export const CAMPAIGNS: Campaign[] = [
 ];
 
 export const CHART_METRICS: ChartMetric[] = [
-  { key: "connectionSent", label: "Connection Sent" },
+  { key: "connectionSent", label: "Sent" },
   { key: "connectionAccepted", label: "Connection Accepted" },
   { key: "replies", label: "Replies" },
   { key: "interested", label: "Interested" },

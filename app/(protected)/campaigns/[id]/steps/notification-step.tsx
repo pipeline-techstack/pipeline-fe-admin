@@ -12,7 +12,7 @@ export default function NotificationStep(props: any) {
     <StepPageWrapper
       {...props}
       title="Notification Settings"
-      subtitle="Set who will receive campaign notifications. Default will be the account owner."
+      subtitle="Set what name will be received in the campaign notifications. Default will be the account owner."
     >
 
         {/* Form Card */}
@@ -20,20 +20,20 @@ export default function NotificationStep(props: any) {
           {/* Name */}
           <div className="space-y-2">
             <Label className="text-sm flex items-center gap-2">
-              Notification Name
+              Meeting Owner Name
             </Label>
 
             <Input placeholder="e.g. Campaign Alerts - Alex" />
           </div>
 
           {/* Email */}
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <Label className="text-sm flex items-center gap-2">
               Notification Email
             </Label>
 
             <Input placeholder="e.g. alex@company.com" />
-          </div>
+          </div> */}
 
           {/* Helper text */}
           {/* <p className="text-xs text-muted-foreground">

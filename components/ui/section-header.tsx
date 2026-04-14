@@ -18,7 +18,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
     return (
       <h2
         className={clsx(
-          "font-bold text-dark text-3xl sm:text-4xl leading-tight",
+          "font- text-dark text-3xl sm:text-4xl leading-tight",
           className
         )}
       >
