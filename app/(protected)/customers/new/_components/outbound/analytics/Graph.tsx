@@ -31,12 +31,12 @@ const EffortOutcomeChart: React.FC<EffortOutcomeChartProps> = ({
     (metricKey: ChartMetric["key"]) => {
       const totalAll = campaigns.reduce(
         (sum, c) => sum + c.metrics[metricKey],
-        0
+        0,
       );
-      const selected = campaigns.filter((c) => selectedIds.includes(c.id));
+      const selected = campaigns.filter((c) => selectedIds?.includes(c.id));
       const selectedTotal = selected.reduce(
         (sum, c) => sum + c.metrics[metricKey],
-        0
+        0,
       );
 
       return selected.map((c) => {
@@ -46,7 +46,7 @@ const EffortOutcomeChart: React.FC<EffortOutcomeChartProps> = ({
         return { campaign: c, value, widthPct, realPct };
       });
     },
-    [campaigns, selectedIds]
+    [campaigns, selectedIds],
   );
 
   const handleMouseEnter = (
@@ -55,7 +55,7 @@ const EffortOutcomeChart: React.FC<EffortOutcomeChartProps> = ({
     value: number,
     percent: number,
     metricLabel: string,
-    color: string
+    color: string,
   ) => {
     const rect = containerRef.current?.getBoundingClientRect();
     if (!rect) return;
@@ -123,7 +123,7 @@ const EffortOutcomeChart: React.FC<EffortOutcomeChartProps> = ({
                         value,
                         realPct,
                         metric.label,
-                        campaign.color
+                        campaign.color,
                       )
                     }
                     onMouseLeave={handleMouseLeave}
@@ -136,14 +136,16 @@ const EffortOutcomeChart: React.FC<EffortOutcomeChartProps> = ({
       </div>
 
       {/* X-axis labels */}
-      <div className="flex ml-44 mt-2">
+      <div className="relative mt-2" style={{ marginLeft: "11rem" }}>
         {[0, 30, 60, 100].map((v) => (
           <span
             key={v}
-            className="text-xs text-muted-foreground"
+            className="text-xs text-muted-foreground absolute"
             style={{
-              position: "absolute",
-              left: `calc(${v === 0 ? "11rem" : v === 100 ? "calc(100% - 1rem)" : `calc(11rem + ${v}% * ((100% - 11rem) / 100))`})`,
+              left: v === 100 ? "auto" : `${v}%`,
+              right: v === 100 ? "0" : "auto",
+              transform:
+                v === 0 ? "none" : v === 100 ? "none" : "translateX(-50%)",
             }}
           >
             {v}%
@@ -154,7 +156,7 @@ const EffortOutcomeChart: React.FC<EffortOutcomeChartProps> = ({
       {/* Legend */}
       <div className="mt-8 flex flex-wrap gap-x-4 gap-y-2 ml-44">
         {campaigns.map((c) => {
-          const isSelected = selectedIds.includes(c.id);
+          const isSelected = selectedIds?.includes(c.id);
           return (
             <div
               key={c.id}
@@ -199,10 +201,7 @@ const EffortOutcomeChart: React.FC<EffortOutcomeChartProps> = ({
             <span className="text-base  text-secondary-foreground">
               {tooltip.value.toLocaleString()}
             </span>
-            <span
-              className="text-xs "
-              style={{ color: tooltip.color }}
-            >
+            <span className="text-xs " style={{ color: tooltip.color }}>
               {tooltip.percent.toFixed(1)}%
             </span>
           </div>

@@ -1,42 +1,45 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Users, Send, MessageCircle, ThumbsUp } from "lucide-react";
 import KpiCard from "./KpiCard";
 import CampaignFilter from "./CampaignFilters";
 import EffortOutcomeChart from "./Graph";
-import { CAMPAIGNS, CHART_METRICS, computeKpis } from "./Data";
+import { CHART_METRICS, computeKpis } from "./Data";
 import { Campaign, KpiCardData } from "./types";
+import SpinLoader from "@/components/common/spin-loader";
+import ErrorState from "@/components/common/error";
 
-/**
- * OutboundAnalytics
- *
- * Props: pass `campaigns` to override dummy data (for API integration).
- * All internal logic derives from the campaigns array automatically.
- */
 interface OutboundAnalyticsProps {
   campaigns?: Campaign[];
+  loading?: boolean;
+  error?: Error | null;
 }
 
 const OutboundAnalytics: React.FC<OutboundAnalyticsProps> = ({
-  campaigns = CAMPAIGNS,
+  campaigns,
+  loading = false,
+  error = null,
 }) => {
-  const [selectedIds, setSelectedIds] = useState<string[]>(
-    campaigns.map((c) => c.id)
-  );
 
+  const [selectedIds, setSelectedIds] = useState<string[]>();
+  useEffect(() => {
+    if (campaigns && campaigns.length > 0) {
+      setSelectedIds(campaigns.map((c) => c.id));
+    }
+  }, [campaigns]);
   const kpis = useMemo(() => computeKpis(campaigns), [campaigns]);
 
   const kpiCards: KpiCardData[] = [
     {
-      label: "Connection Accepted",
-      value: kpis.totalAccepted.toLocaleString(),
-      icon: <Users className="w-5 h-5" />,
-    },
-    {
       label: "Sent",
       value: kpis.totalSent.toLocaleString(),
       icon: <Send className="w-5 h-5" />,
+    },
+    {
+      label: "Accepted",
+      value: kpis.totalAccepted.toLocaleString(),
+      icon: <Users className="w-5 h-5" />,
     },
     {
       label: "Reply Rate",
@@ -50,6 +53,9 @@ const OutboundAnalytics: React.FC<OutboundAnalyticsProps> = ({
     },
   ];
 
+  if (loading) return <SpinLoader />;
+  if (error) return <ErrorState message={error.message} />;
+
   return (
     <div className="flex flex-col gap-6">
       {/* KPI Cards */}
@@ -61,7 +67,6 @@ const OutboundAnalytics: React.FC<OutboundAnalyticsProps> = ({
 
       {/* Effort vs Outcome */}
       <div className="border border-border rounded-xl p-6 shadow-sm">
-        {/* Header */}
         <div className="flex items-start justify-between gap-4 mb-6">
           <div>
             <h3 className="text-base text-secondary-foreground">
@@ -78,7 +83,6 @@ const OutboundAnalytics: React.FC<OutboundAnalyticsProps> = ({
           />
         </div>
 
-        {/* Chart */}
         <EffortOutcomeChart
           campaigns={campaigns}
           selectedIds={selectedIds}

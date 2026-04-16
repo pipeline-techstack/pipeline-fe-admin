@@ -123,20 +123,20 @@ export const CAMPAIGNS: Campaign[] = [
   },
 ];
 
-export const CHART_METRICS: ChartMetric[] = [
-  { key: "connectionSent", label: "Sent" },
-  { key: "connectionAccepted", label: "Connection Accepted" },
-  { key: "replies", label: "Replies" },
-  { key: "interested", label: "Interested" },
-];
-
 /** Compute aggregate KPI totals from all campaigns */
 export function computeKpis(campaigns: Campaign[]) {
   const totalSent = campaigns.reduce((s, c) => s + c.metrics.connectionSent, 0);
   const totalAccepted = campaigns.reduce((s, c) => s + c.metrics.connectionAccepted, 0);
   const totalReplies = campaigns.reduce((s, c) => s + c.metrics.replies, 0);
   const totalInterested = campaigns.reduce((s, c) => s + c.metrics.interested, 0);
-  const replyRate = totalSent > 0 ? ((totalReplies / totalSent) * 100).toFixed(1) + "%" : "0%";
+  const replyRate = totalAccepted > 0 ? ((totalReplies / totalAccepted) * 100).toFixed(1) + "%" : "0%";
 
   return { totalSent, totalAccepted, replyRate, totalInterested };
 }
+
+export const CHART_METRICS: ChartMetric[] = [
+  { key: "connectionSent", label: "Sent" },
+  { key: "connectionAccepted", label: "Accepted" },
+  { key: "replies", label: "Replies" },
+  { key: "interested", label: "Interested" },
+];

@@ -8,6 +8,7 @@ import ShareModal from "../outbound/ShareModal";
 import OutboundAnalytics from "../outbound/analytics/OutboundAnalytics";
 import UpdateOwnerModal from "../outbound/UpdateOwnerModal";
 import { useCampaignNotification } from "@/hooks/use-campaign-notification";
+import { useCamapignMetricsByUser } from "@/hooks/use-campaign-metrics-by-user";
 
 const OutboundTab = ({
   id,
@@ -20,7 +21,7 @@ const OutboundTab = ({
 }) => {
   const router = useRouter();
   const { data, isLoading } = useOutbound(id as string);
-
+  const { metrics, LoadingMetrics, MetricsError } = useCamapignMetricsByUser(id as string);
   const [isShareOpen, setIsShareOpen] = useState(false);
   const [isUpdateOwnerOpen, setIsUpdateOwnerOpen] = useState(false);
   const [selectedCampaign, setSelectedCampaign] = useState<any>(null);
@@ -59,7 +60,7 @@ await updateOwner(selectedCampaign.id, notificationName);
   };
   return (
     <div className="flex flex-col gap-5">
-      <OutboundAnalytics />
+      <OutboundAnalytics campaigns={metrics} loading={LoadingMetrics} error={MetricsError} />
 
       <RevopsTable
         title="Campaigns"

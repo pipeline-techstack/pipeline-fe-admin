@@ -11,7 +11,7 @@ interface CampaignFilterProps {
 }
 
 const CampaignFilter: React.FC<CampaignFilterProps> = ({
-  campaigns,
+  campaigns = [],
   selected,
   onChange,
 }) => {
@@ -28,13 +28,13 @@ const CampaignFilter: React.FC<CampaignFilterProps> = ({
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  const allSelected = selected.length === campaigns.length;
+  const allSelected = selected?.length === campaigns.length;
 
   const toggle = (id: string) => {
-    if (selected.includes(id)) {
+    if (selected?.includes(id)) {
       // Don't allow deselecting all
-      if (selected.length === 1) return;
-      onChange(selected.filter((s) => s !== id));
+      if (selected?.length === 1) return;
+      onChange(selected?.filter((s) => s !== id));
     } else {
       onChange([...selected, id]);
     }
@@ -51,7 +51,7 @@ const CampaignFilter: React.FC<CampaignFilterProps> = ({
 
   const label = allSelected
     ? `Campaigns (${campaigns.length}/${campaigns.length})`
-    : `Campaigns (${selected.length}/${campaigns.length})`;
+    : `Campaigns (${selected?.length}/${campaigns.length})`;
 
   return (
     <div className="relative" ref={ref}>
@@ -87,7 +87,7 @@ const CampaignFilter: React.FC<CampaignFilterProps> = ({
           <div className="h-px bg-border mx-2 my-1" />
 
           {campaigns.map((campaign) => {
-            const isSelected = selected.includes(campaign.id);
+            const isSelected = selected?.includes(campaign.id);
             return (
               <button
                 key={campaign.id}

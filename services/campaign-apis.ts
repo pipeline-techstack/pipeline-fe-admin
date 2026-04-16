@@ -1,5 +1,6 @@
 import { getToken } from "@/lib/auth";
 import { CampaignApiResponse } from "../app/(protected)/linkedin-sync/types/campaign";
+import { fetchWrapper } from "@/lib/api";
 
 const BASE_URL = process.env.NEXT_PUBLIC_CUSTOMER_MANAGEMENT_URL;
 
@@ -239,4 +240,12 @@ export const updateCampaignOwner = async (id: string, ownerName: string) => {
     console.error("Error updating campaign owner:", error);
     throw new Error("Failed to update campaign owner");
   }
+};
+
+// get campaign metrics by user id
+export const getCampaignMetricsByUserId = async (
+  userId: string,
+): Promise<any> => {
+    const url = `${BASE_URL}/admin/campaign-performance?user_id=${userId}`;
+    return fetchWrapper(url, { method: "GET" });
 };
