@@ -29,6 +29,7 @@ import { Button } from "../ui/button";
 import { logout } from "@/lib/auth";
 import Image from "next/image";
 import PageHeader from "../ui/page-header";
+import Link from "next/link";
 
 const navigation = [
   // { name: "Customers", href: "/customers", icon: Users },
@@ -130,10 +131,11 @@ export function Sidebar() {
           })}
         </nav>
       </TooltipProvider>
-
+     <Link href="/notes" className="text-[#F7F7FA] cursor-default">Claude skills</Link>
       {/* Footer */}
       <div className="flex items-center mt-auto p-4 border-gray-200 border-t">
         {/* <div className="bg-gray-300 rounded-full w-8 h-8" /> */}
+   
         {!isCollapsed && (
           <div className="pb-4 w-full">
             {/* Logout Button */}
