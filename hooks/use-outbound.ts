@@ -7,12 +7,16 @@ import { useParams } from "next/navigation";
 const formatStatus = (status: string) => {
   if (!status) return "Unknown";
 
-  const s = status.toLowerCase();
+  const normalized = status.toLowerCase().replace(/_/g, " ");
 
-  if (s === "active") return "Active";
-  if (s === "finished") return "Finished";
+  if (normalized === "active") return "Active";
+  if (normalized === "finished") return "Finished";
 
-  return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
+  // Capitalize each word
+  return normalized
+    .split(" ")
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 };
 
 export const useOutbound = (id: string, page?: number, size?: number) => {

@@ -1,5 +1,4 @@
 import { Shield } from "lucide-react";
-import RevopsTable from "../revops/RevopsTable";
 import { campaignsColumns } from "@/lib/config/outboud/headers";
 import { useOutbound } from "@/hooks/use-outbound";
 import { useRouter } from "next/navigation";
@@ -9,6 +8,7 @@ import OutboundAnalytics from "../outbound/analytics/OutboundAnalytics";
 import UpdateOwnerModal from "../outbound/UpdateOwnerModal";
 import { useCampaignNotification } from "@/hooks/use-campaign-notification";
 import { useCamapignMetricsByUser } from "@/hooks/use-campaign-metrics-by-user";
+import RevopsTable from "../Revops/RevopsTable";
 
 const OutboundTab = ({
   id,
@@ -21,7 +21,9 @@ const OutboundTab = ({
 }) => {
   const router = useRouter();
   const { data, isLoading } = useOutbound(id as string);
-  const { metrics, LoadingMetrics, MetricsError } = useCamapignMetricsByUser(id as string);
+  const { metrics, LoadingMetrics, MetricsError } = useCamapignMetricsByUser(
+    id as string,
+  );
   const [isShareOpen, setIsShareOpen] = useState(false);
   const [isUpdateOwnerOpen, setIsUpdateOwnerOpen] = useState(false);
   const [selectedCampaign, setSelectedCampaign] = useState<any>(null);
@@ -29,7 +31,7 @@ const OutboundTab = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const { updateOwner } = useCampaignNotification();
-  
+
   const handleViewMore = () => {
     router.push(
       `/customers/new/${id}/outbound/campaigns?name=${name}&email=${email}`,
@@ -49,8 +51,8 @@ const OutboundTab = ({
     try {
       setLoading(true);
       setError("");
-      
-await updateOwner(selectedCampaign.id, notificationName);
+
+      await updateOwner(selectedCampaign.id, notificationName);
       setIsUpdateOwnerOpen(false);
     } catch (err: any) {
       setError("Failed to update owner");
@@ -60,7 +62,11 @@ await updateOwner(selectedCampaign.id, notificationName);
   };
   return (
     <div className="flex flex-col gap-5">
-      <OutboundAnalytics campaigns={metrics} loading={LoadingMetrics} error={MetricsError} />
+      <OutboundAnalytics
+        campaigns={metrics}
+        loading={LoadingMetrics}
+        error={MetricsError}
+      />
 
       <RevopsTable
         title="Campaigns"

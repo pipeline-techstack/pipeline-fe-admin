@@ -11,8 +11,14 @@ import { useRouter } from "next/navigation";
 // dialogs
 import { DuplicateWorkbookDialog } from "@/app/(protected)/customers/new/_components/revops/DuplicateWorkbookDialog";
 import CostModal from "@/app/(protected)/customers/new/_components/revops/CostModal";
-import { CampbookDialog } from "../../../_components/revops/CambookDialoguebox";
+
+
+// outbound
 import { outboudConfigMap } from "@/lib/config/outboud/outbound-map";
+import ShareModal from "@/app/(protected)/customers/new/_components/outbound/ShareModal";
+import UpdateOwnerModal from "@/app/(protected)/customers/new/_components/outbound/UpdateOwnerModal";
+import { useCampaignNotification } from "@/hooks/use-campaign-notification";
+import { CampbookDialog } from "../../../_components/Revops/CambookDialoguebox";
 
 type ConfigType = keyof typeof configMap;
 type TableType = "workbooks" | "campbooks" | "enrichments" | "campaigns";
@@ -35,13 +41,55 @@ function Page() {
   const [datapage, setDatapage] = useState(1);
   const pageSize = 20;
 
-  //  COMMON STATE (enrichment dialog)
+  // =========================
+  // SHARE + OWNER STATE
+  // =========================
+
+  const [isShareOpen, setIsShareOpen] = useState(false);
+  const [isUpdateOwnerOpen, setIsUpdateOwnerOpen] = useState(false);
+  const [selectedCampaign, setSelectedCampaign] = useState<any>(null);
+  const [notificationName, setNotificationName] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const { updateOwner } = useCampaignNotification();
+
+  const handleShare = (row: any) => {
+    setSelectedCampaign(row);
+    setIsShareOpen(true);
+  };
+
+  const handleUpdateOwner = (row: any) => {
+    setSelectedCampaign(row);
+    setNotificationName(row?.ownerName || "");
+    setIsUpdateOwnerOpen(true);
+  };
+
+  const handleUpdateOwnerSubmit = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      await updateOwner(selectedCampaign.id, notificationName);
+      setIsUpdateOwnerOpen(false);
+    } catch (err) {
+      setError("Failed to update owner");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // =========================
+  // COMMON STATE (enrichment dialog)
+  // =========================
 
   const [open, setOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [activeType, setActiveType] = useState<ConfigType | null>(null);
 
-  //  WORKBOOK STATE
+  // =========================
+  // WORKBOOK STATE
+  // =========================
 
   const [isDuplicateOpen, setIsDuplicateOpen] = useState(false);
   const [isCostOpen, setIsCostOpen] = useState(false);
@@ -65,7 +113,9 @@ function Page() {
     setIsDuplicateOpen(true);
   };
 
-  //  CAMPBOOK STATE
+  // =========================
+  // CAMPBOOK STATE
+  // =========================
 
   const [isCampbookOpen, setIsCampbookOpen] = useState(false);
   const [campbookMode, setCampbookMode] = useState<"new" | "edit">("new");
@@ -83,7 +133,9 @@ function Page() {
     setIsCampbookOpen(true);
   };
 
-  //  ENRICHMENT VIEW
+  // =========================
+  // ENRICHMENT VIEW
+  // =========================
 
   const handleView = (item: any) => {
     setSelectedItem(item);
@@ -91,32 +143,41 @@ function Page() {
     setOpen(true);
   };
 
-  //  CONFIG
+  // =========================
+  // CONFIG
+  // =========================
+
   const typedType: TableType = type as TableType;
+
   const config =
     typedType === "campaigns"
-      ? outboudConfigMap["campaigns"] // now TS knows this is safe
+      ? outboudConfigMap["campaigns"]
       : configMap[typedType as Exclude<TableType, "campaigns">];
-
-  //  DATA FETCH
 
   const safehook =
     config?.hook ?? (() => ({ data: undefined, isLoading: false }));
+
   const { data, isLoading } = safehook(id, datapage, pageSize);
+
   if (!config) return <div>Invalid type</div>;
 
   const { title, subtitle, icon, getColumns, dataKey, isPaginated } = config;
 
-  const tableData = data?.[dataKey] ?? [];
-  //  COLUMN LOGIC (IMPORTANT)
+  const tableData = data?.[dataKey] ?? data;
+
+  // =========================
+  // COLUMN LOGIC (UPDATED)
+  // =========================
 
   const columns =
     typeof getColumns === "function"
       ? type === "workbooks"
         ? getColumns(handleCostClick, handleDuplicate)
         : type === "campbooks"
-          ? getColumns(handleEditCampbook, () => {})
-          : getColumns(handleView, () => {})
+        ? getColumns(handleEditCampbook, () => {})
+        : type === "campaigns"
+        ? getColumns(handleShare, handleUpdateOwner) // ✅ FIX
+        : getColumns(handleView, () => {})
       : getColumns;
 
   useEffect(() => {
@@ -137,12 +198,12 @@ function Page() {
           className="mt-1.5"
         >
           <div className="flex flex-col h-[calc(100vh-200px)] overflow-hidden">
-            {/* CREATE BUTTON (campbooks only) */}
+            {/* CREATE BUTTON */}
             {type === "campbooks" && (
               <div className="flex justify-end mb-3">
                 <button
                   onClick={handleCreateCampbook}
-                  className="px-3 py-1.5 text-sm bg-primary text-white rounded-md"
+                  className="bg-primary px-3 py-1.5 rounded-md text-white text-sm"
                 >
                   Create Campbook
                 </button>
@@ -167,8 +228,7 @@ function Page() {
         </SectionCard>
       </PageWrapper>
 
-      {/*  ENRICHMENT DIALOG */}
-
+      {/* ENRICHMENT DIALOG */}
       {activeType &&
         configMap[activeType].Dialog &&
         (() => {
@@ -178,8 +238,7 @@ function Page() {
           );
         })()}
 
-      {/*  WORKBOOK DIALOGS */}
-
+      {/* WORKBOOK DIALOGS */}
       <DuplicateWorkbookDialog
         isOpen={isDuplicateOpen}
         onClose={() => setIsDuplicateOpen(false)}
@@ -198,8 +257,7 @@ function Page() {
         workbook={costWorkbook}
       />
 
-      {/*  CAMPBOOK DIALOG */}
-
+      {/* CAMPBOOK DIALOG */}
       {isCampbookOpen && (
         <CampbookDialog
           open={isCampbookOpen}
@@ -207,6 +265,31 @@ function Page() {
           mode={campbookMode}
           campaignId={selectedCampbook?.campaignId || ""}
           selectedCampbook={selectedCampbook}
+        />
+      )}
+
+      {/* =========================
+          SHARE + OWNER MODALS
+         ========================= */}
+
+      {isShareOpen && (
+        <ShareModal
+          open={isShareOpen}
+          onClose={() => setIsShareOpen(false)}
+          campaign={selectedCampaign}
+        />
+      )}
+
+      {isUpdateOwnerOpen && (
+        <UpdateOwnerModal
+          open={isUpdateOwnerOpen}
+          onClose={() => setIsUpdateOwnerOpen(false)}
+          campaign={selectedCampaign}
+          notificationName={notificationName}
+          setNotificationName={setNotificationName}
+          loading={loading}
+          error={error}
+          handleSubmit={handleUpdateOwnerSubmit}
         />
       )}
     </>

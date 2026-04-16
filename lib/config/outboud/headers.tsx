@@ -1,8 +1,11 @@
 import { Badge } from "@/app/(protected)/customers/new/_components/Card";
 import { Button } from "@/components/ui/button";
-import { Copy, RefreshCw, Share, Upload } from "lucide-react";
+import { Share, User } from "lucide-react";
 
-export const campaignsColumns = (handleShare: (row: any) => void , handleUpdateOwner: (row: any) => void) => [
+export const campaignsColumns = (
+  handleShare: (row: any) => void,
+  handleUpdateOwner: (row: any) => void,
+) => [
   {
     key: "campaigns",
     header: "Name",
@@ -36,12 +39,17 @@ export const campaignsColumns = (handleShare: (row: any) => void , handleUpdateO
     header: "Status",
     render: (row: any) => {
       const status = row.status;
-
       let variant: "success" | "info" | "default" = "default";
 
-      if (status === "Active") variant = "success";
-      else if (status === "Finished") variant = "info";
+      if (status === "In Progress" || status === "Active") {
+        variant = "success";
+      } else if (status === "Paused" || status === "Pending") {
+        variant = "default";
+      } else if (status === "Finished") {
+        variant = "info";
+      }
 
+      console.log("success", variant);
       return <Badge label={status} variant={variant} />;
     },
   },
@@ -50,22 +58,18 @@ export const campaignsColumns = (handleShare: (row: any) => void , handleUpdateO
     header: "Actions",
     render: (row: any) => (
       <div className="flex gap-2">
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => handleShare(row)} 
-      >
-        <Share className="size-4" />
-        Share
-      </Button>
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => handleUpdateOwner(row)} 
-      >
-        <RefreshCw className="size-4" />
-        Owner
-      </Button>
+        <Button variant="outline" size="sm" onClick={() => handleShare(row)}>
+          <Share className="size-4" />
+          Share
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => handleUpdateOwner(row)}
+        >
+          <User className="size-4" />
+          Edit
+        </Button>
       </div>
     ),
   },

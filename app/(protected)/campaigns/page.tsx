@@ -4,9 +4,16 @@ import { useState } from "react";
 import PageWrapper from "@/components/common/page-wrapper";
 import { DataTable } from "@/components/common/table/data-table";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Calendar, User, CheckCircle, Megaphone, Users, PlayCircle } from "lucide-react";
+import {
+  Calendar,
+  User,
+  CheckCircle,
+  Megaphone,
+  Users,
+  PlayCircle,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
+import { Badge } from "../customers/new/_components/Card";
 
 const campaignData = [
   {
@@ -14,7 +21,7 @@ const campaignData = [
     name: "Annual Conference Follow-up",
     status: "Pending",
     owner: "Alex R.",
-    type: 'Create Campaign',
+    type: "Create Campaign",
     taskcreatedat: "1w ago",
   },
   {
@@ -22,7 +29,7 @@ const campaignData = [
     name: "Financial Services ABM",
     status: "Pending",
     owner: "Alex R.",
-    type: 'Create Campaign',
+    type: "Create Campaign",
     taskcreatedat: "1w ago",
   },
   {
@@ -30,7 +37,7 @@ const campaignData = [
     name: "Healthcare Vertical Push",
     status: "Pending",
     owner: "Alex R.",
-    type: 'Create Campaign',
+    type: "Create Campaign",
     taskcreatedat: "1w ago",
   },
   {
@@ -38,7 +45,7 @@ const campaignData = [
     name: "Product Launch - DevTools",
     status: "Completed",
     owner: "Alex R.",
-    type: 'Update Campaign',
+    type: "Update Campaign",
     taskcreatedat: "1w ago",
   },
 ];
@@ -48,32 +55,31 @@ const columns = [
     key: "name",
     header: "Campaign Name",
     width: 260,
-    icon: <Megaphone size={16} />, 
+    icon: <Megaphone size={16} />,
   },
 
   {
     key: "status",
     header: "Status",
-    icon: <CheckCircle size={16} />, 
+    icon: <CheckCircle size={16} />,
     render: (row: any) => (
       <Badge
-       variant={row.status === "Completed" ? "success" : "info"}
-      >
-        {row.status}
-      </Badge>
+        variant={row.status === "Completed" ? "success" : "default"}
+        label={row.status}
+      />
     ),
   },
 
   {
     key: "owner",
     header: "Owner",
-    icon: <User size={16} />, 
+    icon: <User size={16} />,
   },
 
   {
     key: "type",
     header: "Type",
-    icon: <Users size={16} />, 
+    icon: <Users size={16} />,
   },
 
   {
