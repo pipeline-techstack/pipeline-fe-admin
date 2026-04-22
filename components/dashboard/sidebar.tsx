@@ -5,19 +5,10 @@ import { redirect, usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
   Users,
-  Copyright,
-  KeyRound,
-  Building2,
-  LayoutDashboard,
   ChevronsLeft,
   ChevronsRight,
-  BookOpen,
-  Stars,
   Network,
-  Link2,
-  Settings2,
-  MessageSquare,
-  LogOut,
+  Send,
 } from "lucide-react";
 import {
   Tooltip,
@@ -28,7 +19,6 @@ import {
 import { Button } from "../ui/button";
 import { logout } from "@/lib/auth";
 import Image from "next/image";
-import PageHeader from "../ui/page-header";
 import Link from "next/link";
 
 const navigation = [
@@ -44,8 +34,8 @@ const navigation = [
   // { name: "Feedback", href: "/feedback", icon: Stars },
   // { name: "Enrichments", href: "/enrichments", icon: MessageSquare },
   { name: "Customer Management", href: "/customers/new", icon: Users },
-  { name: "Campaign Setup", href: "/campaigns", icon: Network },
-    // { name: "Campaign Setup", href: "/campaigns/new", icon: Users },
+  { name: "Campaign Setup", href: "/campaigns", icon: Send },
+  { name: "Sender Management", href: "/senders", icon: Network },
 ];
 
 export function Sidebar() {
@@ -110,9 +100,7 @@ export function Sidebar() {
                 className={cn(
                   "flex items-center px-3 py-2 rounded-lg w-full text-[#4b4d4e] text-sm transition-colors",
                   isCollapsed && "justify-center",
-                  isActive
-                    ? "bg-gray-200  "
-                    : " hover:bg-gray-100",
+                  isActive ? "bg-gray-200  " : " hover:bg-gray-100",
                 )}
               >
                 <item.icon className="w-5 h-5 text-[#4a5464]" />
@@ -131,11 +119,13 @@ export function Sidebar() {
           })}
         </nav>
       </TooltipProvider>
-     <Link href="/notes" className="text-[#F7F7FA] cursor-default">Claude skills</Link>
+      <Link href="/notes" className="text-[#F7F7FA] cursor-default">
+        Claude skills
+      </Link>
       {/* Footer */}
       <div className="flex items-center mt-auto p-4 border-gray-200 border-t">
         {/* <div className="bg-gray-300 rounded-full w-8 h-8" /> */}
-   
+
         {!isCollapsed && (
           <div className="pb-4 w-full">
             {/* Logout Button */}

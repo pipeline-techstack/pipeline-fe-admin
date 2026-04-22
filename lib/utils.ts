@@ -1,9 +1,14 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { EditMemberFormData, Member } from "./types/member-types";
-import { Permission, PostUserResourcesPyaload, User } from "./types/resource-types";
+import {
+  Permission,
+  PostUserResourcesPyaload,
+  User,
+} from "./types/resource-types";
 import { Feature } from "framer-motion";
 import { DEFAULT_FEATURES } from "@/app/(protected)/customers/new/_components/customer.constants";
+import { normalizeStatus, STATUS_MAP, STATUS_STYLES } from "./config/senders/headers";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -50,7 +55,7 @@ export async function copyToClipboard(text: string): Promise<boolean> {
   }
 }
 export function normalizePermissions(
-  permissions: Permission[] | null | undefined
+  permissions: Permission[] | null | undefined,
 ): Feature[] {
   // If API returns empty or invalid → fallback
   if (!permissions || permissions.length === 0) {
@@ -66,10 +71,28 @@ export function normalizePermissions(
   return features;
 }
 
- export const formatCurrency = (amount: number) => {
-    return `$${amount.toFixed(3)}`;
-  };
+export const formatCurrency = (amount: number) => {
+  return `$${amount.toFixed(3)}`;
+};
 
-  export const calculatePercentage = (cost: number, total: number) => {
-    return `${Math.round((cost / total) * 100)}%`;
-  };
+export const calculatePercentage = (cost: number, total: number) => {
+  return `${Math.round((cost / total) * 100)}%`;
+};
+
+export const getStatusBg = (status: string): string => {
+  switch (normalizeStatus(status)) {
+    case "active":      return "bg-green-500";
+    case "less active": return "bg-yellow-500";
+    case "inactive":    return "bg-red-500";
+    default:            return "bg-gray-300";
+  }
+};
+
+export const getStatusTextColor = (status: string): string => {
+  switch (normalizeStatus(status)) {
+    case "active":      return "text-green-500";
+    case "less active": return "text-yellow-500";
+    case "inactive":    return "text-red-500";
+    default:            return "text-gray-500";
+  }
+};

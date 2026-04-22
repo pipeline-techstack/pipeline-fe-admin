@@ -122,7 +122,7 @@ export default function CampaignPage() {
   return (
     <PageWrapper
       title="Campaign Setup"
-      subtitle="Complete your outreach campaigns."
+      // subtitle="Complete your outreach campaigns."
     >
       <DataTable
         data={campaignData}

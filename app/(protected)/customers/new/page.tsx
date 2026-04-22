@@ -16,9 +16,19 @@ const columns = [
 
   { key: "email", header: "Email", icon: <Mail size={16} />, width: 280 },
 
-  { key: "company", header: "Company", icon: <Building size={16} />, width: 220 },
+  {
+    key: "company",
+    header: "Company",
+    icon: <Building size={16} />,
+    width: 220,
+  },
 
-  { key: "date", header: "Creation Date", icon: <Calendar size={16} />, width: 180 },
+  {
+    key: "date",
+    header: "Creation Date",
+    icon: <Calendar size={16} />,
+    width: 180,
+  },
 
   { key: "phone", header: "Phone", icon: <Phone size={16} />, width: 180 },
 
@@ -31,7 +41,7 @@ const columns = [
       if (!row.mode || row.mode.length === 0) return "-";
 
       return (
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex flex-wrap gap-2">
           {row.mode.map((m: string) => {
             const isSlack = m === "Slack";
 
@@ -70,7 +80,6 @@ export default function CustomerPage() {
     <PageWrapper
       // title="Customer Management"
       title="All Customers"
-      subtitle="Click a customer row to view their full profile."
       rightComponent={
         <div className="flex items-center gap-3">
           {/* Search */}

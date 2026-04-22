@@ -31,7 +31,7 @@ export default function PageWrapper({
     <div className="flex flex-col bg-white shadow-sm border border-gray-200 h-screen">
       <div className="flex flex-col space-y- px-6 py-4 h-screen">
         <div className="flex flex-col gap-2 shrink-0">
-          <div className="flex justify-between items-start border-[#1D1E2029] border-b w-full shrink-0">
+          <div className="flex justify-between items-start border-gray-200 border-b w-full shrink-0">
             <PageHeader
               title={title || ""}
               subtitle={subtitle}
