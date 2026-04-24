@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import AddSenderDialog from "./add-sender-dialog";
-import { SingleSelectComponent } from "@/app/(protected)/wb-config/_components/campaign-select";
+import { SingleSelectComponent } from "@/app/(protected)/wb-config/_components/single-select";
 import { useHeyreach } from "@/hooks/use-heyreach";
 
 interface SendersHeaderProps {

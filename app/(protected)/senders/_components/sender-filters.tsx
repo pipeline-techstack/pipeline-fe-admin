@@ -1,5 +1,6 @@
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import DateFilter from "./date-filter"
 
 export function SenderFilters() {
   return (
@@ -26,16 +27,7 @@ export function SenderFilters() {
         </SelectContent>
       </Select>
 
-      <Select>
-        <SelectTrigger className="w-[150px]">
-          <SelectValue placeholder="All Time" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All Time</SelectItem>
-          <SelectItem value="7">Last 7 days</SelectItem>
-          <SelectItem value="30">Last 30 days</SelectItem>
-        </SelectContent>
-      </Select>
+      <DateFilter />
     </div>
   )
 }

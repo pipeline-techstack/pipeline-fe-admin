@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import PageWrapper from "@/components/common/page-wrapper";
 import { DataTable } from "@/components/common/table/data-table";
 import { Send, Check, MessageCircle, ThumbsUp, Plus } from "lucide-react";
@@ -8,9 +8,16 @@ import { senders } from "./dummy-data";
 import { MetricCard } from "./_components/metric-card";
 import { SenderFilters } from "./_components/sender-filters";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import Metrics from "./_components/metrics";
 
 const SenderPage = () => {
+  const router = useRouter();
   const [page, setPage] = useState(1);
+
+  const handleclick = (row: any) => {
+    router.push(`senders/${row._id}`);
+  };
 
   return (
     <PageWrapper title="Sender Management">
@@ -29,24 +36,7 @@ const SenderPage = () => {
 
       {/* Global Stats */}
       {/* <span className="my-2 text-secondary-foreground text-sm">Global Stats</span> */}
-      <div className="gap-4 grid grid-cols-1 md:grid-cols-4 mt-1 mb-3">
-        <MetricCard
-          title="Connection Sent"
-          value="1,247"
-          icon={<Send size={18} />}
-        />
-        <MetricCard title="Accepted" value="35%" icon={<Check size={18} />} />
-        <MetricCard
-          title="Reply Rate"
-          value="13%"
-          icon={<MessageCircle size={18} />}
-        />
-        <MetricCard
-          title="Interested"
-          value="341"
-          icon={<ThumbsUp size={18} />}
-        />
-      </div>
+     <Metrics />
 
       {/* Table */}
       <DataTable
@@ -55,7 +45,7 @@ const SenderPage = () => {
         footer={true}
         currentPage={page}
         onPageChange={setPage}
-        onRowClick={(row) => console.log(row)}
+        onRowClick={handleclick}
         loading={false}
         error={null}
       />

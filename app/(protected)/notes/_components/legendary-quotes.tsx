@@ -17,6 +17,7 @@ const visionaryQuotes = [
   "user ka socho yaar, taki use kar k majha a jaye",
   "baki log kaise kar par rhe h",
   "'A' could you give a demo on friday",
+  "You should look for a new job in 2 years"
 ];
 
 const QuoteCard = ({

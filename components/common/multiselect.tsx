@@ -24,6 +24,17 @@ const MultiSelect = ({
       onChange={(val) => onChange(val as SelectOption[])}
       placeholder={placeholder}
       styles={{
+        control: (base, state) => ({
+          ...base,
+          borderColor: "#e5e7eb", // Tailwind gray-200
+          borderRadius: "0.375rem",
+          minHeight: "40px", // Tailwind h-10
+          height: "40px",
+          boxShadow: state.isFocused ? "0 0 0 1px #e5e7eb" : "none",
+          "&:hover": {
+            borderColor: "#e5e7eb",
+          },
+        }),
         option: (base, state) => ({
           ...base,
           fontSize: "14px",
@@ -39,7 +50,11 @@ const MultiSelect = ({
             "#374151",
         }),
         multiValue: (base) => ({ ...base, padding: "0 2px" }),
-        placeholder: (base) => ({ ...base, fontSize: "14px" }),
+        placeholder: (base) => ({
+          ...base,
+          fontSize: "14px",
+          color: "#0A0A0A",
+        }),
       }}
     />
   </div>

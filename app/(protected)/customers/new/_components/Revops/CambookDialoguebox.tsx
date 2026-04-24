@@ -15,12 +15,13 @@ import { useSaveConfiguration } from "@/hooks/use-save-config";
 
 import { Button } from "@/components/ui/button";
 import { Plus, Loader2 } from "lucide-react";
-import { SingleSelectComponent } from "@/app/(protected)/wb-config/_components/campaign-select";
 import { WorkbookSelect } from "@/app/(protected)/wb-config/_components/workbook-select";
 import { ResearchTypeSelector } from "@/app/(protected)/wb-config/_components/workbook-type-selector";
 import { ConfigurationForm } from "@/app/(protected)/wb-config/_components/configurations-form";
 import { ActionButtons } from "@/app/(protected)/wb-config/_components/action-buttons";
 import SpinLoader from "@/components/common/spin-loader";
+import { SingleSelectComponent } from "@/app/(protected)/wb-config/_components/single-select";
+
 
 type Props = {
   open: boolean;
