@@ -10,7 +10,8 @@ import { Toaster } from "sonner";
 let isRedirecting = false;
 
 const handleAuthError = (error: any) => {
-  if (error?.response?.status === 401 && !isRedirecting) {
+  const status = error?.status ?? error?.response?.status;
+  if (status === 401) {
     isRedirecting = true;
     window.location.href = "/login?sessionExpired=true";
   }

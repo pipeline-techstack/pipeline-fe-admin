@@ -6,17 +6,29 @@ import toast from "react-hot-toast";
 export const fetchWrapper = async (url: string, options: RequestInit = {}) => {
   const token = getToken();
 
+  const skipAuth = (options as any).skipAuth === true;
+  if (!token && !skipAuth) {
+    const error: any = new Error("Authentication required");
+    error.status = 401;
+    error.response = { status: 401 }; 
+    throw error;
+  }
+
   // Handle headers nicely while respecting anything passed in
   const headers = new Headers(options.headers);
   if (!headers.has("Content-Type")) headers.set("Content-Type", "application/json");
   if (!headers.has("Accept")) headers.set("Accept", "application/json");
   if (token && !headers.has("Authorization")) headers.set("Authorization", `Bearer ${token}`);
 
-  const res = await fetch(url, { ...options, headers });
+  // strip our custom flag before passing to fetch
+  const { skipAuth: _skipAuth, ...fetchOptions } = options as any;
+
+  const res = await fetch(url, { ...fetchOptions, headers });
 
   if (!res.ok) {
     const error: any = new Error("API Error");
-    error.status = res.status; // ✅ VERY IMPORTANT
+    error.status = res.status;
+    error.response = { status: res.status }; 
     error.body = await res.json().catch(() => null);
     throw error;
   }
