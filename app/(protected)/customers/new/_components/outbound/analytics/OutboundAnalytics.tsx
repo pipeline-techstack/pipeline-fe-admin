@@ -9,6 +9,7 @@ import { CHART_METRICS, computeKpis } from "./Data";
 import { Campaign, KpiCardData } from "./types";
 import SpinLoader from "@/components/common/spin-loader";
 import ErrorState from "@/components/common/error";
+import { MetricCard } from "@/app/(protected)/senders/_components/metric-card";
 
 interface OutboundAnalyticsProps {
   campaigns?: Campaign[];
@@ -59,20 +60,20 @@ const OutboundAnalytics: React.FC<OutboundAnalyticsProps> = ({
   return (
     <div className="flex flex-col gap-6">
       {/* KPI Cards */}
-      <div className="flex gap-4 flex-wrap">
+      <div className="gap-4 grid grid-cols-1 md:grid-cols-4 w-full">
         {kpiCards.map((card) => (
-          <KpiCard key={card.label} card={card} />
+          <MetricCard title={card.label} value={card.value} icon={card.icon} />
         ))}
       </div>
 
       {/* Effort vs Outcome */}
-      <div className="border border-border rounded-xl p-6 shadow-sm">
-        <div className="flex items-start justify-between gap-4 mb-6">
+      <div className="shadow-sm p-6 border border-border rounded-xl">
+        <div className="flex justify-between items-start gap-4 mb-6">
           <div>
-            <h3 className="text-base text-secondary-foreground">
+            <h3 className="text-secondary-foreground text-base">
               Effort vs Outcome
             </h3>
-            <p className="text-sm text-muted-foreground mt-0.5">
+            <p className="mt-0.5 text-muted-foreground text-sm">
               100% distribution across campaigns
             </p>
           </div>

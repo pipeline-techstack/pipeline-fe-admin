@@ -1,14 +1,12 @@
 import { Badge } from "@/app/(protected)/customers/new/_components/Card";
 import { InfoHover } from "@/components/common/info-hover";
-import LinkedInBtn from "@/components/common/linkedin-button";
 import { Column } from "@/lib/types/table-types";
-import { getStatusBg, getStatusTextColor } from "@/lib/utils";
 import {
   Building,
   ChartScatter,
   Check,
-  Linkedin,
   MessageCircle,
+  RefreshCcw,
   Send,
   ThumbsUp,
   User,
@@ -21,7 +19,7 @@ import { CheckIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Sender } from "@/lib/types/senders";
 import { SenderUser } from "@/app/(protected)/senders/_components/sender-user";
-
+import { Button } from "@/components/ui/button";
 
 export const STATUS_MAP: Record<string, { bg: string; text: string }> = {
   active: {
@@ -49,7 +47,7 @@ export const columns: Column<Sender>[] = [
       <div className="flex items-center gap-3">
         {/* Avatar with status ring */}
 
-       <SenderUser user={user} showHover />
+        <SenderUser user={user} showHover />
       </div>
     ),
   },
@@ -101,21 +99,39 @@ export const columns: Column<Sender>[] = [
           />
           <Badge
             variant="outline"
-            label={`${perf.accepted}`}
+            label={`${perf.accepted}%`}
             logo={<Check className="size-4" />}
           />
           <Badge
             variant="outline"
-            label={`${perf.reply}`}
+            label={`${perf.reply}%`}
             logo={<MessageCircle className="size-4" />}
           />
           <Badge
             variant="outline"
-            label={`${perf.interested}`}
+            label={`${perf.interested}%`}
             logo={<ThumbsUp className="size-4" />}
           />
         </div>
       );
     },
+  },
+  {
+    key: "actions",
+    header: "Actions",
+    render: (row) => (
+      <div className="flex justify-center">
+        <Button
+          variant={"outline"}
+          onClick={(e) => {
+            e.stopPropagation(); // ✅ VERY IMPORTANT (prevents row click)
+            console.log("Sender ID:", row._id);
+          }}
+          size={"icon"}
+        >
+          <RefreshCcw className="size-4" />
+        </Button>
+      </div>
+    ),
   },
 ];

@@ -97,3 +97,19 @@ export const getStatusTextColor = (status: string): string => {
 export const formatNumber = (num: number) => {
   return num.toLocaleString();
 };
+
+export const getLast30DaysRange = () => {
+  const today = new Date();
+
+  const end = new Date(today);
+  const start = new Date(today);
+  start.setDate(start.getDate() - 30);
+
+  const format = (date: Date) =>
+    date.toISOString().split("T")[0]; // YYYY-MM-DD
+
+  return {
+    start_date: format(start),
+    end_date: format(end),
+  };
+};

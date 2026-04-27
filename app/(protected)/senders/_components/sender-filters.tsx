@@ -81,8 +81,11 @@ export function SenderFilters({ filters, onChange }: any) {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => setLocalFilters(INITIAL_FILTERS)}
-              className="hover:bg-red-500/30 rounded-tl-none rounded-bl-none"
+          onClick={() => {
+            setLocalFilters(INITIAL_FILTERS);
+            onChange(INITIAL_FILTERS); // 👈 triggers API
+          }}
+          className="hover:bg-red-500/30 rounded-tl-none rounded-bl-none"
         >
           <X className="size-4" />
         </Button>

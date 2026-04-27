@@ -13,38 +13,40 @@ export const useSenders = (
 
       // 🔹 Normalize senders
       const getDaysBetween = (start?: string, end?: string) => {
-        if (!start || !end) return 30; // fallback
+        if (!start || !end) return 30;
+
+        const startDate = new Date(start);
+        const endDate = new Date(end);
+
         const diff =
-          (new Date(end).getTime() - new Date(start).getTime()) /
-          (1000 * 60 * 60 * 24);
-        return diff || 30;
+          (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24);
+
+        return Math.max(Math.ceil(diff), 1); // ✅ inclusive + safe
       };
 
-      const getStatus = (monthlyAvg: number) => {
-        if (monthlyAvg >= 23) return "active";
-        if (monthlyAvg < 18) return "inactive";
-        return "less_active";
+      const getStatus = (avg: number) => {
+        if (avg >= 23) return "Active"; // ~30/month
+        if (avg < 18) return "Inactive"; // ~18/month
+        return "Less Active";
       };
 
       const days = getDaysBetween(payload.start_date, payload.end_date);
+
 
       const normalizedSenders: Sender[] = (res.senders || [])
         .filter((s: any) => typeof s?.name === "string" && s.name.trim() !== "")
         .map((s: any) => {
           const totalSent = s.connections_sent || 0;
-
-          // 🔹 convert to monthly average
-          const dailyAvg = totalSent / days;
-          const monthlyAvg = dailyAvg * 30;
-
-          const status = getStatus(monthlyAvg);
+            
+          const avgPerDay = totalSent / days; // ✅ correct
+          const status = getStatus(avgPerDay);
 
           return {
             _id: s.sender_id,
             name: s.name,
             avatar: s.profile_image,
             status,
-            statusCount: Math.round(monthlyAvg), // optional: meaningful now
+            statusCount: Math.round(avgPerDay), // optional (for UI display)
             company: s.company,
             campaigns: s.campaigns,
             campaignList: s.campaign_names || [],
@@ -60,7 +62,6 @@ export const useSenders = (
             },
           };
         });
-
       // 🔹 Normalize summary (for Metrics component)
       const summary = {
         sent: res.summary?.connections_sent ?? 0,

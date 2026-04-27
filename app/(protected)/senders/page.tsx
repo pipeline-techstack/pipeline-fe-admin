@@ -11,13 +11,13 @@ import { columns } from "@/lib/config/senders/headers";
 import { SenderFilters } from "./_components/sender-filters";
 import Metrics from "./_components/metrics";
 import { useSenders } from "@/hooks/use-senders";
+import { getLast30DaysRange } from "@/lib/utils";
 
 const INITIAL_FILTERS = {
   sender_name: "",
   companies: [],
   campaigns: [],
-  start_date: "",
-  end_date: "",
+  ...getLast30DaysRange(),
 };
 
 const SenderPage = () => {
@@ -31,7 +31,7 @@ const SenderPage = () => {
   // -----------------------
   // Filters
   // -----------------------
-  const [filters, setFilters] = useState(INITIAL_FILTERS);
+  const [filters, setFilters] = useState(() => INITIAL_FILTERS);
 
   // -----------------------
   // Reset page when filters change
@@ -41,35 +41,17 @@ const SenderPage = () => {
   }, [filters]);
 
   // -----------------------
-  // Empty filter check (to prevent unnecessary API calls)
-  // -----------------------
-  const isEmptyFilters = (filters: any) => {
-    return (
-      !filters.sender_name &&
-      filters.companies.length === 0 &&
-      filters.campaigns.length === 0 &&
-      !filters.start_date &&
-      !filters.end_date
-    );
-  };
-
-  const shouldFetch = !isEmptyFilters(filters);
-
-  // -----------------------
   // API call
   // -----------------------
-  const { data, isLoading, error } = useSenders(
-    {
-      page,
-      page_size: 25,
-      sender_name: filters.sender_name,
-      start_date: filters.start_date,
-      end_date: filters.end_date,
-      companies: filters.companies,
-      campaign_names: filters.campaigns,
-    },
-    { enabled: shouldFetch },
-  );
+  const { data, isLoading, error } = useSenders({
+    page,
+    page_size: 25,
+    sender_name: filters.sender_name,
+    start_date: filters.start_date,
+    end_date: filters.end_date,
+    companies: filters.companies,
+    campaign_names: filters.campaigns,
+  });
 
   // -----------------------
   // Row click
@@ -87,7 +69,7 @@ const SenderPage = () => {
 
   return (
     <PageWrapper title="Sender Management">
-      <div className="flex flex-col h-[calc(100vh-200px)]">
+      <div className="flex flex-col h-[calc(100vh-80px)] overflow-hidden">
         {/* ---------------- FILTERS ---------------- */}
         <div className="flex gap-12 mt-3 mb-4">
           <div className="flex-1">

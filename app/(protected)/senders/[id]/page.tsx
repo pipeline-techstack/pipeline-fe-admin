@@ -49,50 +49,55 @@ const Sender = () => {
   const id = params.id;
 
   // -------------------------
-  // APPLIED FILTERS (API)
+  // DATE FILTERS
   // -------------------------
   const [appliedFilters, setAppliedFilters] = useState(INITIAL_FILTERS);
-
-  // -------------------------
-  // LOCAL FILTERS (UI only)
-  // -------------------------
   const [localFilters, setLocalFilters] = useState(INITIAL_FILTERS);
 
-  const [selectedCampaigns, setSelectedCampaigns] = useState<string[]>([]);
+  // -------------------------
+  // CAMPAIGNS (IMPORTANT FIX)
+  // -------------------------
+  const [appliedCampaigns, setAppliedCampaigns] = useState<string[]>([]);
+  const [localCampaigns, setLocalCampaigns] = useState<string[]>([]);
 
   // -------------------------
-  // API ONLY RUNS ON APPLIED FILTERS
+  // API depends ONLY on applied filters
   // -------------------------
   const { data, isLoading, error } = useSender(id as string, appliedFilters);
 
   // -------------------------
-  // APPLY FILTERS
+  // APPLY BUTTON
   // -------------------------
   const handleApply = () => {
     setAppliedFilters(localFilters);
+    setAppliedCampaigns(localCampaigns);
   };
 
   // -------------------------
-  // CLEAR FILTERS
+  // CLEAR BUTTON (IMPORTANT FIX)
   // -------------------------
   const handleClear = () => {
     setLocalFilters(INITIAL_FILTERS);
     setAppliedFilters(INITIAL_FILTERS);
-    setSelectedCampaigns([]);
+
+    setLocalCampaigns([]);
+    setAppliedCampaigns([]);
   };
 
   // -------------------------
-  // FILTERED CHART DATA
+  // CHART DATA (ONLY APPLIED CAMPAIGNS)
   // -------------------------
   const filteredCampaigns = useMemo(() => {
     if (!data?.campaigns) return [];
 
-    if (selectedCampaigns.length === 0) return data.campaigns;
+    if (appliedCampaigns.length === 0) {
+      return data.campaigns;
+    }
 
     return data.campaigns.filter((c: any) =>
-      selectedCampaigns.includes(String(c.campaign_id)),
+      appliedCampaigns.includes(String(c.campaign_id)),
     );
-  }, [data?.campaigns, selectedCampaigns]);
+  }, [data?.campaigns, appliedCampaigns]);
 
   if (isLoading) return <SpinLoader />;
   if (error) return <div>Something went wrong</div>;
@@ -128,7 +133,7 @@ const Sender = () => {
         </span>
 
         <div className="flex items-center gap-2">
-          {/* DATE FILTER (LOCAL ONLY) */}
+          {/* DATE */}
           <DateFilter
             value={localFilters}
             onChange={(range: any) =>
@@ -139,11 +144,11 @@ const Sender = () => {
             }
           />
 
-          {/* CAMPAIGNS */}
+          {/* CAMPAIGNS (LOCAL ONLY) */}
           <div className="max-w-[300px]">
             <MultiSelect
-              value={selectedCampaigns}
-              onChange={setSelectedCampaigns}
+              value={localCampaigns}
+              onChange={setLocalCampaigns}
               options={
                 data?.availableCampaigns?.map((c: any) => ({
                   id: String(c.campaign_id),
@@ -154,7 +159,7 @@ const Sender = () => {
             />
           </div>
 
-          {/* APPLY / CLEAR BUTTONS */}
+          {/* APPLY / CLEAR */}
           <div className="flex border rounded-md">
             <Button
               variant="ghost"
