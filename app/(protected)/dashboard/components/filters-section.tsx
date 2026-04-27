@@ -119,7 +119,7 @@ const FiltersSection = ({
       {/* Threshold */}
       <div className="flex flex-col">
         <label className="mb-1 font-medium text-gray-700 text-sm">Threshold</label>
-        <div className="flex justify-start items-center bg-white px-3 border border-gray-300 rounded-md h-10">
+        <div className="flex justify-start items-center bg-white px-3 border border-gray-200 rounded-md h-10">
           <span className="font-semibold text-gray-900 text-sm">90% SLA</span>
         </div>
       </div>

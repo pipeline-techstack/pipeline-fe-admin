@@ -41,26 +41,26 @@ const ResourceAllocationPage = () => {
   >
     {/* 🔥 Loading State */}
     {loading ? (
-      <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-8">
+      <div className="bg-white shadow-sm p-8 border border-gray-200 rounded-lg">
         <div className="flex justify-center items-center h-40">
-          <div className="w-8 h-8 border-4 border-gray-300 border-t-blue-600 rounded-full animate-spin" />
+          <div className="border-4 border-gray-200 border-t-blue-600 rounded-full w-8 h-8 animate-spin" />
         </div>
       </div>
     ) : allocations.length === 0 ? (
       <p className="text-gray-500 text-sm">No feature allocations found</p>
     ) : (
-      <div className="bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden flex flex-col flex-1 min-h-0">
+      <div className="flex flex-col flex-1 bg-white shadow-sm border border-gray-200 rounded-lg min-h-0 overflow-hidden">
         <div className="flex-1 min-h-0 overflow-y-auto">
           <table className="w-full border-collapse">
-            <thead className="top-0 z-10 sticky bg-gray-50 border-b border-gray-200">
+            <thead className="top-0 z-10 sticky bg-gray-50 border-gray-200 border-b">
               <tr>
-                <th className="px-6 py-3 font-semibold text-gray-900 text-left text-sm">
+                <th className="px-6 py-3 font-semibold text-gray-900 text-sm text-left">
                   Email
                 </th>
-                <th className="px-6 py-3 font-semibold text-gray-900 text-left text-sm">
+                <th className="px-6 py-3 font-semibold text-gray-900 text-sm text-left">
                   Assigned Resources
                 </th>
-                <th className="px-6 py-3 font-semibold text-gray-900 text-left text-sm">
+                <th className="px-6 py-3 font-semibold text-gray-900 text-sm text-left">
                   Actions
                 </th>
               </tr>
@@ -77,7 +77,7 @@ const ResourceAllocationPage = () => {
                     <div className="text-gray-900 text-sm">
                       {user.email}
                       {user.permissions?.length === 0 && (
-                        <span className="w-2 h-2 bg-blue-500 rounded-full inline-block ml-2" />
+                        <span className="inline-block bg-blue-500 ml-2 rounded-full w-2 h-2" />
                       )}
                     </div>
                   </td>
@@ -125,7 +125,7 @@ const ResourceAllocationPage = () => {
                         )}
                       </div>
                     ) : (
-                      <span className="text-gray-400 italic text-sm">
+                      <span className="text-gray-400 text-sm italic">
                         No resources
                       </span>
                     )}

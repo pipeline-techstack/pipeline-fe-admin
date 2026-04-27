@@ -39,10 +39,10 @@ const FilterDropdown = ({
 
   // if (isDatePicker) {
   //   return (
-  //     <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
+  //     <div className="bg-white shadow-sm p-4 border border-gray-200 rounded-lg">
   //       <div className="relative">
-  //         <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-  //           {hasFilterIcon && <Filter className="h-4 w-4 text-gray-500" />}
+  //         <label className="flex items-center gap-2 mb-2 font-medium text-gray-700 text-sm">
+  //           {hasFilterIcon && <Filter className="w-4 h-4 text-gray-500" />}
   //           {label}
   //         </label>
   //         <DatePicker
@@ -60,13 +60,13 @@ const FilterDropdown = ({
   }`;
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
+    <div className="bg-white shadow-sm p-4 border border-gray-200 rounded-lg">
       <div className="relative">
         <label
           htmlFor={selectId}
-          className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2"
+          className="flex items-center gap-2 mb-2 font-medium text-gray-700 text-sm"
         >
-          {hasFilterIcon && <Filter className="h-4 w-4 text-gray-500" />}
+          {hasFilterIcon && <Filter className="w-4 h-4 text-gray-500" />}
           {label}
         </label>
         <div className="relative">
@@ -74,8 +74,7 @@ const FilterDropdown = ({
             id={selectId}
             value={selectedValue}
             onChange={handleSelectChange}
-            className="w-full bg-white border border-gray-300 rounded-md px-3 py-2 pr-8 text-sm
-                       focus:outline-none focus:ring-2 focus:ring-gray-600 focus:border-gray-800 appearance-none"
+            className="bg-white px-3 py-2 pr-8 border border-gray-200 focus:border-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600 w-full text-sm appearance-none"
           >
             <option value={value}>{value}</option>
             {options.map((option, index) => (
@@ -84,7 +83,7 @@ const FilterDropdown = ({
               </option>
             ))}
           </select>
-          <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+          <ChevronDown className="top-1/2 right-2 absolute w-4 h-4 text-gray-400 -translate-y-1/2 pointer-events-none" />
         </div>
       </div>
     </div>

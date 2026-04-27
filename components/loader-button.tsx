@@ -92,7 +92,7 @@ export function ExampleUsage() {
       <Button
         variant="outline"
         disabled={isSubmitting}
-        className="flex-1 hover:bg-gray-100 border-gray-300 text-gray-900"
+        className="flex-1 hover:bg-gray-100 border-gray-200 text-gray-900"
       >
         Cancel
       </Button>

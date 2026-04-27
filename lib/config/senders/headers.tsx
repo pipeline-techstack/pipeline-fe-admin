@@ -19,30 +19,9 @@ export const normalizeStatus = (status: string) => status?.trim().toLowerCase();
 import { CheckIcon } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Sender } from "@/lib/types/senders";
+import { SenderUser } from "@/app/(protected)/senders/_components/sender-user";
 
-const AvatarStatusRingDemo = ({ user }) => {
-  return (
-    <div className="relative w-fit">
-      <Avatar
-        className={`rounded-full p-0.5 size-10 ${getStatusBg(user.status)}`}
-      >
-        <AvatarImage
-          src={user.avatar}
-          alt={user.name}
-          className="rounded-full"
-        />
-        <AvatarFallback className="bg-muted font-medium text-sm">
-          {user.name?.charAt(0).toUpperCase()}
-        </AvatarFallback>
-      </Avatar>
-      <span
-        className={`absolute right-0 bottom-1 size-2 rounded-full ${getStatusBg(user.status)}`}
-      />
-    </div>
-  );
-};
-
-export default AvatarStatusRingDemo;
 
 export const STATUS_MAP: Record<string, { bg: string; text: string }> = {
   active: {
@@ -70,22 +49,7 @@ export const columns: Column<Sender>[] = [
       <div className="flex items-center gap-3">
         {/* Avatar with status ring */}
 
-        <AvatarStatusRingDemo user={user} />
-
-        {/* Text */}
-        <div className="flex flex-col">
-          {/* Name + LinkedIn */}
-          <div className="flex items-center gap-1">
-            <p className="text-sm">{user.name}</p>
-
-            {user.linkedin && <LinkedInBtn url={user.linkedin} />}
-          </div>
-
-          {/* Status */}
-          <p className={`text-xs ${getStatusTextColor(user.status)}`}>
-            {user.status} ({user.statusCount})
-          </p>
-        </div>
+       <SenderUser user={user} showHover />
       </div>
     ),
   },

@@ -1,14 +1,11 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { EditMemberFormData, Member } from "./types/member-types";
 import {
   Permission,
-  PostUserResourcesPyaload,
-  User,
 } from "./types/resource-types";
 import { Feature } from "framer-motion";
 import { DEFAULT_FEATURES } from "@/app/(protected)/customers/new/_components/customer.constants";
-import { normalizeStatus, STATUS_MAP, STATUS_STYLES } from "./config/senders/headers";
+import { normalizeStatus } from "./config/senders/headers";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -95,4 +92,8 @@ export const getStatusTextColor = (status: string): string => {
     case "inactive":    return "text-red-500";
     default:            return "text-gray-500";
   }
+};
+
+export const formatNumber = (num: number) => {
+  return num.toLocaleString();
 };

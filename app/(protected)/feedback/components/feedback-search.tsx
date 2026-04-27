@@ -18,21 +18,21 @@
 
 //   return (
 //     <div className="relative">
-//       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+//       <Search className="top-1/2 left-3 absolute w-4 h-4 text-gray-400 -translate-y-1/2 transform" />
 //       <input
 //         type="text"
 //         value={value}
 //         onChange={(e) => onChange(e.target.value)}
 //         placeholder={placeholder}
-//         className="pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-800 focus:border-blue-800 outline-none w-64"
+//         className="py-2 pr-10 pl-10 border border-gray-200 focus:border-blue-800 rounded-lg outline-none focus:ring-2 focus:ring-blue-800 w-64"
 //       />
 //       {value && (
 //         <button
 //           aria-label="Clear search"
 //           onClick={clearSearch}
-//           className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+//           className="top-1/2 right-3 absolute text-gray-400 hover:text-gray-600 -translate-y-1/2 transform"
 //         >
-//           <X className="h-4 w-4" />
+//           <X className="w-4 h-4" />
 //         </button>
 //       )}
 //     </div>

@@ -158,7 +158,7 @@ const EditTeamMember: React.FC<EditTeamMemberProps> = ({
                 value={member.email}
                 onChange={(e) => handleFormChange("email", e.target.value)}
                 placeholder="john@example.com"
-                className="border-gray-300 w-full text-gray-900 placeholder:text-gray-500"
+                className="border-gray-200 w-full text-gray-900 placeholder:text-gray-500"
               />
             </div>
 
@@ -176,7 +176,7 @@ const EditTeamMember: React.FC<EditTeamMemberProps> = ({
                 value={member.addQuota}
                 onChange={(e) => handleFormChange("addQuota", e.target.value)}
                 placeholder="1000"
-                className="border-gray-300 w-full text-gray-900 placeholder:text-gray-500"
+                className="border-gray-200 w-full text-gray-900 placeholder:text-gray-500"
               />
             </div>
             <div className="space-y-2">
@@ -195,7 +195,7 @@ const EditTeamMember: React.FC<EditTeamMemberProps> = ({
                   handleFormChange("reduceQuota", e.target.value)
                 }
                 placeholder="500"
-                className="border-gray-300 w-full text-gray-900 placeholder:text-gray-500"
+                className="border-gray-200 w-full text-gray-900 placeholder:text-gray-500"
               />
             </div>
 
@@ -210,7 +210,7 @@ const EditTeamMember: React.FC<EditTeamMemberProps> = ({
                 value={member.role}
                 onValueChange={(value) => handleFormChange("role", value)}
               >
-                <SelectTrigger className="border-gray-300 w-full text-gray-900">
+                <SelectTrigger className="border-gray-200 w-full text-gray-900">
                   <SelectValue placeholder="Select a role" />
                 </SelectTrigger>
                 <SelectContent>
@@ -239,7 +239,7 @@ const EditTeamMember: React.FC<EditTeamMemberProps> = ({
           <Button
             variant="outline"
             onClick={() => setIsOpen(false)}
-            className="flex-1 hover:bg-gray-100 border-gray-300 text-gray-900"
+            className="flex-1 hover:bg-gray-100 border-gray-200 text-gray-900"
             // disabled={isSubmitting}
           >
             Cancel

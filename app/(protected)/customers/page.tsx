@@ -122,7 +122,7 @@ const CustomersPage = () => {
             placeholder="Search customers..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="py-2 pr-4 pl-10 border border-gray-300 rounded-md w-full text-sm"
+            className="py-2 pr-4 pl-10 border border-gray-200 rounded-md w-full text-sm"
           />
         </div>
       }

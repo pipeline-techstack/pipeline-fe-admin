@@ -1,11 +1,22 @@
 "use client";
 
-import { useState, useRef, useEffect, ReactNode } from "react";
-import { DateRangePicker as ReactDateRangePicker, Range } from "react-date-range";
+import { useState, useEffect, ReactNode } from "react";
+import {
+  DateRangePicker as ReactDateRangePicker,
+  Range,
+} from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { Calendar } from "lucide-react";
 import { DashboardFilters } from "./filters-section";
+
+import {
+  useFloating,
+  offset,
+  flip,
+  shift,
+  autoUpdate,
+} from "@floating-ui/react";
 
 interface DateRangePickerProps {
   filters: DashboardFilters;
@@ -13,6 +24,7 @@ interface DateRangePickerProps {
   onToggle: () => void;
   onChange: (dateRange: { start: string; end: string }) => void;
   children?: ReactNode;
+  label?: string;
 }
 
 export default function DateRangePicker({
@@ -20,45 +32,41 @@ export default function DateRangePicker({
   show,
   onToggle,
   onChange,
+  label = "Select data range",
 }: DateRangePickerProps) {
-  const inputRef = useRef<HTMLDivElement>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
+  // -----------------------------
+  // Floating UI setup (POPUP logic)
+  // -----------------------------
+  const { refs, floatingStyles, update } = useFloating({
+    placement: "bottom-start",
+    middleware: [offset(8), flip(), shift({ padding: 8 })],
+    whileElementsMounted: autoUpdate,
+  });
 
-  // Convert YYYY-MM-DD string to Date
+  // -----------------------------
+  // Date utils
+  // -----------------------------
   const parseDate = (str: string) => {
     if (!str) return new Date();
     const [year, month, day] = str.split("-").map(Number);
     return new Date(year, month - 1, day);
   };
 
-  // Format Date to YYYY-MM-DD
   const formatDate = (date: Date) =>
     `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(
       date.getDate()
     ).padStart(2, "0")}`;
 
-  // State for react-date-range
+  // -----------------------------
+  // Local selection state
+  // -----------------------------
   const [selectionRange, setSelectionRange] = useState<Range>({
     startDate: parseDate(filters.dateRange.start),
     endDate: parseDate(filters.dateRange.end),
     key: "selection",
   });
 
-  // Calculate dropdown position when showing
-  useEffect(() => {
-    if (show && inputRef.current) {
-      const rect = inputRef.current.getBoundingClientRect();
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-
-      setDropdownPosition({
-        top: rect.bottom + scrollTop + 8, // 8px gap
-        left: rect.left,
-      });
-    }
-  }, [show]);
-
-  // Sync with external filters
+  // Sync external filters → internal state
   useEffect(() => {
     setSelectionRange({
       startDate: parseDate(filters.dateRange.start),
@@ -67,26 +75,16 @@ export default function DateRangePicker({
     });
   }, [filters.dateRange]);
 
-  // Close on outside click
+  // Force reposition when opening
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Node;
-      if (
-        inputRef.current &&
-        !inputRef.current.contains(target) &&
-        dropdownRef.current &&
-        !dropdownRef.current.contains(target)
-      ) {
-        onToggle();
-      }
-    };
-
     if (show) {
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => document.removeEventListener("mousedown", handleClickOutside);
+      update();
     }
-  }, [show, onToggle]);
+  }, [show, update]);
 
+  // -----------------------------
+  // Selection handler
+  // -----------------------------
   const handleSelect = (ranges: { [key: string]: Range }) => {
     const range = ranges.selection;
     setSelectionRange(range);
@@ -96,39 +94,44 @@ export default function DateRangePicker({
         start: formatDate(range.startDate),
         end: formatDate(range.endDate),
       });
-      onToggle();
+
+      onToggle(); // close after selection
     }
   };
 
+  // -----------------------------
+  // UI
+  // -----------------------------
   return (
     <>
-      <div className="relative w-full">
-        <span className="block font-medium text-gray-700 text-sm mb-1">
-          Select Date Range:
-        </span>
+      {/* Trigger */}
+      <div className="relative w-[180px]">
+        {label && (
+          <span className="block mb-1 font-medium text-gray-700 text-sm">
+            {label}
+          </span>
+        )}
 
-        {/* Input container */}
         <div
-          ref={inputRef}
-          className="flex items-center justify-between bg-white px-3 py-[10px] border border-gray-300 hover:border-gray-400 rounded-md min-w-[240px] text-sm cursor-pointer"
+          ref={refs.setReference}
+          className="flex justify-between items-center bg-white px-3 border border-gray-200 rounded-md h-10 text-sm cursor-pointer"
           onClick={onToggle}
         >
-          <span className="text-gray-900">
-            {filters.dateRange.start || "Start"} – {filters.dateRange.end || "End"}
+          <span className="text-muted-foreground">
+            {filters.dateRange.start || "Start"} –{" "}
+            {filters.dateRange.end || "End"}
           </span>
-          <Calendar className="w-4 h-4 text-gray-500 ml-2" />
+
+          <Calendar className="ml-2 w-4 h-4 text-gray-500" />
         </div>
       </div>
 
-      {/* Portal-style dropdown positioned absolutely */}
+      {/* Popover */}
       {show && (
         <div
-          ref={dropdownRef}
-          className="fixed z-50 bg-white shadow-lg border border-gray-200 rounded-lg"
-          style={{
-            top: `${dropdownPosition.top}px`,
-            left: `${dropdownPosition.left}px`,
-          }}
+          ref={refs.setFloating}
+          style={floatingStyles}
+          className="z-50 bg-white shadow-lg border border-gray-200 rounded-lg"
         >
           <ReactDateRangePicker
             ranges={[selectionRange]}

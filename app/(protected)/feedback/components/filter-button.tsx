@@ -133,7 +133,7 @@
 //           <div className="space-y-2">
 //             <div className="font-medium text-gray-700 text-sm">Date of Meeting</div>
 //             <div
-//               className="flex justify-between items-center bg-white px-3 py-2 border border-gray-300 hover:border-gray-400 rounded-md text-sm transition-colors cursor-pointer"
+//               className="flex justify-between items-center bg-white px-3 py-2 border border-gray-200 hover:border-gray-400 rounded-md text-sm transition-colors cursor-pointer"
 //               onClick={() => setShowDateOfMeetingPicker(!showDateOfMeetingPicker)}
 //             >
 //               <span className="text-xs truncate">

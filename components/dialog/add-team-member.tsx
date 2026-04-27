@@ -184,7 +184,7 @@ export function AddTeamMemberDialog({
                 value={member.email}
                 onChange={(e) => handleFormChange("email", e.target.value)}
                 placeholder="john@example.com"
-                className="border-gray-300 w-full text-gray-900 placeholder:text-gray-500"
+                className="border-gray-200 w-full text-gray-900 placeholder:text-gray-500"
               />
             </div>
 
@@ -202,7 +202,7 @@ export function AddTeamMemberDialog({
                 value={member.quota}
                 onChange={handleQuotaChange}
                 placeholder="1000"
-                className="border-gray-300 w-full text-gray-900 placeholder:text-gray-500"
+                className="border-gray-200 w-full text-gray-900 placeholder:text-gray-500"
               />
             </div>
 
@@ -217,7 +217,7 @@ export function AddTeamMemberDialog({
                 value={member.role}
                 onValueChange={(value) => handleFormChange("role", value)}
               >
-                <SelectTrigger className="border-gray-300 w-full text-gray-900">
+                <SelectTrigger className="border-gray-200 w-full text-gray-900">
                   <SelectValue placeholder="Select a role" />
                 </SelectTrigger>
                 <SelectContent>
@@ -246,7 +246,7 @@ export function AddTeamMemberDialog({
           <Button
             variant="outline"
             onClick={() => setIsAddMemberOpen(false)}
-            className="flex-1 hover:bg-gray-100 border-gray-300 text-gray-900"
+            className="flex-1 hover:bg-gray-100 border-gray-200 text-gray-900"
             disabled={isSubmitting}
           >
             Cancel

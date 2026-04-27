@@ -16,7 +16,7 @@
 
 //   return (
 //     <div 
-//       className="group bg-white hover:shadow-md p-4 border border-gray-200 hover:border-gray-300 rounded-lg transition-all cursor-pointer"
+//       className="group bg-white hover:shadow-md p-4 border border-gray-200 hover:border-gray-200 rounded-lg transition-all cursor-pointer"
 //       onClick={handleClick}
 //     >
 //       <div className="flex justify-between items-start mb-3">

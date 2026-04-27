@@ -258,7 +258,7 @@ export function ActionButton({
   const styles = {
     ghost: "text-gray-500 hover:text-gray-800 hover:bg-gray-100",
     outline:
-      "text-muted-foreground hover:text-gray-900 border border-gray-200 hover:border-gray-300 hover:bg-gray-50",
+      "text-muted-foreground hover:text-gray-900 border border-gray-200 hover:border-gray-200 hover:bg-gray-50",
   };
   return (
     <button onClick={onClick} className={`${base} ${styles[variant]}`}>

@@ -1,54 +1,123 @@
 "use client";
-import React, { use, useState } from "react";
+
+import { useEffect, useState } from "react";
 import PageWrapper from "@/components/common/page-wrapper";
 import { DataTable } from "@/components/common/table/data-table";
-import { Send, Check, MessageCircle, ThumbsUp, Plus } from "lucide-react";
-import { columns } from "@/lib/config/senders/headers";
-import { senders } from "./dummy-data";
-import { MetricCard } from "./_components/metric-card";
-import { SenderFilters } from "./_components/sender-filters";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+
+import { columns } from "@/lib/config/senders/headers";
+import { SenderFilters } from "./_components/sender-filters";
 import Metrics from "./_components/metrics";
+import { useSenders } from "@/hooks/use-senders";
+
+const INITIAL_FILTERS = {
+  sender_name: "",
+  companies: [],
+  campaigns: [],
+  start_date: "",
+  end_date: "",
+};
 
 const SenderPage = () => {
   const router = useRouter();
+
+  // -----------------------
+  // Pagination (server-driven)
+  // -----------------------
   const [page, setPage] = useState(1);
 
-  const handleclick = (row: any) => {
+  // -----------------------
+  // Filters
+  // -----------------------
+  const [filters, setFilters] = useState(INITIAL_FILTERS);
+
+  // -----------------------
+  // Reset page when filters change
+  // -----------------------
+  useEffect(() => {
+    setPage(1);
+  }, [filters]);
+
+  // -----------------------
+  // Empty filter check (to prevent unnecessary API calls)
+  // -----------------------
+  const isEmptyFilters = (filters: any) => {
+    return (
+      !filters.sender_name &&
+      filters.companies.length === 0 &&
+      filters.campaigns.length === 0 &&
+      !filters.start_date &&
+      !filters.end_date
+    );
+  };
+
+  const shouldFetch = !isEmptyFilters(filters);
+
+  // -----------------------
+  // API call
+  // -----------------------
+  const { data, isLoading, error } = useSenders(
+    {
+      page,
+      page_size: 25,
+      sender_name: filters.sender_name,
+      start_date: filters.start_date,
+      end_date: filters.end_date,
+      companies: filters.companies,
+      campaign_names: filters.campaigns,
+    },
+    { enabled: shouldFetch },
+  );
+
+  // -----------------------
+  // Row click
+  // -----------------------
+  const handleClick = (row: any) => {
     router.push(`senders/${row._id}`);
+  };
+
+  // -----------------------
+  // Pagination handlers
+  // -----------------------
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
   };
 
   return (
     <PageWrapper title="Sender Management">
-      {/* Filters */}
-      <div className="flex gap-12 mt-3 mb-4">
-        <div className="flex-1">
-          {" "}
-          <SenderFilters />
+      <div className="flex flex-col h-[calc(100vh-200px)]">
+        {/* ---------------- FILTERS ---------------- */}
+        <div className="flex gap-12 mt-3 mb-4">
+          <div className="flex-1">
+            <SenderFilters filters={filters} onChange={setFilters} />
+          </div>
+
+          <Button>
+            <Plus size={16} className="mr-2" />
+            Add Senders
+          </Button>
         </div>
 
-        <Button>
-          <Plus size={16} className="mr-2" />
-          Add Senders
-        </Button>
+        {/* ---------------- METRICS ---------------- */}
+
+        <Metrics summary={data?.summary} />
+
+        {/* ---------------- TABLE ---------------- */}
+        <DataTable
+          data={data?.senders || []}
+          columns={columns}
+          footer
+          currentPage={data?.pagination?.page || page}
+          totalPages={data?.pagination?.totalPages}
+          onPageChange={handlePageChange}
+          onRowClick={handleClick}
+          loading={isLoading}
+          isServerPagination={true}
+          error={error}
+        />
       </div>
-
-      {/* Global Stats */}
-      {/* <span className="my-2 text-secondary-foreground text-sm">Global Stats</span> */}
-     <Metrics />
-
-      {/* Table */}
-      <DataTable
-        data={senders}
-        columns={columns}
-        footer={true}
-        currentPage={page}
-        onPageChange={setPage}
-        onRowClick={handleclick}
-        loading={false}
-        error={null}
-      />
     </PageWrapper>
   );
 };

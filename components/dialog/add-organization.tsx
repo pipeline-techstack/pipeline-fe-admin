@@ -204,7 +204,7 @@ export function AddOrganizationDialog({
                   onChange={(e) =>
                     handleInputChange("organizationName", e.target.value)
                   }
-                  className="px-3 py-3 border border-gray-300 focus:border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-base"
+                  className="px-3 py-3 border border-gray-200 focus:border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-base"
                 />
               </div>
 
@@ -224,7 +224,7 @@ export function AddOrganizationDialog({
                   onChange={(e) =>
                     handleInputChange("enterpriseId", e.target.value)
                   }
-                  className="bg-gray-50 px-3 py-3 border border-gray-300 focus:border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-base"
+                  className="bg-gray-50 px-3 py-3 border border-gray-200 focus:border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-base"
                 />
               </div>
 
@@ -250,7 +250,7 @@ export function AddOrganizationDialog({
                       className={`w-full px-3 py-3 text-base border rounded-md focus:outline-none focus:ring-2 focus:border-transparent ${
                         emailTouched && !isEmailValid
                           ? "border-red-300 ring-red-500 focus:ring-red-500"
-                          : "border-gray-300 focus:ring-blue-500"
+                          : "border-gray-200 focus:ring-blue-500"
                       }`}
                     />
 
@@ -277,7 +277,7 @@ export function AddOrganizationDialog({
                       onChange={(e) =>
                         handleInputChange("quota", e.target.value)
                       }
-                      className="px-3 py-3 border border-gray-300 focus:border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-base"
+                      className="px-3 py-3 border border-gray-200 focus:border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-base"
                     />
                   </div>
                   <div className="space-y-2">
@@ -296,7 +296,7 @@ export function AddOrganizationDialog({
                       onChange={(e) =>
                         handleInputChange("seats", e.target.value)
                       }
-                      className="px-3 py-3 border border-gray-300 focus:border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-base"
+                      className="px-3 py-3 border border-gray-200 focus:border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-base"
                     />
                   </div>
                 </>
@@ -351,7 +351,7 @@ export function AddOrganizationDialog({
                           handleInputChange("addQuota", e.target.value)
                         }
                         placeholder="e.g. 100"
-                        className="px-3 py-3 border border-gray-300 rounded-md w-full text-base"
+                        className="px-3 py-3 border border-gray-200 rounded-md w-full text-base"
                       />
                     </div>
                     <div className="space-y-2">
@@ -369,7 +369,7 @@ export function AddOrganizationDialog({
                           handleInputChange("removeQuota", e.target.value)
                         }
                         placeholder="e.g. 50"
-                        className="px-3 py-3 border border-gray-300 rounded-md w-full text-base"
+                        className="px-3 py-3 border border-gray-200 rounded-md w-full text-base"
                       />
                     </div>
                     <div className="space-y-2">
@@ -387,7 +387,7 @@ export function AddOrganizationDialog({
                           handleInputChange("addSeats", e.target.value)
                         }
                         placeholder="e.g. 3"
-                        className="px-3 py-3 border border-gray-300 rounded-md w-full text-base"
+                        className="px-3 py-3 border border-gray-200 rounded-md w-full text-base"
                       />
                     </div>
                     <div className="space-y-2">
@@ -405,7 +405,7 @@ export function AddOrganizationDialog({
                           handleInputChange("removeSeats", e.target.value)
                         }
                         placeholder="e.g. 1"
-                        className="px-3 py-3 border border-gray-300 rounded-md w-full text-base"
+                        className="px-3 py-3 border border-gray-200 rounded-md w-full text-base"
                       />
                     </div>
                   </div> */}

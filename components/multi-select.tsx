@@ -14,6 +14,7 @@ interface MultiSelectProps {
   options: Option[];
   placeholder?: string;
   isLoading?: boolean;
+  width?: string;
 }
 
 const MultiSelect: React.FC<MultiSelectProps> = ({
@@ -22,6 +23,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   options,
   placeholder = "Select options...",
   isLoading = false,
+  width = "w-[250px]",
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -120,12 +122,12 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   };
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className={`relative ${width}`} ref={dropdownRef}>
       <div
-        className="bg-white px-3 py-2 border border-gray-300 focus-within:border-blue-500 rounded-lg cursor-pointer"
+        className="flex items-center bg-white px-2 border border-gray-200 focus-within:border-blue-500 rounded-lg h-10 overflow-hidden cursor-pointer"
         onClick={handleDropdownToggle}
       >
-        <div className="flex flex-wrap items-center gap-1">
+        <div className="flex items-center gap-1 w-full overflow-hidden whitespace-nowrap">
           {value.length === 0 ? (
             <span className="text-muted-foreground text-sm">{placeholder}</span>
           ) : (
@@ -134,9 +136,9 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
               return (
                 <span
                   key={id}
-                  className="inline-flex items-center gap-1 bg-blue-50 px-2 py-1 border border-blue-200 rounded-full text-blue-700 text-sm"
+                  className="inline-flex flex-shrink-0 items-center gap-1 bg-blue-50 px-2 py-0.5 border border-blue-200 rounded-full max-w-[120px] text-blue-700 text-xs"
                 >
-                  {campaign?.name || id}
+                  <span className="truncate">{campaign?.name || id}</span>
                   <button
                     type="button"
                     aria-label="Remove"
@@ -161,9 +163,9 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
       {isOpen &&
         createPortal(
           <div
-            ref={portalRef} 
+            ref={portalRef}
             style={dropdownStyles}
-            className="bg-white shadow-lg border border-gray-300 rounded-lg max-h-72 overflow-auto"
+            className="bg-white shadow-lg border border-gray-200 rounded-lg max-h-72 overflow-auto"
           >
             {/* Search + Select All toggle */}
             <div className="flex items-center gap-2 px-3 py-2 border-b">
@@ -195,7 +197,9 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
                   className="flex justify-between items-center hover:bg-gray-50 px-3 py-2 cursor-pointer"
                   onClick={() => handleToggle(option)}
                 >
-                  <span className="text-secondary-foreground text-sm">{option.name}</span>
+                  <span className="text-secondary-foreground text-sm">
+                    {option.name}
+                  </span>
                   {value.includes(option.id) && (
                     <Check size={16} className="text-blue-600" />
                   )}

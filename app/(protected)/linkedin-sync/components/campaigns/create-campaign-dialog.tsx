@@ -87,7 +87,7 @@ const CreateCampaignDialog = ({
               id="taskId"
               value={taskId}
               disabled
-              className="bg-gray-50 border-gray-300 h-12 text-gray-600"
+              className="bg-gray-50 border-gray-200 h-12 text-gray-600"
             />
           </div> */}
 
@@ -101,7 +101,7 @@ const CreateCampaignDialog = ({
               value={heyreachCampaignId}
               onChange={(e) => setHeyreachCampaignId(e.target.value)}
               onKeyPress={handleKeyPress}
-              className="border-gray-300 focus-visible:ring-blue-500 h-12"
+              className="border-gray-200 focus-visible:ring-blue-500 h-12"
               autoFocus
               disabled={isSubmitting}
             />

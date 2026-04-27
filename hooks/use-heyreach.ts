@@ -52,6 +52,8 @@ export const useHeyreach = ({
     queryFn: () => fetchCampaigns(search),
     staleTime: 5 * 60 * 1000,
     enabled: enableCampaigns, // run only if explicitly enabled
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   });
 
   const userPermissionsQuery = useQuery<UserPermission[]>({
@@ -67,6 +69,8 @@ export const useHeyreach = ({
     },
     staleTime: 5 * 60 * 1000,
     enabled: enablePermissions, // run only if explicitly enabled
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   });
 
   return { campaignsQuery, userPermissionsQuery };
