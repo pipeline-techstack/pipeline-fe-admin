@@ -30,6 +30,7 @@ interface DataTableProps<T> {
   loading?: boolean;
   isServerPagination?: boolean;
   totalPages?: number;
+  tableHight?: string;
 }
 
 export function DataTable<T extends { _id?: string }>({
@@ -45,6 +46,7 @@ export function DataTable<T extends { _id?: string }>({
   onPageChange,
   isServerPagination = false,
   totalPages: totalPagesProp,
+  tableHight = "max-h-[calc(100vh-168px)]",
 }: DataTableProps<T>) {
   const dynamicPageSize = useDynamicPageSize({
     rowHeight: 48,
@@ -84,7 +86,7 @@ export function DataTable<T extends { _id?: string }>({
   return (
     <div className="flex flex-col bg-white rounded-md h-full">
       {/* Scrollable Table */}
-      <div className="flex-1 max-h-[calc(100vh-168px)] overflow-auto">
+      <div className={`flex-1 ${tableHight} overflow-auto`}>
         <Table>
           <TableHeader>
             <TableRow>

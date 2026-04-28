@@ -49,7 +49,7 @@ const SenderPage = () => {
   // -----------------------
   const { data, isLoading, error } = useSenders({
     page,
-    page_size: 25,
+    page_size: 20,
     sender_name: filters.sender_name,
     start_date: filters.start_date,
     end_date: filters.end_date,
@@ -92,7 +92,7 @@ const SenderPage = () => {
         </div>
       }
     >
-      <div className="flex flex-col h-[calc(100vh-80px)] overflow-hidden">
+      <div className="overflow-hidden">
         {/* ---------------- FILTERS ---------------- */}
         <div className="mt-3 mb-4">
           <SenderFilters filters={filters} onChange={setFilters} />
@@ -109,11 +109,14 @@ const SenderPage = () => {
           footer
           currentPage={data?.pagination?.page || page}
           totalPages={data?.pagination?.totalPages}
+          pageSize={data?.pagination.pageSize}
+          total={data?.pagination.total}
           onPageChange={handlePageChange}
           onRowClick={handleClick}
           loading={isLoading}
           isServerPagination={true}
           error={error}
+          tableHight="max-h-[calc(100vh-330px)]"
         />
       </div>
       <AddSenderDialog open={openAddSender} onOpenChange={setOpenAddSender} />
