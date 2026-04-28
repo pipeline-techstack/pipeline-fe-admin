@@ -1,7 +1,12 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+
+import React, { useState, useEffect } from "react";
 import { Check, X, ChevronDown, Search } from "lucide-react";
-import { createPortal } from "react-dom";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 interface Option {
   id: string;
@@ -28,9 +33,6 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState(search);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const [dropdownStyles, setDropdownStyles] = useState<React.CSSProperties>({});
-  const portalRef = useRef<HTMLDivElement>(null);
 
   // debounce
   useEffect(() => {
@@ -38,37 +40,8 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
     return () => clearTimeout(handler);
   }, [search]);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node) &&
-        portalRef.current &&
-        !portalRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
-  }, []);
-
-  useEffect(() => {
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setIsOpen(false);
-    };
-    document.addEventListener("keydown", handleEscape);
-    return () => document.removeEventListener("keydown", handleEscape);
-  }, []);
-
-  useEffect(() => {
-    const handleScroll = () => setIsOpen(false);
-    window.addEventListener("scroll", handleScroll, true);
-    return () => window.removeEventListener("scroll", handleScroll, true);
-  }, []);
-
   const filteredOptions = options.filter((o) =>
-    o.name.toLowerCase().includes(debouncedSearch.toLowerCase()),
+    o.name.toLowerCase().includes(debouncedSearch.toLowerCase())
   );
 
   const allFilteredSelected =
@@ -79,6 +52,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
     const newValue = value.includes(option.id)
       ? value.filter((id) => id !== option.id)
       : [...value, option.id];
+
     onChange(newValue);
   };
 
@@ -87,129 +61,117 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
     onChange(value.filter((item) => item !== id));
   };
 
-  const handleDropdownToggle = () => {
-    if (!isOpen && dropdownRef.current) {
-      const rect = dropdownRef.current.getBoundingClientRect();
-
-      setDropdownStyles({
-        position: "absolute",
-        top: rect.bottom + window.scrollY + 4,
-        left: rect.left + window.scrollX,
-        width: rect.width,
-        zIndex: 9999,
-      });
-    }
-
-    setIsOpen(!isOpen);
-    if (!isOpen) setSearch("");
-  };
-
   const handleSelectAllToggle = (e: React.MouseEvent) => {
     e.stopPropagation();
+
     if (allFilteredSelected) {
-      // Deselect all filtered
       const remaining = value.filter(
-        (id) => !filteredOptions.some((o) => o.id === id),
+        (id) => !filteredOptions.some((o) => o.id === id)
       );
       onChange(remaining);
     } else {
-      // Select all filtered
       const newIds = Array.from(
-        new Set([...value, ...filteredOptions.map((o) => o.id)]),
+        new Set([...value, ...filteredOptions.map((o) => o.id)])
       );
       onChange(newIds);
     }
   };
 
   return (
-    <div className={`relative ${width}`} ref={dropdownRef}>
-      <div
-        className="flex items-center bg-white px-2 border border-gray-200 focus-within:border-blue-500 rounded-lg h-10 overflow-hidden cursor-pointer"
-        onClick={handleDropdownToggle}
-      >
-        <div className="flex items-center gap-1 w-full overflow-hidden whitespace-nowrap">
-          {value.length === 0 ? (
-            <span className="text-muted-foreground text-sm">{placeholder}</span>
-          ) : (
-            value.map((id) => {
-              const campaign = options.find((c) => c.id === id);
-              return (
-                <span
-                  key={id}
-                  className="inline-flex flex-shrink-0 items-center gap-1 bg-blue-50 px-2 py-0.5 border border-blue-200 rounded-full max-w-[120px] text-blue-700 text-xs"
-                >
-                  <span className="truncate">{campaign?.name || id}</span>
-                  <button
-                    type="button"
-                    aria-label="Remove"
-                    onClick={(e) => handleRemove(id, e)}
-                    className="hover:bg-blue-100 p-0.5 rounded-full"
-                  >
-                    <X size={12} />
-                  </button>
-                </span>
-              );
-            })
-          )}
-          <ChevronDown
-            size={16}
-            className={`ml-auto text-gray-400 transition-transform ${
-              isOpen ? "rotate-180" : ""
-            }`}
-          />
-        </div>
-      </div>
-
-      {isOpen &&
-        createPortal(
-          <div
-            ref={portalRef}
-            style={dropdownStyles}
-            className="bg-white shadow-lg border border-gray-200 rounded-lg max-h-72 overflow-auto"
-          >
-            {/* Search + Select All toggle */}
-            <div className="flex items-center gap-2 px-3 py-2 border-b">
-              <Search size={14} className="text-gray-400" />
-              <input
-                type="text"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search..."
-                className="flex-1 outline-none text-sm"
-              />
-              <button
-                type="button"
-                onClick={handleSelectAllToggle}
-                className="font-medium text-blue-600 text-xs hover:underline whitespace-nowrap"
-              >
-                {allFilteredSelected ? "Deselect All" : "Select All"}
-              </button>
-            </div>
-
-            {isLoading ? (
-              <p className="p-3 text-gray-500 text-sm">Loading...</p>
-            ) : filteredOptions.length === 0 ? (
-              <p className="p-3 text-gray-500 text-sm">No campaigns found</p>
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
+      <PopoverTrigger asChild>
+        <div
+          className={`flex items-center bg-white px-2 border border-gray-200 focus-within:border-blue-500 rounded-lg h-10 overflow-hidden cursor-pointer ${width}`}
+        >
+          <div className="flex items-center gap-1 w-full overflow-hidden whitespace-nowrap">
+            {value.length === 0 ? (
+              <span className="text-muted-foreground text-sm">
+                {placeholder}
+              </span>
             ) : (
-              filteredOptions.map((option) => (
-                <div
-                  key={option.id}
-                  className="flex justify-between items-center hover:bg-gray-50 px-3 py-2 cursor-pointer"
-                  onClick={() => handleToggle(option)}
-                >
-                  <span className="text-secondary-foreground text-sm">
-                    {option.name}
+              value.map((id) => {
+                const option = options.find((c) => c.id === id);
+                return (
+                  <span
+                    key={id}
+                    className="inline-flex flex-shrink-0 items-center gap-1 bg-blue-50 px-2 py-0.5 border border-blue-200 rounded-full max-w-[120px] text-blue-700 text-sm"
+                  >
+                    <span className="truncate">
+                      {option?.name || id}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={(e) => handleRemove(id, e)}
+                      className="hover:bg-blue-100 p-0.5 rounded-full"
+                    >
+                      <X size={12} />
+                    </button>
                   </span>
-                  {value.includes(option.id) && (
-                    <Check size={16} className="text-blue-600" />
-                  )}
-                </div>
-              ))
+                );
+              })
             )}
-          </div>,
-          document.body,
-        )}
-    </div>
+
+            <ChevronDown
+              size={16}
+              className={`ml-auto text-gray-400 transition-transform ${
+                isOpen ? "rotate-180" : ""
+              }`}
+            />
+          </div>
+        </div>
+      </PopoverTrigger>
+
+      <PopoverContent
+        className="p-0 w-[--radix-popover-trigger-width]"
+        align="start"
+      >
+        {/* Search + Select All */}
+        <div className="flex items-center gap-2 px-3 py-2 border-b">
+          <Search size={14} className="text-gray-400" />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search..."
+            className="flex-1 outline-none text-sm"
+          />
+          <button
+            type="button"
+            onClick={handleSelectAllToggle}
+            className="font-medium text-blue-600 text-xs hover:underline whitespace-nowrap"
+          >
+            {allFilteredSelected ? "Deselect All" : "Select All"}
+          </button>
+        </div>
+
+        {/* Options */}
+        <div className="max-h-72 overflow-y-auto">
+          {isLoading ? (
+            <p className="p-3 text-gray-500 text-sm">Loading...</p>
+          ) : filteredOptions.length === 0 ? (
+            <p className="p-3 text-gray-500 text-sm">
+              No options found
+            </p>
+          ) : (
+            filteredOptions.map((option) => (
+              <div
+                key={option.id}
+                className="flex justify-between items-center hover:bg-gray-50 px-3 py-2 cursor-pointer"
+                onClick={() => handleToggle(option)}
+              >
+                <span className="text-secondary-foreground text-sm">
+                  {option.name}
+                </span>
+
+                {value.includes(option.id) && (
+                  <Check size={16} className="text-blue-600" />
+                )}
+              </div>
+            ))
+          )}
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 };
 

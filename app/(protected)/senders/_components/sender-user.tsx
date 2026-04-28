@@ -26,8 +26,14 @@ const AvatarStatusRingDemo = ({
 }) => {
   return (
     <div className="relative w-fit shrink-0">
-      <Avatar className={`rounded-full p-0.5 ${size} ${getStatusBg(user.status)}`}>
-        <AvatarImage src={user.avatar} alt={user.name} className="rounded-full" />
+      <Avatar
+        className={`rounded-full p-0.5 ${size} ${getStatusBg(user.status)}`}
+      >
+        <AvatarImage
+          src={user.avatar}
+          alt={user.name}
+          className="rounded-full"
+        />
         <AvatarFallback className="bg-muted text-sm">
           {user.name?.charAt(0).toUpperCase()}
         </AvatarFallback>
@@ -43,10 +49,11 @@ const SenderContent = ({ user }: { user: Sender }) => (
   <div className="flex items-center gap-3">
     <AvatarStatusRingDemo user={user} />
     <div className="flex flex-col">
-      <div className="flex items-center gap-1">
-        <p className="text-sm">{user.name}</p>
+      <span className="flex items-center text-sm">
+        {user.name}
         {user.linkedin && <LinkedInBtn url={user.linkedin} />}
-      </div>
+      </span>
+
       <p className={`text-xs ${getStatusTextColor(user.status)}`}>
         {user.status} ({user.statusCount})
       </p>
@@ -61,7 +68,10 @@ export const SenderUser = ({ user, showHover = false }: SenderUserProps) => {
     <HoverCard openDelay={200} closeDelay={100}>
       <HoverCardTrigger asChild>
         {/* stopPropagation so hovering doesn't fire the row's onRowClick */}
-        <div className="w-fit cursor-default" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="w-fit cursor-default"
+          onClick={(e) => e.stopPropagation()}
+        >
           <SenderContent user={user} />
         </div>
       </HoverCardTrigger>
@@ -70,7 +80,7 @@ export const SenderUser = ({ user, showHover = false }: SenderUserProps) => {
       <HoverCardContent
         side="right"
         align="start"
-        className="w-80 p-5"
+        className="p-5 w-80"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
