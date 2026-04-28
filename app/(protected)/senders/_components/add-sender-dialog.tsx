@@ -12,11 +12,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import { useHeyreachSenders } from "../../../../../hooks/useHeyrechSenders";
+import { useHeyreachSenders } from "../../../../hooks/useHeyrechSenders";
 import { addLinkedinSender } from "@/services/linkedin-senders";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
-import { SenderSelectComponent } from "./sender-select";
+import { SenderSelectComponent } from "../../linkedin-sync/components/senders/sender-select";
 
 interface AddSenderDialogProps {
   open: boolean;
@@ -43,7 +43,7 @@ const AddSenderDialog = ({ open, onOpenChange }: AddSenderDialogProps) => {
     }
 
     const selected = senderOptions.find(
-      (s: any) => String(s.id) === selectedSenderId
+      (s: any) => String(s.id) === selectedSenderId,
     );
     if (!selected) return;
 
@@ -52,7 +52,7 @@ const AddSenderDialog = ({ open, onOpenChange }: AddSenderDialogProps) => {
       await addLinkedinSender(selectedSenderId, profileUrl.trim());
       toast.success(`Sender "${selected.name}" linked successfully!`);
 
-      queryClient.invalidateQueries({ queryKey: ["linkedin-senders"] });
+      queryClient.invalidateQueries({ queryKey: ["sender-dashboard"] });
 
       // Reset form
       setSelectedSenderId("");
@@ -84,21 +84,17 @@ const AddSenderDialog = ({ open, onOpenChange }: AddSenderDialogProps) => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="p-0 sm:max-w-[540px]">
         <DialogHeader className="px-6 pt-6 pb-4">
-          <DialogTitle className="mb-2 font-semibold text-gray-700 text-xl">
-            Add New Sender
-          </DialogTitle>
-          <DialogDescription className="text-gray-600">
+          <DialogTitle className="mb-1 text-xl">Add New Sender</DialogTitle>
+          <DialogDescription className="text-muted-foreground">
             Select a Heyreach LinkedIn sender profile and add their LinkedIn
             URL.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-5 px-6 pb-6">
+        <div className="space-y-3 px-6 pb-6">
           {/* Sender Select */}
-          <div className="space-y-2">
-            <Label className="font-medium text-gray-900 text-sm">
-              Select Sender
-            </Label>
+          <div className="space-y-1">
+            <Label className="text-sm">Select Sender</Label>
             {isLoading ? (
               <div className="text-gray-500 text-sm">Loading senders...</div>
             ) : selectOptions.length === 0 ? (
@@ -120,11 +116,8 @@ const AddSenderDialog = ({ open, onOpenChange }: AddSenderDialogProps) => {
           </div>
 
           {/* LinkedIn URL Input */}
-          <div className="space-y-2">
-            <Label
-              htmlFor="profileUrl"
-              className="font-medium text-gray-900 text-sm"
-            >
+          <div className="space-y-1">
+            <Label htmlFor="profileUrl" className="text-sm">
               LinkedIn Profile URL
             </Label>
             <Input
@@ -147,7 +140,7 @@ const AddSenderDialog = ({ open, onOpenChange }: AddSenderDialogProps) => {
           </div>
 
           {/* Buttons */}
-          <div className="flex justify-center items-center gap-3 pt-4">
+          <div className="flex justify-end items-center gap-3">
             <Button
               variant="outline"
               onClick={handleCancel}
@@ -164,7 +157,6 @@ const AddSenderDialog = ({ open, onOpenChange }: AddSenderDialogProps) => {
                 !isValidLinkedInUrl(profileUrl) ||
                 isSubmitting
               }
-              className="bg-[#4A5BAA] hover:bg-[#3d4c92] px-6 w-32 h-10 text-white"
             >
               {isSubmitting ? "Adding..." : "Add Sender"}
             </Button>

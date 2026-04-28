@@ -6,12 +6,13 @@ import { DataTable } from "@/components/common/table/data-table";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-
-import { columns } from "@/lib/config/senders/headers";
+import { getColumns } from "@/lib/config/senders/headers";
 import { SenderFilters } from "./_components/sender-filters";
 import Metrics from "./_components/metrics";
-import { useSenders } from "@/hooks/use-senders";
+import { useRefetchLinkedinSender, useSenders } from "@/hooks/use-senders";
 import { getLast30DaysRange } from "@/lib/utils";
+import { refetchLinkedinSenderApi } from "@/services/linkedin-senders";
+import AddSenderDialog from "./_components/add-sender-dialog";
 
 const INITIAL_FILTERS = {
   sender_name: "",
@@ -22,6 +23,7 @@ const INITIAL_FILTERS = {
 
 const SenderPage = () => {
   const router = useRouter();
+  const { refetchLinkedinSender } = useRefetchLinkedinSender();
 
   // -----------------------
   // Pagination (server-driven)
@@ -32,6 +34,8 @@ const SenderPage = () => {
   // Filters
   // -----------------------
   const [filters, setFilters] = useState(() => INITIAL_FILTERS);
+  const [loadingId, setLoadingId] = useState<string | null>(null);
+  const [openAddSender, setOpenAddSender] = useState(false);
 
   // -----------------------
   // Reset page when filters change
@@ -67,19 +71,31 @@ const SenderPage = () => {
     setPage(newPage);
   };
 
-  return (
-    <PageWrapper title="Sender Management">
-      <div className="flex flex-col h-[calc(100vh-80px)] overflow-hidden">
-        {/* ---------------- FILTERS ---------------- */}
-        <div className="flex gap-12 mt-3 mb-4">
-          <div className="flex-1">
-            <SenderFilters filters={filters} onChange={setFilters} />
-          </div>
+  const handleRefresh = async (id: string) => {
+    setLoadingId(id);
+    await refetchLinkedinSender(id);
+    setLoadingId(null);
+  };
 
-          <Button>
+  const columns = getColumns(handleRefresh, loadingId);
+  return (
+    <PageWrapper
+      title="Sender Management"
+      subtitle="Overview of all the senders working for us"
+      rightComponent={
+        <div className="flex items-center gap-3">
+          {/* Search */}
+          <Button onClick={() => setOpenAddSender(true)}>
             <Plus size={16} className="mr-2" />
             Add Senders
           </Button>
+        </div>
+      }
+    >
+      <div className="flex flex-col h-[calc(100vh-80px)] overflow-hidden">
+        {/* ---------------- FILTERS ---------------- */}
+        <div className="mt-3 mb-4">
+          <SenderFilters filters={filters} onChange={setFilters} />
         </div>
 
         {/* ---------------- METRICS ---------------- */}
@@ -100,6 +116,7 @@ const SenderPage = () => {
           error={error}
         />
       </div>
+      <AddSenderDialog open={openAddSender} onOpenChange={setOpenAddSender} />
     </PageWrapper>
   );
 };

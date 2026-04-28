@@ -29,7 +29,7 @@ const CompaniesSelect = ({ value, onChange }: any) => {
         onChange(names);
       }}
       placeholder="Select Companies"
-      width="w-[150px]"
+    //   width="w-[150px]"
     />
   );
 };

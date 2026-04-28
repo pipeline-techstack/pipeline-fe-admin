@@ -21,6 +21,7 @@ import { Share, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DateFilter from "@/components/common/filters/date-filter";
 import Metrics from "../_components/metrics";
+import { TooltipWrapper } from "@/components/common/tooltip-wrapper";
 
 const INITIAL_FILTERS = {
   start_date: "",
@@ -34,7 +35,9 @@ const CustomTooltip = ({ active, payload, label }: any) => {
     return (
       <div className="bg-white shadow-lg p-3 border rounded-lg text-sm">
         <p className="mb-2 text-gray-800">{label}</p>
-        <p className="text-[#4A90E2]">Connections Sent: {data.connectionsSent}</p>
+        <p className="text-[#4A90E2]">
+          Connections Sent: {data.connectionsSent}
+        </p>
         <p className="text-[#2EC4B6]">Accepted: {data.accepted}</p>
         <p className="text-[#F5A623]">Reply Rate: {data.replyRate}%</p>
         <p className="text-[#27AE60]">Interested: {data.interested}%</p>
@@ -161,25 +164,29 @@ const Sender = () => {
 
           {/* APPLY / CLEAR */}
           <div className="flex border rounded-md">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleApply}
-              className="hover:bg-green-500/30 rounded-tr-none rounded-br-none"
-            >
-              <Check className="size-4" />
-            </Button>
+            <TooltipWrapper content="Apply">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleApply}
+                className="hover:bg-green-500/30 rounded-tr-none rounded-br-none"
+              >
+                <Check className="size-4" />
+              </Button>
+            </TooltipWrapper>
 
             <div className="border-r" />
 
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleClear}
-              className="hover:bg-red-500/30 rounded-tl-none rounded-bl-none"
-            >
-              <X className="size-4" />
-            </Button>
+            <TooltipWrapper content="Clear">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleClear}
+                className="hover:bg-red-500/30 rounded-tl-none rounded-bl-none"
+              >
+                <X className="size-4" />
+              </Button>
+            </TooltipWrapper>
           </div>
         </div>
       </div>

@@ -105,7 +105,7 @@ export default function DateRangePicker({
   return (
     <>
       {/* Trigger */}
-      <div className="relative w-[180px]">
+      <div className="relative w-[250px]">
         {label && (
           <span className="block mb-1 font-medium text-gray-700 text-sm">
             {label}

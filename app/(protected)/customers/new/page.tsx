@@ -9,7 +9,15 @@ import { DataTable } from "@/components/common/table/data-table";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCustomers } from "@/hooks/use-customers";
-import { Bell, Building, Calendar, Mail, Phone, User } from "lucide-react";
+import {
+  Bell,
+  Building,
+  Calendar,
+  Mail,
+  Phone,
+  Search,
+  User,
+} from "lucide-react";
 
 const columns = [
   { key: "name", header: "Name", icon: <User size={16} />, width: 200 },
@@ -80,9 +88,11 @@ export default function CustomerPage() {
     <PageWrapper
       // title="Customer Management"
       title="All Customers"
+      subtitle="Overview of the all the customers and manage them"
       rightComponent={
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1">
           {/* Search */}
+          <Search size={16} />
           <Input
             placeholder="Search customers..."
             value={search}

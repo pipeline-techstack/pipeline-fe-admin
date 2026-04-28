@@ -8,18 +8,16 @@ import {
   MessageCircle,
   RefreshCcw,
   Send,
+  Settings2,
   ThumbsUp,
   User,
 } from "lucide-react";
 
 export const normalizeStatus = (status: string) => status?.trim().toLowerCase();
-
-import { CheckIcon } from "lucide-react";
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Sender } from "@/lib/types/senders";
 import { SenderUser } from "@/app/(protected)/senders/_components/sender-user";
 import { Button } from "@/components/ui/button";
+import { TooltipWrapper } from "@/components/common/tooltip-wrapper";
 
 export const STATUS_MAP: Record<string, { bg: string; text: string }> = {
   active: {
@@ -36,7 +34,10 @@ export const STATUS_MAP: Record<string, { bg: string; text: string }> = {
   },
 };
 
-export const columns: Column<Sender>[] = [
+export const getColumns = (
+  onRefresh: (id: string) => void,
+  loadingId?: string | null,
+): Column<Sender>[] => [
   {
     key: "name",
     header: "Name",
@@ -119,18 +120,26 @@ export const columns: Column<Sender>[] = [
   {
     key: "actions",
     header: "Actions",
+    icon: <Settings2 size={16} />,
     render: (row) => (
       <div className="flex justify-center">
-        <Button
-          variant={"outline"}
-          onClick={(e) => {
-            e.stopPropagation(); // ✅ VERY IMPORTANT (prevents row click)
-            console.log("Sender ID:", row._id);
-          }}
-          size={"icon"}
-        >
-          <RefreshCcw className="size-4" />
-        </Button>
+        <TooltipWrapper content="Refetch Sender">
+          <Button
+            variant="outline"
+            onClick={(e) => {
+              e.stopPropagation();
+              onRefresh(row._id);
+            }}
+            size="icon"
+            disabled={loadingId === row._id}
+          >
+            <RefreshCcw
+              className={`size-4 ${
+                loadingId === row._id ? "animate-spin" : ""
+              }`}
+            />
+          </Button>
+        </TooltipWrapper>
       </div>
     ),
   },
