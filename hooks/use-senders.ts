@@ -8,8 +8,8 @@ import {
 import {
   getSenderDashboard,
   getSenderData,
+  refetchLinkedinSenderApi,
 } from "@/services/sender-apis";
-import { refetchLinkedinSenderApi } from "@/services/linkedin-senders";
 
 /* ---------------------------------------------------- */
 /* 🔹 Helpers */

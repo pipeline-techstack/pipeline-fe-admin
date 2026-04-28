@@ -4,9 +4,9 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { LinkedInSenderProfile } from "../types/sender";
 import {
-  getLinkedinSenders,
-  refetchLinkedinSenderApi,
+  getLinkedinSenders,,
 } from "@/services/linkedin-senders";
+import { refetchLinkedinSenderApi } from "@/services/sender-apis";
 
 const normalizeSender = (item: any): LinkedInSenderProfile => {
   const profile = item.profile_info || {};

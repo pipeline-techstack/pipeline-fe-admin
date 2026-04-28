@@ -11,7 +11,6 @@ import { SenderFilters } from "./_components/sender-filters";
 import Metrics from "./_components/metrics";
 import { useRefetchLinkedinSender, useSenders } from "@/hooks/use-senders";
 import { getLast30DaysRange } from "@/lib/utils";
-import { refetchLinkedinSenderApi } from "@/services/linkedin-senders";
 import AddSenderDialog from "./_components/add-sender-dialog";
 
 const INITIAL_FILTERS = {

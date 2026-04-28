@@ -13,10 +13,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { useHeyreachSenders } from "../../../../hooks/useHeyrechSenders";
-import { addLinkedinSender } from "@/services/linkedin-senders";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { SenderSelectComponent } from "../../linkedin-sync/components/senders/sender-select";
+import { addLinkedinSender } from "@/services/sender-apis";
 
 interface AddSenderDialogProps {
   open: boolean;
